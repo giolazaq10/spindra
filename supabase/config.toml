@@ -1,0 +1,7 @@
+[functions.provider-callback]
+# Providers authenticate using the timestamped HMAC, not a Supabase user JWT.
+verify_jwt = false
+[functions.game-launch]
+# Handler validates the bearer token through Supabase Auth.
+verify_jwt = false
+
