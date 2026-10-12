@@ -31,10 +31,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const spent = useRef(0);
   const locked = useRef(false);
   const cap = useRef(50000);
-  const [balance, setBalance] = useState(funds.current),
+  const [balance, setBalance] = useState(100000),
     [rounds, setRounds] = useState<Round[]>([]),
     [blocked, setBlocked] = useState(false),
-    [limit, setLimitState] = useState(cap.current),
+    [limit, setLimitState] = useState(50000),
     [loss, setLoss] = useState(0);
   const reserve = (n: number) => {
     if (

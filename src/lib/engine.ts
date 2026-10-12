@@ -141,3 +141,87 @@ export function slotSpin(math: SlotMath, rng: RandomInt = randomInt) {
     multiplier: reels.every((r) => r === reels[0]) ? math.pays[reels[0]] : 0,
   };
 }
+
+// Five independent columns, three visible rows, ten fixed left-to-right lines.
+export const slotLines = [
+  [1, 1, 1, 1, 1],
+  [0, 0, 0, 0, 0],
+  [2, 2, 2, 2, 2],
+  [0, 1, 2, 1, 0],
+  [2, 1, 0, 1, 2],
+  [0, 0, 1, 2, 2],
+  [2, 2, 1, 0, 0],
+  [1, 0, 0, 0, 1],
+  [1, 2, 2, 2, 1],
+  [0, 1, 1, 1, 0],
+];
+export function linePays(math: SlotMath) {
+  const total = math.weights.reduce((a, b) => a + b, 0);
+  const unscaled = math.weights.reduce((sum, w, i) => {
+    const p = w / total;
+    return (
+      sum +
+      math.pays[i] * (p ** 3 * (1 - p) + 2 * p ** 4 * (1 - p) + 5 * p ** 5)
+    );
+  }, 0);
+  const scale = slotRtp(math) / unscaled;
+  return math.pays.map((pay) => {
+    const three = Math.max(1, Math.floor(pay * scale));
+    return [three, three * 2, three * 5];
+  });
+}
+export function fiveReelRtp(math: SlotMath) {
+  const total = math.weights.reduce((a, b) => a + b, 0),
+    pays = linePays(math);
+  return math.weights.reduce((sum, w, i) => {
+    const p = w / total;
+    return (
+      sum +
+      p ** 3 * (1 - p) * pays[i][0] +
+      p ** 4 * (1 - p) * pays[i][1] +
+      p ** 5 * pays[i][2]
+    );
+  }, 0);
+}
+export function evaluateLines(grid: number[][], math: SlotMath) {
+  if (
+    grid.length !== 5 ||
+    grid.some(
+      (column) =>
+        column.length !== 3 ||
+        column.some(
+          (s) => !Number.isInteger(s) || s < 0 || s >= math.weights.length,
+        ),
+    )
+  )
+    throw new Error("Five columns of three valid symbols required");
+  const pays = linePays(math);
+  return slotLines.flatMap((rows, line) => {
+    const symbol = grid[0][rows[0]];
+    let count = 1;
+    while (count < 5 && grid[count][rows[count]] === symbol) count++;
+    return count >= 3
+      ? [{ line, rows, symbol, count, multiplier: pays[symbol][count - 3] }]
+      : [];
+  });
+}
+export function fiveReelSpin(math: SlotMath, rng: RandomInt = randomInt) {
+  const total = math.weights.reduce((a, b) => a + b, 0);
+  const grid = Array.from({ length: 5 }, () =>
+    Array.from({ length: 3 }, () => {
+      let ticket = rng(total);
+      for (let i = 0; i < math.weights.length; i++) {
+        ticket -= math.weights[i];
+        if (ticket < 0) return i;
+      }
+      throw new Error("Invalid reel weights");
+    }),
+  );
+  const wins = evaluateLines(grid, math);
+  return {
+    grid,
+    wins,
+    multiplier:
+      wins.reduce((sum, w) => sum + w.multiplier, 0) / slotLines.length,
+  };
+}

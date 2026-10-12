@@ -1,0 +1,2715 @@
+.spindra-extension {
+  color: #eeeef0;
+  background: #0a0a14;
+  font-weight: 400;
+  --muted: #9ca3af;
+  --lime: #fbbf24;
+  --line: #ffffff12;
+}
+.spindra-extension * {
+  box-sizing: border-box;
+}
+.spindra-extension a {
+  color: inherit;
+  text-decoration: none;
+}
+.spindra-extension button,
+.spindra-extension input,
+.spindra-extension select {
+  font: inherit;
+}
+.spindra-extension button,
+.spindra-extension a,
+.spindra-extension input,
+.spindra-extension select,
+.spindra-extension summary {
+  -webkit-tap-highlight-color: transparent;
+}
+.spindra-extension button {
+  cursor: pointer;
+}
+.spindra-extension button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.spindra-extension button:focus-visible,
+.spindra-extension a:focus-visible,
+.spindra-extension input:focus-visible,
+.spindra-extension select:focus-visible,
+.spindra-extension summary:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 4px;
+}
+.spindra-extension ::selection {
+  background: var(--lime);
+  color: #131613;
+}
+.spindra-extension h1,
+.spindra-extension h2,
+.spindra-extension h3,
+.spindra-extension p {
+  margin: 0;
+}
+.spindra-extension h1,
+.spindra-extension h2,
+.spindra-extension h3 {
+  font-weight: 550;
+  letter-spacing: -0.04em;
+}
+.spindra-extension h1 {
+  font-size: clamp(30px, 3.1vw, 44px);
+  line-height: 1.14;
+}
+.spindra-extension h2 {
+  font-size: 25px;
+}
+.spindra-extension h3 {
+  font-size: 16px;
+}
+.spindra-extension p {
+  line-height: 1.7;
+}
+.spindra-extension .muted,
+.spindra-extension .quiet {
+  color: var(--muted);
+}
+.spindra-extension .eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.19em;
+  font-weight: 650;
+  display: block;
+  color: var(--muted);
+  margin-bottom: 15px;
+}
+.spindra-extension .button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid transparent;
+  padding: 12px 20px;
+  min-height: 44px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 650;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.spindra-extension .primary {
+  background: var(--lime);
+  color: #0a0a14;
+}
+.spindra-extension .primary:hover {
+  background: #fcd34d;
+  transform: translateY(-1px);
+}
+.spindra-extension .secondary {
+  background: #ffffff06;
+  border-color: #ffffff18;
+  color: #e3e9e3;
+}
+.spindra-extension .secondary:hover {
+  background: #ffffff12;
+}
+.spindra-extension .danger {
+  background: #753a3b;
+  color: white;
+}
+.spindra-extension .text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--lime);
+}
+.spindra-extension .wide {
+  width: 100%;
+}
+.spindra-extension .site-header {
+  height: 88px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 max(32px, calc((100vw - 1360px) / 2));
+  gap: 24px;
+  background: #0a0a14;
+  position: relative;
+  z-index: 20;
+}
+.spindra-extension .brand {
+  font-size: 29px;
+  letter-spacing: -1.8px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+}
+.spindra-extension .brand-icon {
+  color: var(--lime);
+  font-size: 38px;
+  margin-right: 10px;
+  font-weight: 400;
+}
+.spindra-extension .brand-dot {
+  color: var(--lime);
+}
+.spindra-extension .desktop-nav {
+  display: flex;
+  gap: 30px;
+  font-size: 12px;
+  color: #b4beb8;
+}
+.spindra-extension .desktop-nav a:hover,
+.spindra-extension .desktop-nav a.active {
+  color: var(--lime);
+}
+.spindra-extension .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+}
+.spindra-extension .signin-link {
+  font-size: 12px;
+  font-weight: 600;
+}
+.spindra-extension .menu-button {
+  display: none;
+  background: none;
+  border: 0;
+  color: white;
+}
+.spindra-extension .prelaunch-bar {
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  padding: 10px 24px;
+  text-align: center;
+  background: #1c2318;
+  color: #bec6b5;
+  border-bottom: 1px solid #fbbf2410;
+}
+.spindra-extension .prelaunch-bar span {
+  margin: 0 13px;
+  color: var(--lime);
+}
+.spindra-extension .page {
+  max-width: 1360px;
+  margin: auto;
+  padding: 45px 32px 70px;
+}
+.spindra-extension .intro-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: #a8b2aa;
+  margin-bottom: 25px;
+}
+.spindra-extension .intro-line > a {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  letter-spacing: 0;
+}
+.spindra-extension .status-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: var(--lime);
+  border-radius: 50%;
+  margin-right: 9px;
+  vertical-align: middle;
+}
+.spindra-extension .casino-hero {
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #141428;
+  overflow: hidden;
+  min-height: 460px;
+}
+.spindra-extension .hero-copy {
+  padding: 55px 48px;
+  position: relative;
+  z-index: 2;
+}
+.spindra-extension .hero-copy .eyebrow {
+  color: #9ca3af;
+}
+.spindra-extension .hero-copy h1 {
+  font-size: clamp(48px, 5.2vw, 73px);
+  line-height: 1.04;
+  letter-spacing: -0.065em;
+}
+.spindra-extension .hero-copy em,
+.spindra-extension .auth-story em {
+  color: var(--lime);
+  font-family: Georgia, serif;
+  font-weight: 400;
+}
+.spindra-extension .hero-copy p {
+  color: #a6b1a9;
+  font-size: 13px;
+  margin-top: 22px;
+}
+.spindra-extension .hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 30px;
+}
+.spindra-extension .hero-actions .text-link {
+  color: #e5e7eb;
+  font-size: 11px;
+}
+.spindra-extension .hero-meta {
+  display: flex;
+  gap: 17px;
+  font-size: 10px;
+  color: #98a38f;
+  margin-top: 34px;
+}
+.spindra-extension .hero-meta span + span {
+  border-left: 1px solid #ffffff18;
+  padding-left: 17px;
+}
+.spindra-extension .hero-art {
+  position: relative;
+  min-height: 460px;
+  overflow: hidden;
+  background: radial-gradient(
+    ellipse at 48% 46%,
+    #a68644 0%,
+    #524b2d 26%,
+    #23281c 66%
+  );
+  border-left: 1px solid #ffffff09;
+}
+.spindra-extension .sun-ring {
+  position: absolute;
+  border: 1px solid #f9de8455;
+  border-radius: 50%;
+  left: 50%;
+  top: 43%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 26px #ddbf5b10;
+}
+.spindra-extension .ring-one {
+  width: 360px;
+  height: 360px;
+}
+.spindra-extension .ring-two {
+  width: 290px;
+  height: 290px;
+  border: 14px double #f9de8425;
+}
+.spindra-extension .ring-three {
+  width: 220px;
+  height: 220px;
+  border: 1px dashed #f9de8488;
+  animation: solar-turn 65s linear infinite;
+}
+.spindra-extension .sun-core {
+  position: absolute;
+  left: 50%;
+  top: 43%;
+  transform: translate(-50%, -50%);
+  font-size: 218px;
+  line-height: 1;
+  color: #f5d878;
+  text-shadow: 0 0 60px #ffcf5f90;
+}
+.spindra-extension .hero-art-label {
+  position: absolute;
+  top: 26px;
+  left: 29px;
+  letter-spacing: 0.22em;
+  font-size: 9px;
+  color: #e3d5b3;
+}
+.spindra-extension .hero-art-title {
+  position: absolute;
+  bottom: 62px;
+  left: 30px;
+  line-height: 0.91;
+  font-family: Georgia, serif;
+  color: #f3e7c4;
+  font-size: 53px;
+  letter-spacing: 0.08em;
+}
+.spindra-extension .hero-art-cta {
+  position: absolute;
+  bottom: 28px;
+  left: 32px;
+  letter-spacing: 0.15em;
+  font-size: 9px;
+  color: #d7cdb3;
+}
+.spindra-extension .feature-strip {
+  display: flex;
+  justify-content: space-around;
+  gap: 18px;
+  border-bottom: 1px solid var(--line);
+  padding: 25px 0;
+  margin-bottom: 44px;
+}
+.spindra-extension .feature-strip span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11px;
+  color: #aeb7ad;
+}
+.spindra-extension .feature-strip svg {
+  color: #c4d19d;
+}
+.spindra-extension .section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 0 0 28px;
+}
+.spindra-extension .section-heading .eyebrow {
+  margin-bottom: 10px;
+}
+.spindra-extension .section-heading h1 {
+  font-size: 30px;
+}
+.spindra-extension .section-heading p {
+  margin-top: 10px;
+}
+.spindra-extension .section-heading > .muted {
+  font-size: 11px;
+}
+.spindra-extension .catalog-tools {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 25px;
+}
+.spindra-extension .category-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.spindra-extension .category-tabs a {
+  font-size: 11px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  color: #a8b0aa;
+  background: #ffffff03;
+  white-space: nowrap;
+}
+.spindra-extension .category-tabs a.active {
+  background: #fbbf2413;
+  border: 1px solid #fbbf2424;
+  color: var(--lime);
+}
+.spindra-extension .category-tabs a:hover {
+  color: var(--lime);
+}
+.spindra-extension .catalog-filters {
+  display: flex;
+  gap: 10px;
+}
+.spindra-extension .search-field,
+.spindra-extension .sort-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 11px;
+  height: 36px;
+  color: #8f9b96;
+}
+.spindra-extension .search-field input,
+.spindra-extension .sort-field select {
+  background: none;
+  color: #c0c8c0;
+  border: 0;
+  font-size: 11px;
+  padding: 0;
+  outline: none;
+}
+.spindra-extension .search-field input {
+  width: 120px;
+}
+.spindra-extension .sort-field select {
+  width: 82px;
+}
+.spindra-extension .game-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px 19px;
+}
+.spindra-extension .game-card {
+  min-width: 0;
+  transition: transform 0.2s;
+}
+.spindra-extension .game-card:hover {
+  transform: translateY(-4px);
+}
+.spindra-extension .game-art {
+  position: relative;
+  aspect-ratio: 1.25;
+  overflow: hidden;
+  border-radius: 9px;
+  background: radial-gradient(
+    ellipse at 50% 55%,
+    color-mix(in srgb, var(--accent) 26%, var(--theme)),
+    var(--theme) 73%
+  );
+  border: 1px solid color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
+}
+.spindra-extension .art-brand {
+  position: absolute;
+  left: 15px;
+  top: 14px;
+  font-size: 7px;
+  line-height: 1.5;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  opacity: 0.75;
+  z-index: 2;
+}
+.spindra-extension .art-number {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  font-size: 9px;
+  opacity: 0.6;
+}
+.spindra-extension .art-orbit {
+  width: 58%;
+  aspect-ratio: 1;
+  position: absolute;
+  left: 21%;
+  top: 13%;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 50%;
+  transform: rotate(-30deg);
+}
+.spindra-extension .orbit-two {
+  width: 44%;
+  left: 28%;
+  top: 20%;
+  border: 8px double color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.spindra-extension .art-emblem {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 93px;
+  transform: translateY(-7px);
+  text-shadow: 0 0 40px color-mix(in srgb, var(--accent) 40%, transparent);
+  font-family: Georgia, serif;
+}
+.spindra-extension .art-caption {
+  position: absolute;
+  bottom: 21px;
+  left: 12px;
+  right: 12px;
+  text-align: center;
+  font-family: Georgia, serif;
+  letter-spacing: 0.16em;
+  font-size: 16px;
+  color: var(--accent);
+}
+.spindra-extension .glitch .art-orbit {
+  border-radius: 6px;
+  transform: rotate(45deg);
+}
+.spindra-extension .glitch .orbit-two {
+  border-radius: 1px;
+  transform: rotate(25deg);
+}
+.spindra-extension .wave .art-orbit {
+  border-radius: 45% 60% 40% 55%;
+  transform: rotate(25deg);
+}
+.spindra-extension .bloom .art-orbit {
+  border-radius: 20% 60% 20% 60%;
+  transform: rotate(45deg);
+}
+.spindra-extension .flare .art-orbit {
+  border-radius: 7%;
+  transform: rotate(45deg);
+  border-width: 2px;
+}
+.spindra-extension .card-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: #050907bb;
+  font-size: 12px;
+  font-weight: 650;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.spindra-extension .game-card:hover .card-play,
+.spindra-extension .game-card:focus-visible .card-play {
+  opacity: 1;
+}
+.spindra-extension .game-card-info {
+  padding: 12px 2px 0;
+}
+.spindra-extension .game-card-info h3 {
+  font-size: 13px;
+  letter-spacing: -0.015em;
+  margin-bottom: 5px;
+}
+.spindra-extension .game-card-info > span {
+  display: block;
+  font-size: 9px;
+  color: #929f94;
+}
+.spindra-extension .game-card-info b {
+  margin: 0 5px;
+  color: #68766c;
+}
+.spindra-extension .bottom-banner {
+  margin-top: 50px;
+  border: 1px solid #fbbf241b;
+  border-radius: 10px;
+  background: #141428;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 35px 38px;
+  gap: 25px;
+}
+.spindra-extension .bottom-banner h2 {
+  font-size: 28px;
+}
+.spindra-extension .bottom-banner p {
+  color: #9aa592;
+  font-size: 12px;
+  margin-top: 9px;
+}
+.spindra-extension .bottom-banner .eyebrow {
+  color: #bdc9a4;
+}
+.spindra-extension .site-footer {
+  max-width: 1360px;
+  margin: auto;
+  padding: 42px 32px 25px;
+  border-top: 1px solid var(--line);
+}
+.spindra-extension .footer-top {
+  display: flex;
+  align-items: center;
+  gap: 42px;
+  margin-bottom: 37px;
+}
+.spindra-extension .footer-top p {
+  font-size: 11px;
+  color: #8d9990;
+}
+.spindra-extension .footer-top nav {
+  display: flex;
+  gap: 23px;
+  margin-left: auto;
+  font-size: 11px;
+  color: #9daa9e;
+}
+.spindra-extension .footer-top nav a:hover {
+  color: var(--lime);
+}
+.spindra-extension .footer-bottom {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  font-size: 9px;
+  color: #78867d;
+}
+.spindra-extension .age-badge {
+  display: inline-block;
+  padding: 4px 5px;
+  border: 1px solid #ffffff25;
+  border-radius: 4px;
+  margin-right: 9px;
+  color: #bac5b3;
+}
+.spindra-extension .skip-link {
+  position: absolute;
+  left: 15px;
+  top: -50px;
+  z-index: 100;
+  background: var(--lime);
+  color: #111;
+  padding: 10px;
+}
+.spindra-extension .skip-link:focus {
+  top: 8px;
+}
+.spindra-extension .panel {
+  background: #141428;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 28px;
+}
+.spindra-extension .panel p {
+  color: #9ca3af;
+  font-size: 13px;
+  margin: 14px 0;
+}
+.spindra-extension .notice {
+  background: #fbbf2408;
+  border: 1px solid #fbbf2422;
+  border-radius: 7px;
+  padding: 14px 18px;
+  margin: 20px 0;
+  font-size: 12px;
+  color: #d1d5db;
+  line-height: 1.6;
+}
+.spindra-extension .notice a {
+  color: var(--lime);
+  text-decoration: underline;
+}
+.spindra-extension .error {
+  color: #f3a4a4;
+  font-size: 13px;
+  margin: 14px 0;
+}
+.spindra-extension .success {
+  color: #34d399;
+  font-size: 13px;
+  margin: 14px 0;
+}
+.spindra-extension .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  padding: 70px 20px;
+}
+.spindra-extension .empty-state p {
+  color: var(--muted);
+}
+.spindra-extension .auth-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1120px;
+  margin: 60px auto 85px;
+  gap: 85px;
+  padding: 0 32px;
+  align-items: center;
+}
+.spindra-extension .auth-story {
+  position: relative;
+}
+.spindra-extension .auth-story h1 {
+  font-size: 64px;
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+}
+.spindra-extension .auth-story p {
+  color: var(--muted);
+  max-width: 340px;
+  font-size: 13px;
+}
+.spindra-extension .auth-story .quiet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  margin-top: 22px;
+}
+.spindra-extension .auth-emblem {
+  font-size: 170px;
+  color: var(--lime);
+  line-height: 1.4;
+  font-family: Georgia, serif;
+}
+.spindra-extension .auth-form h2 {
+  font-size: 28px;
+}
+.spindra-extension .auth-form form {
+  margin-top: 24px;
+}
+.spindra-extension .auth-bottom {
+  font-size: 12px;
+  margin-top: 22px !important;
+}
+.spindra-extension .auth-bottom a,
+.spindra-extension .check a {
+  color: var(--lime);
+}
+.spindra-extension label {
+  display: block;
+  font-size: 11px;
+  color: #d1d5db;
+  margin-bottom: 16px;
+}
+.spindra-extension input,
+.spindra-extension select {
+  width: 100%;
+  background: #0a0a14;
+  border: 1px solid #ffffff1c;
+  border-radius: 6px;
+  padding: 12px;
+  color: #e1e8df;
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  min-width: 0;
+}
+.spindra-extension select option {
+  background: #181e18;
+  color: white;
+}
+.spindra-extension .password-input {
+  position: relative;
+}
+.spindra-extension .password-input input {
+  padding-right: 45px;
+}
+.spindra-extension .password-input button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  color: #a1b095;
+  padding: 5px;
+}
+.spindra-extension .check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  line-height: 1.7;
+  margin-top: 15px;
+}
+.spindra-extension .check input {
+  width: 15px;
+  flex-shrink: 0;
+  margin-top: 3px;
+  accent-color: var(--lime);
+}
+.spindra-extension .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.spindra-extension .auth-form form > .text-link {
+  display: block;
+  text-align: right;
+  margin: -3px 0 22px;
+  font-size: 11px;
+}
+.spindra-extension .reading-page {
+  max-width: 1000px;
+}
+.spindra-extension .reading-page > h1 {
+  font-size: 48px;
+}
+.spindra-extension .lead {
+  font-size: 17px;
+  color: #9daa9e;
+  margin: 22px 0 32px;
+  max-width: 760px;
+}
+.spindra-extension .reading-page > .panel {
+  margin-bottom: 20px;
+}
+.spindra-extension .reading-page .panel h2 {
+  font-size: 22px;
+}
+.spindra-extension .reading-page ul {
+  color: #9ca3af;
+  font-size: 13px;
+  line-height: 2;
+  padding-left: 20px;
+}
+.spindra-extension .reading-page details {
+  margin-top: 25px;
+  color: #d1d5db;
+  font-size: 13px;
+}
+.spindra-extension .reading-page details .button {
+  margin-top: 12px;
+}
+.spindra-extension .reading-page .account-grid {
+  grid-template-columns: 1fr 1fr;
+}
+.spindra-extension .account-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 25px;
+}
+.spindra-extension .account-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.spindra-extension .account-tile > svg {
+  color: var(--lime);
+  margin-bottom: 26px;
+}
+.spindra-extension .account-tile .eyebrow {
+  margin-bottom: 10px;
+}
+.spindra-extension .account-tile h2 {
+  font-size: 27px;
+}
+.spindra-extension .account-tile p {
+  flex: 1;
+}
+.spindra-extension .account-details,
+.spindra-extension .history {
+  margin-bottom: 22px;
+}
+.spindra-extension .account-details dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  font-size: 13px;
+  margin: 25px 0;
+}
+.spindra-extension .account-details dt {
+  color: #8d9c90;
+  margin-bottom: 8px;
+}
+.spindra-extension .account-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.spindra-extension .table-scroll {
+  overflow: auto;
+}
+.spindra-extension table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  text-align: left;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.spindra-extension th {
+  color: #91a08e;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+.spindra-extension td,
+.spindra-extension th {
+  padding: 14px 15px;
+  border-bottom: 1px solid var(--line);
+}
+.spindra-extension .provider-empty {
+  text-align: center;
+  padding: 65px 35px;
+}
+.spindra-extension .provider-empty > svg {
+  color: var(--lime);
+  margin: 0 auto 25px;
+}
+.spindra-extension .provider-empty .button {
+  margin-top: 20px;
+}
+.spindra-extension .game-page > .text-link {
+  margin-bottom: 30px;
+}
+.spindra-extension .game-surface {
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 15px;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--theme) 80%, #15241e),
+    #0c1411
+  );
+  padding: 24px 28px;
+  overflow: hidden;
+}
+.spindra-extension .game-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--accent);
+  font-size: 10px;
+}
+.spindra-extension .pill {
+  border: 1px solid #ffffff22;
+  border-radius: 5px;
+  padding: 6px 9px;
+  letter-spacing: 0.06em;
+  font-size: 9px;
+}
+.spindra-extension .game-bottom {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-top: 30px;
+  border-top: 1px solid #ffffff12;
+  padding-top: 24px;
+}
+.spindra-extension .game-bottom .eyebrow {
+  font-size: 8px;
+  margin-bottom: 5px;
+}
+.spindra-extension .game-bottom strong {
+  font-size: 23px;
+  font-variant-numeric: tabular-nums;
+}
+.spindra-extension .game-bottom label {
+  margin: 0;
+  width: 140px;
+  flex-shrink: 0;
+}
+.spindra-extension .game-bottom select {
+  padding: 9px;
+  font-size: 11px;
+}
+.spindra-extension .game-result {
+  font-size: 12px;
+  color: #d1d5db;
+  margin-left: auto;
+  max-width: 360px;
+  line-height: 1.6;
+}
+.spindra-extension .slot-machine {
+  text-align: center;
+  max-width: 640px;
+  margin: 35px auto;
+}
+.spindra-extension .slot-title {
+  font-family: Georgia, serif;
+  letter-spacing: 0.19em;
+  color: var(--accent);
+  font-size: 28px;
+  display: block;
+  margin-bottom: 28px;
+}
+.spindra-extension .reels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  position: relative;
+  border: 3px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  padding: 12px;
+  border-radius: 14px;
+  box-shadow: 0 0 45px color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.spindra-extension .reels:after {
+  content: "";
+  position: absolute;
+  left: -15px;
+  right: -15px;
+  top: 50%;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.spindra-extension .reel {
+  height: 235px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0c1010cc;
+  border: 1px solid #ffffff15;
+  border-radius: 7px;
+  overflow: hidden;
+  gap: 10px;
+  color: var(--accent);
+  position: relative;
+}
+.spindra-extension .pay-symbol {
+  font-family: Georgia, serif;
+  font-size: 72px;
+  line-height: 1.15;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 0 25px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.spindra-extension .ghost-symbol {
+  font-family: Georgia, serif;
+  font-size: 38px;
+  opacity: 0.13;
+  line-height: 1;
+}
+.spindra-extension .payline-label {
+  font-size: 8px;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  opacity: 0.7;
+  margin-top: 12px;
+}
+.spindra-extension .play-button {
+  margin-top: 26px;
+  min-width: 180px;
+}
+.spindra-extension .spinning .pay-symbol {
+  animation: reel-spin 0.15s linear infinite;
+}
+.spindra-extension .glitch .spinning .pay-symbol {
+  animation: glitch-spin 0.18s steps(3) infinite;
+}
+.spindra-extension .wave .spinning .pay-symbol {
+  animation: wave-spin 0.23s linear infinite;
+}
+.spindra-extension .bloom .spinning .pay-symbol {
+  animation: bloom-spin 0.25s linear infinite;
+}
+.spindra-extension .flare .spinning .pay-symbol {
+  animation: flare-spin 0.2s linear infinite;
+}
+.spindra-extension .win .pay-symbol {
+  animation: win-pulse 0.65s ease-in-out 3;
+}
+.spindra-extension .rules {
+  margin-top: 25px;
+}
+.spindra-extension .rules p {
+  font-size: 13px;
+}
+.spindra-extension .paytable {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 22px;
+}
+.spindra-extension .paytable > div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  border: 1px solid var(--line);
+  padding: 16px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+.spindra-extension .paytable b {
+  font-weight: 500;
+}
+.spindra-extension .paytable span {
+  color: var(--lime);
+  font-size: 12px;
+}
+.spindra-extension .paytable small {
+  color: var(--muted);
+  font-size: 10px;
+}
+.spindra-extension .table-game {
+  text-align: center;
+  padding: 30px 0 10px;
+  min-height: 350px;
+}
+.spindra-extension .table-inscription {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  opacity: 0.7;
+  margin-bottom: 24px;
+}
+.spindra-extension .hand-label {
+  font-size: 11px;
+  color: #d1d5db;
+  display: block;
+  margin: 12px 0;
+}
+.spindra-extension .cards-row {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.spindra-extension .playing-card {
+  width: 76px;
+  height: 112px;
+  border-radius: 7px;
+  background: #ecece1;
+  color: #202b25;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid #ffffff30;
+  box-shadow: 0 5px 13px #0003;
+  animation: card-deal 0.25s ease-out;
+}
+.spindra-extension .playing-card small {
+  font-size: 14px;
+  align-self: flex-start;
+  line-height: 1;
+}
+.spindra-extension .playing-card small:last-child {
+  align-self: flex-end;
+  transform: rotate(180deg);
+}
+.spindra-extension .playing-card strong {
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1;
+}
+.spindra-extension .red-card {
+  color: #a53240;
+}
+.spindra-extension .card-back {
+  background: repeating-linear-gradient(
+    45deg,
+    #243a29,
+    #243a29 4px,
+    #29432e 4px,
+    #29432e 8px
+  );
+  border: 4px solid #b7b69b;
+  justify-content: center;
+  color: #bfbf9f;
+  font-size: 38px;
+}
+.spindra-extension .blackjack-hands {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
+.spindra-extension .blackjack-hand {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px;
+}
+.spindra-extension .active-hand {
+  border-color: var(--accent);
+  background: #ffffff04;
+}
+.spindra-extension .game-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.spindra-extension .poker-cards {
+  gap: 15px;
+  margin-top: 50px;
+}
+.spindra-extension .hold-card {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #d1d5db;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  opacity: 1 !important;
+}
+.spindra-extension .hold-card > span {
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  background: #ffffff07;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+.spindra-extension .hold-card.held > span {
+  background: var(--accent);
+  color: #202521;
+}
+.spindra-extension .hold-card.held .playing-card {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.spindra-extension .roulette-game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 65px;
+  min-height: 380px;
+  padding: 28px;
+}
+.spindra-extension .wheel-holder {
+  position: relative;
+  width: 310px;
+  height: 310px;
+  flex-shrink: 0;
+}
+.spindra-extension .wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 9px solid #756742;
+  position: relative;
+  background: #182820;
+  transition: transform 1.8s cubic-bezier(0.13, 0.7, 0.12, 1);
+  box-shadow:
+    0 0 0 3px #cbb68133,
+    0 0 40px #0004;
+}
+.spindra-extension .wheel > span {
+  position: absolute;
+  left: calc(50% - 12px);
+  top: 0;
+  height: 100%;
+  width: 24px;
+  transform-origin: 50% 50%;
+  color: #d9d9c5;
+}
+.spindra-extension .wheel > span b {
+  display: block;
+  background: #17221c;
+  font-size: 9px;
+  text-align: center;
+  padding: 15px 0 10px;
+}
+.spindra-extension .wheel > span.red-pocket b {
+  background: #8b3336;
+}
+.spindra-extension .wheel > span.green-pocket b {
+  background: #286a42;
+}
+.spindra-extension .wheel-hub {
+  position: absolute;
+  inset: 21%;
+  border-radius: 50%;
+  border: 10px double #cab77955;
+  background: radial-gradient(#4b4930, #192b22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 75px;
+  color: #cbbb7e;
+}
+.spindra-extension .wheel-pointer {
+  position: absolute;
+  left: 50%;
+  top: -10px;
+  transform: translateX(-50%);
+  z-index: 2;
+  color: #edd391;
+  font-size: 23px;
+}
+.spindra-extension .wheel-result {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  background: #18271a;
+  border: 1px solid #cbb88088;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  font-weight: 500;
+  color: #ebd792;
+}
+.spindra-extension .roulette-controls {
+  max-width: 350px;
+}
+.spindra-extension .bet-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.spindra-extension .bet-options .button {
+  padding: 10px 15px;
+  text-transform: capitalize;
+}
+.spindra-extension .selected {
+  background: var(--accent);
+  color: #20261a;
+}
+.spindra-extension .roulette-controls label {
+  max-width: 160px;
+}
+.spindra-extension .mobile-nav {
+  background: #1a211a;
+  border-bottom: 1px solid var(--line);
+  padding: 15px 24px;
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+.spindra-extension .reading-page form {
+  margin-top: 15px;
+}
+.spindra-extension .reading-page .account-grid .panel > svg {
+  color: var(--lime);
+  margin-bottom: 20px;
+}
+@keyframes solar-turn {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+@keyframes reel-spin {
+  0% {
+    transform: translateY(-65px);
+    filter: blur(4px);
+  }
+  100% {
+    transform: translateY(65px);
+    filter: blur(4px);
+  }
+}
+@keyframes glitch-spin {
+  0% {
+    transform: translate(-6px, -35px);
+    filter: blur(2px);
+  }
+  100% {
+    transform: translate(6px, 35px);
+    filter: blur(4px);
+  }
+}
+@keyframes wave-spin {
+  0% {
+    transform: translate(-12px, -40px);
+  }
+  100% {
+    transform: translate(12px, 40px);
+    filter: blur(4px);
+  }
+}
+@keyframes bloom-spin {
+  0% {
+    transform: scale(0.7) rotate(-20deg);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.25) rotate(20deg);
+    opacity: 0.8;
+  }
+}
+@keyframes flare-spin {
+  0% {
+    transform: translateY(-50px);
+    text-shadow: 0 0 50px var(--accent);
+  }
+  100% {
+    transform: translateY(50px);
+    filter: blur(3px);
+  }
+}
+@keyframes win-pulse {
+  50% {
+    transform: scale(1.1);
+    text-shadow: 0 0 50px var(--accent);
+  }
+}
+@keyframes card-deal {
+  from {
+    transform: translateY(-15px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@media (min-width: 1500px) {
+  .spindra-extension .page {
+    padding-top: 45px;
+  }
+}
+@media (max-width: 1100px) {
+  .spindra-extension .desktop-nav {
+    gap: 18px;
+  }
+  .spindra-extension .site-header {
+    padding: 0 24px;
+  }
+  .spindra-extension .hero-copy {
+    padding: 45px 30px;
+  }
+  .spindra-extension .hero-actions {
+    gap: 15px;
+  }
+  .spindra-extension .game-grid {
+    gap: 22px 15px;
+  }
+  .spindra-extension .catalog-tools {
+    flex-wrap: wrap;
+  }
+  .spindra-extension .catalog-filters {
+    margin-left: auto;
+  }
+  .spindra-extension .footer-top {
+    gap: 24px;
+  }
+  .spindra-extension .auth-layout {
+    gap: 40px;
+  }
+  .spindra-extension .auth-story h1 {
+    font-size: 52px;
+  }
+  .spindra-extension .game-card-info > span {
+    font-size: 8px;
+  }
+  .spindra-extension .roulette-game {
+    gap: 30px;
+  }
+  .spindra-extension .paytable {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 800px) {
+  .spindra-extension .desktop-nav {
+    display: none;
+  }
+  .spindra-extension .menu-button {
+    display: block;
+  }
+  .spindra-extension .site-header {
+    height: 75px;
+  }
+  .spindra-extension .header-actions {
+    gap: 15px;
+  }
+  .spindra-extension .header-actions .button {
+    padding: 11px 13px;
+  }
+  .spindra-extension .page {
+    padding: 30px 22px 50px;
+  }
+  .spindra-extension .casino-hero {
+    min-height: 380px;
+  }
+  .spindra-extension .hero-copy {
+    padding: 35px 25px;
+  }
+  .spindra-extension .hero-copy h1 {
+    font-size: 49px;
+  }
+  .spindra-extension .hero-copy p {
+    font-size: 12px;
+  }
+  .spindra-extension .hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .spindra-extension .hero-meta {
+    gap: 10px;
+    font-size: 8px;
+  }
+  .spindra-extension .hero-meta span + span {
+    padding-left: 10px;
+  }
+  .spindra-extension .hero-art {
+    min-height: 400px;
+  }
+  .spindra-extension .sun-ring {
+    width: 280px;
+    height: 280px;
+  }
+  .spindra-extension .ring-two {
+    width: 220px;
+    height: 220px;
+  }
+  .spindra-extension .ring-three {
+    width: 160px;
+    height: 160px;
+  }
+  .spindra-extension .sun-core {
+    font-size: 160px;
+  }
+  .spindra-extension .hero-art-title {
+    font-size: 42px;
+    bottom: 70px;
+  }
+  .spindra-extension .feature-strip {
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 35px;
+  }
+  .spindra-extension .feature-strip span {
+    width: 40%;
+    font-size: 10px;
+  }
+  .spindra-extension .game-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .spindra-extension .art-caption {
+    font-size: 12px;
+    bottom: 16px;
+  }
+  .spindra-extension .art-emblem {
+    font-size: 75px;
+  }
+  .spindra-extension .art-brand {
+    font-size: 6px;
+    top: 10px;
+    left: 10px;
+  }
+  .spindra-extension .footer-top {
+    flex-wrap: wrap;
+  }
+  .spindra-extension .footer-top nav {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+  .spindra-extension .auth-layout {
+    gap: 25px;
+    margin-top: 35px;
+    grid-template-columns: 1fr;
+    max-width: 520px;
+  }
+  .spindra-extension .auth-story {
+    display: none;
+  }
+  .spindra-extension .auth-form {
+    padding: 27px;
+  }
+  .spindra-extension .account-grid {
+    grid-template-columns: 1fr;
+  }
+  .spindra-extension .reading-page .account-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .spindra-extension .game-top {
+    flex-wrap: wrap;
+  }
+  .spindra-extension .game-bottom {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .spindra-extension .game-result {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+  }
+  .spindra-extension .roulette-game {
+    flex-direction: column;
+  }
+  .spindra-extension .roulette-controls {
+    text-align: center;
+  }
+  .spindra-extension .roulette-controls label {
+    margin: 0 auto 20px;
+  }
+  .spindra-extension .bet-options {
+    justify-content: center;
+  }
+  .spindra-extension .section-heading {
+    align-items: flex-start;
+  }
+  .spindra-extension .section-heading h1 {
+    font-size: 27px;
+  }
+  .spindra-extension .section-heading > .button {
+    font-size: 10px;
+    padding: 10px;
+  }
+  .spindra-extension .bottom-banner {
+    padding: 28px;
+  }
+  .spindra-extension .bottom-banner h2 {
+    font-size: 25px;
+  }
+}
+@media (max-width: 540px) {
+  .spindra-extension .site-header {
+    padding: 0 18px;
+    gap: 10px;
+  }
+  .spindra-extension .brand {
+    font-size: 25px;
+  }
+  .spindra-extension .brand-icon {
+    font-size: 32px;
+  }
+  .spindra-extension .header-actions .button {
+    font-size: 10px;
+    gap: 7px;
+    padding: 10px;
+  }
+  .spindra-extension .signin-link {
+    display: none;
+  }
+  .spindra-extension .prelaunch-bar {
+    font-size: 8px;
+    padding: 9px 14px;
+    line-height: 1.6;
+  }
+  .spindra-extension .intro-line > a {
+    display: none;
+  }
+  .spindra-extension .intro-line {
+    margin-bottom: 19px;
+  }
+  .spindra-extension .casino-hero {
+    grid-template-columns: 1fr;
+  }
+  .spindra-extension .hero-copy {
+    padding: 32px 25px;
+  }
+  .spindra-extension .hero-copy h1 {
+    font-size: 58px;
+  }
+  .spindra-extension .hero-actions {
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .spindra-extension .hero-actions .button {
+    font-size: 11px;
+    padding: 12px;
+  }
+  .spindra-extension .hero-art {
+    min-height: 260px;
+    border-left: 0;
+    border-top: 1px solid #ffffff12;
+  }
+  .spindra-extension .sun-ring {
+    left: 66%;
+    top: 50%;
+  }
+  .spindra-extension .sun-core {
+    left: 66%;
+    top: 50%;
+  }
+  .spindra-extension .hero-art-title {
+    font-size: 36px;
+    left: 25px;
+    bottom: 55px;
+  }
+  .spindra-extension .hero-art-label {
+    left: 25px;
+    font-size: 7px;
+    top: 20px;
+  }
+  .spindra-extension .hero-art-cta {
+    left: 25px;
+    bottom: 25px;
+    font-size: 7px;
+  }
+  .spindra-extension .feature-strip {
+    gap: 17px;
+    padding: 22px 0;
+  }
+  .spindra-extension .feature-strip span {
+    width: 43%;
+    font-size: 9px;
+  }
+  .spindra-extension .section-heading {
+    gap: 15px;
+  }
+  .spindra-extension .section-heading h1 {
+    font-size: 26px;
+  }
+  .spindra-extension .section-heading > .muted {
+    display: none;
+  }
+  .spindra-extension .eyebrow {
+    font-size: 8px;
+  }
+  .spindra-extension .category-tabs {
+    gap: 5px;
+  }
+  .spindra-extension .category-tabs a {
+    padding: 9px 11px;
+    font-size: 10px;
+  }
+  .spindra-extension .catalog-tools {
+    gap: 14px;
+  }
+  .spindra-extension .catalog-filters {
+    width: 100%;
+    margin: 0;
+  }
+  .spindra-extension .search-field {
+    flex: 1;
+  }
+  .spindra-extension .search-field input {
+    width: 100%;
+  }
+  .spindra-extension .game-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 13px;
+  }
+  .spindra-extension .art-emblem {
+    font-size: 67px;
+  }
+  .spindra-extension .art-caption {
+    font-size: 10px;
+    bottom: 16px;
+    letter-spacing: 0.1em;
+  }
+  .spindra-extension .art-number {
+    font-size: 7px;
+    right: 10px;
+    top: 11px;
+  }
+  .spindra-extension .game-card-info h3 {
+    font-size: 11px;
+  }
+  .spindra-extension .game-card-info > span {
+    font-size: 8px;
+    line-height: 1.5;
+  }
+  .spindra-extension .bottom-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 35px;
+    padding: 26px;
+  }
+  .spindra-extension .footer-top {
+    gap: 20px;
+  }
+  .spindra-extension .site-footer {
+    padding: 30px 22px;
+  }
+  .spindra-extension .footer-top nav {
+    gap: 20px;
+    font-size: 10px;
+  }
+  .spindra-extension .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .spindra-extension .reading-page > h1 {
+    font-size: 37px;
+  }
+  .spindra-extension .lead {
+    font-size: 15px;
+  }
+  .spindra-extension .reading-page .account-grid {
+    grid-template-columns: 1fr;
+  }
+  .spindra-extension .panel {
+    padding: 22px;
+  }
+  .spindra-extension .account-details dl {
+    grid-template-columns: 1fr;
+  }
+  .spindra-extension .game-surface {
+    padding: 18px 15px;
+  }
+  .spindra-extension .game-top {
+    font-size: 9px;
+    gap: 12px;
+  }
+  .spindra-extension .slot-title {
+    font-size: 21px;
+    letter-spacing: 0.1em;
+  }
+  .spindra-extension .reels {
+    padding: 7px;
+    gap: 6px;
+  }
+  .spindra-extension .reel {
+    height: 185px;
+    gap: 13px;
+  }
+  .spindra-extension .pay-symbol {
+    font-size: 49px;
+  }
+  .spindra-extension .ghost-symbol {
+    font-size: 30px;
+  }
+  .spindra-extension .game-bottom strong {
+    font-size: 22px;
+  }
+  .spindra-extension .game-bottom label {
+    width: 135px;
+  }
+  .spindra-extension .paytable {
+    grid-template-columns: 1fr 1fr;
+  }
+  .spindra-extension .paytable > div {
+    padding: 12px;
+  }
+  .spindra-extension .paytable b {
+    font-size: 11px;
+  }
+  .spindra-extension .playing-card {
+    width: 55px;
+    height: 85px;
+    padding: 6px;
+  }
+  .spindra-extension .playing-card strong {
+    font-size: 26px;
+  }
+  .spindra-extension .playing-card small {
+    font-size: 12px;
+  }
+  .spindra-extension .poker-cards {
+    gap: 8px;
+  }
+  .spindra-extension .hold-card > span {
+    padding: 5px 8px;
+    font-size: 8px;
+  }
+  .spindra-extension .table-inscription {
+    font-size: 7px;
+  }
+  .spindra-extension .roulette-game {
+    padding: 25px 0;
+  }
+  .spindra-extension .wheel-holder {
+    width: 265px;
+    height: 265px;
+  }
+  .spindra-extension .wheel > span b {
+    font-size: 8px;
+    padding: 12px 0;
+  }
+  .spindra-extension .wheel > span {
+    width: 21px;
+    left: calc(50% - 10.5px);
+  }
+  .spindra-extension .game-page .section-heading {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension *,
+  .spindra-extension *:before,
+  .spindra-extension *:after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.spindra-extension {
+  font-family: var(--font-body);
+  background: transparent;
+  color: #f0f0fa;
+  --muted: #9ca3af;
+  --lime: #fbbf24;
+}
+.spindra-extension .page {
+  padding-top: 112px;
+  max-width: 1344px;
+}
+.spindra-extension h1,
+.spindra-extension h2,
+.spindra-extension h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: normal;
+}
+.spindra-extension .panel {
+  background: rgba(20, 20, 40, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+.spindra-extension .button {
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+.spindra-extension .primary {
+  background: linear-gradient(to right, #fbbf24, #f97316);
+  color: #000;
+  font-weight: 700;
+}
+.spindra-extension .primary:hover {
+  box-shadow: 0 0 30px #fbbf2433;
+}
+.spindra-extension .auth-layout {
+  padding-top: 52px;
+}
+.spindra-extension .auth-story em {
+  background: linear-gradient(135deg, #ffd700, #ff8c00, #ffd700);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
+}
+.spindra-extension .auth-emblem {
+  color: #fbbf24;
+  text-shadow: 0 0 30px #fbbf2440;
+}
+.spindra-extension .eyebrow {
+  color: #fbbf24;
+}
+.spindra-extension .secondary {
+  background: rgba(20, 20, 40, 0.6);
+  border-color: #ffffff14;
+}
+.spindra-extension input,
+.spindra-extension select {
+  background: #0a0a14;
+  border-radius: 12px;
+}
+@media (max-width: 540px) {
+  .spindra-extension .auth-layout {
+    margin-top: 40px;
+  }
+  .spindra-extension .page {
+    padding-top: 96px;
+  }
+}
+/* Game interiors share the original site palette; each cabinet has its own theme. */
+.spindra-extension .game-surface {
+  overflow: hidden;
+  border: 1px solid #ffffff20;
+  border-radius: 24px;
+  background: radial-gradient(ellipse at top, var(--theme), #0b0b19 75%);
+  box-shadow: 0 30px 80px #0007;
+}
+.spindra-extension .advanced-slot {
+  position: relative;
+  isolation: isolate;
+  max-width: 950px;
+  margin: auto;
+  padding: 26px 35px 20px;
+}
+.spindra-extension .cabinet-ambient {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+.spindra-extension .cabinet-ambient i {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  filter: blur(65px);
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.14;
+  animation: cabinet-drift 10s ease-in-out infinite alternate;
+}
+.spindra-extension .cabinet-ambient i:nth-child(2) {
+  right: -90px;
+  top: 40%;
+  animation-delay: -4s;
+}
+.spindra-extension .cabinet-ambient i:nth-child(3) {
+  left: 40%;
+  bottom: -150px;
+  animation-delay: -7s;
+}
+.spindra-extension .cabinet-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.spindra-extension .cabinet-heading h2 {
+  font-size: clamp(24px, 4vw, 42px);
+  font-family: Sora, sans-serif;
+  font-weight: 800;
+  background: linear-gradient(#fffbd4, var(--accent), #b9823c);
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -1.5px;
+  margin: 2px 0;
+  text-shadow: 0 8px 35px #0006;
+}
+.spindra-extension .cabinet-heading small {
+  font-size: 9px;
+  letter-spacing: 5px;
+  color: #fff9;
+}
+.spindra-extension .cabinet-mark {
+  font-size: 46px;
+  color: var(--accent);
+  filter: drop-shadow(0 0 15px var(--accent));
+  animation: emblem-pulse 5s ease-in-out infinite;
+}
+.spindra-extension .cabinet-badge {
+  position: absolute;
+  right: 35px;
+  top: 32px;
+  color: #e5c586;
+  border: 1px solid #a9824666;
+  padding: 9px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 1.6;
+  background: #0e0c18a0;
+}
+.spindra-extension .slot-marquee {
+  text-align: center;
+  letter-spacing: 2.5px;
+  font-size: 10px;
+  color: #e7d6af;
+  background: linear-gradient(90deg, transparent, #0006, transparent);
+  padding: 10px;
+  margin-bottom: 14px;
+  min-height: 34px;
+}
+.spindra-extension .reel-cabinet {
+  position: relative;
+  padding: 12px;
+  border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    #efd3a1,
+    #865b31 20%,
+    #282032 40%,
+    #9c7240 70%,
+    #f4d498
+  );
+  box-shadow:
+    0 0 0 1px #ffde9d55,
+    0 14px 35px #0009,
+    inset 0 2px 4px #fff8;
+}
+.spindra-extension .advanced-reels {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  position: relative;
+  gap: 3px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #02020a;
+  border: 3px solid #211627;
+  box-shadow: inset 0 0 25px #000;
+}
+.spindra-extension .advanced-reel {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  background: linear-gradient(180deg, #111022, #292439 48%, #111022);
+  position: relative;
+  overflow: hidden;
+}
+.spindra-extension .advanced-reel:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(#0006, transparent 25%, transparent 75%, #0006);
+}
+.spindra-extension .symbol-cell {
+  aspect-ratio: 1.16;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #ffffff07;
+}
+.spindra-extension .symbol-art {
+  width: 77%;
+  height: 88%;
+  overflow: visible;
+  filter: drop-shadow(0 6px 3px #0009);
+  transition: filter 0.2s;
+}
+.spindra-extension .reel-moving .symbol-art {
+  animation: reel-rush 0.13s linear infinite;
+  filter: blur(3px);
+  opacity: 0.65;
+}
+.spindra-extension .reel-stopped .symbol-cell {
+  animation: reel-land 0.28s ease-out both;
+}
+.spindra-extension .symbol-winning {
+  background: radial-gradient(#fcd78944, transparent 75%);
+  box-shadow: inset 0 0 0 2px #ffc75b99;
+}
+.spindra-extension .symbol-winning .symbol-art {
+  animation: winning-gem 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px #ffc75baa);
+}
+.spindra-extension .symbol-spark {
+  position: absolute;
+  right: 12%;
+  top: 15%;
+  color: #fff4b8;
+  animation: spark-flash 1.1s infinite;
+}
+.spindra-extension .winning-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  filter: drop-shadow(0 0 5px #ffd579);
+  opacity: 0.8;
+}
+.spindra-extension .winning-lines polyline {
+  stroke-dasharray: 900;
+  animation: line-trace 0.8s ease-out;
+}
+.spindra-extension .line-numbers {
+  position: absolute;
+  left: -17px;
+  top: 14px;
+  bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  color: #fff2b7;
+  font-size: 10px;
+}
+.spindra-extension .line-numbers b {
+  background: #342134;
+  border: 1px solid #a77a45;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+}
+.spindra-extension .cabinet-winner {
+  animation: cabinet-glow 1.5s infinite alternate;
+}
+.spindra-extension .slot-console {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto 1fr;
+  gap: 20px;
+  align-items: center;
+  padding: 22px 0 10px;
+  text-align: center;
+}
+.spindra-extension .slot-console small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #9d96b7;
+  margin-bottom: 4px;
+}
+.spindra-extension .slot-console b {
+  font-size: 18px;
+  color: #ead4ab;
+  font-variant-numeric: tabular-nums;
+}
+.spindra-extension .slot-console .has-win b {
+  color: #fff1a3;
+  text-shadow: 0 0 18px #ffc35d99;
+}
+.spindra-extension .spin-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 94px;
+  height: 94px;
+  border-radius: 50%;
+  color: #291508;
+  background: linear-gradient(135deg, #fff0b5, #fdbb41 40%, #ed782a);
+  border: 5px solid #302436;
+  box-shadow:
+    0 0 0 2px #cc9b5c,
+    0 8px 20px #0007,
+    inset 0 2px 3px #fff8;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.spindra-extension .spin-control:hover:enabled {
+  transform: scale(1.06);
+}
+.spindra-extension .spin-control span {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+.spindra-extension .spin-control:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.spindra-extension .spin-control:disabled svg {
+  animation: spin 1s linear infinite;
+}
+.spindra-extension .line-results {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-height: 33px;
+  font-size: 11px;
+  color: #aaa3bb;
+}
+.spindra-extension .line-results span {
+  padding: 4px 8px;
+  background: #0003;
+  border-radius: 5px;
+}
+.spindra-extension .theme-neon .reel-cabinet {
+  background: linear-gradient(120deg, #39d9fc, #66277a, #242034, #cf7aff);
+}
+.spindra-extension .theme-frost .reel-cabinet {
+  background: linear-gradient(120deg, #f7ffff, #728ea6, #263441, #8ddeff);
+}
+.spindra-extension .theme-ember .cabinet-ambient i {
+  animation: ember-rise 6s linear infinite;
+}
+.spindra-extension .theme-bloom .cabinet-mark {
+  animation: emblem-pulse 3s ease-in-out infinite;
+}
+.spindra-extension .premium-felt {
+  position: relative;
+  isolation: isolate;
+  margin: 24px auto;
+  max-width: 960px;
+  padding: 42px 26px 32px;
+  border-radius: 180px 180px 90px 90px;
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    #25564c,
+    #0a2c2a 65%,
+    #071a1a
+  );
+  border: 12px solid #312834;
+  outline: 2px solid #b38a56;
+  box-shadow:
+    inset 0 0 0 2px #dcb98766,
+    inset 0 20px 45px #0007,
+    0 20px 35px #0006;
+  overflow: hidden;
+}
+.spindra-extension .premium-felt:before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 1px solid #fff2;
+  border-radius: inherit;
+  z-index: -1;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 3px,
+    #ffffff02 3px,
+    #ffffff02 4px
+  );
+}
+.spindra-extension .poker.premium-felt {
+  background: radial-gradient(ellipse at top, #4c315f, #21172e 70%);
+  border-radius: 65px;
+}
+.spindra-extension .felt-brand {
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 7px;
+  color: #eacb9888;
+  margin-bottom: 10px;
+}
+.spindra-extension .felt-brand span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 3px;
+  margin-top: 6px;
+}
+.spindra-extension .table-inscription {
+  color: #ddc99d;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+.spindra-extension .playing-card {
+  border-radius: 9px;
+  background: linear-gradient(145deg, #fff, #ece7df);
+  box-shadow:
+    0 8px 15px #0007,
+    inset 0 0 0 1px #fff;
+  animation: premium-deal 0.5s cubic-bezier(0.15, 0.8, 0.3, 1) both;
+  position: relative;
+}
+.spindra-extension .playing-card strong {
+  text-shadow: 0 2px 1px #0001;
+}
+.spindra-extension .playing-card small:last-child {
+  transform: rotate(180deg);
+}
+.spindra-extension .card-back {
+  background: repeating-linear-gradient(45deg, #262142 0 4px, #342959 4px 8px);
+  border: 5px solid #e7ddc7;
+  box-shadow:
+    0 8px 15px #0007,
+    inset 0 0 0 2px #d5ab64;
+}
+.spindra-extension .blackjack-hand {
+  border: 1px solid #ffffff18;
+  background: #0002;
+  border-radius: 18px;
+  padding: 15px;
+}
+.spindra-extension .blackjack-hand.active-hand {
+  border-color: #e7bd6e;
+  box-shadow: 0 0 25px #e7bd6e18;
+}
+.spindra-extension .cards-row {
+  perspective: 900px;
+}
+.spindra-extension .blackjack .cards-row .playing-card + .playing-card {
+  margin-left: -12px;
+}
+.spindra-extension .game-actions {
+  position: relative;
+  z-index: 1;
+}
+.spindra-extension .chip-stack {
+  position: absolute;
+  left: 7%;
+  top: 34%;
+  width: 40px;
+  height: 40px;
+  transform: rotate(-12deg);
+  opacity: 0.8;
+  pointer-events: none;
+}
+.spindra-extension .chip-stack i {
+  position: absolute;
+  border: 5px dashed #f7d9b0;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background: #ab445d;
+  box-shadow: 0 3px 0 #4e1a27;
+}
+.spindra-extension .chip-stack i:nth-child(2) {
+  top: -5px;
+}
+.spindra-extension .chip-stack i:nth-child(3) {
+  top: -10px;
+}
+.spindra-extension .chip-stack i:nth-child(4) {
+  top: -15px;
+}
+.spindra-extension .poker-payboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px 14px;
+  max-width: 640px;
+  margin: 12px auto 25px;
+  padding: 12px;
+  border: 1px solid #bc976444;
+  border-radius: 8px;
+  background: #09061388;
+  text-align: left;
+  font-size: 10px;
+  color: #c8b5da;
+}
+.spindra-extension .poker-payboard span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px;
+}
+.spindra-extension .poker-payboard b {
+  color: #ebce99;
+}
+.spindra-extension .poker-payboard .payboard-win {
+  background: #9d704344;
+  color: #fff4cc;
+  box-shadow: 0 0 12px #ffa74733;
+}
+.spindra-extension .hold-card {
+  transition: transform 0.2s;
+}
+.spindra-extension .hold-card.held {
+  transform: translateY(-10px);
+}
+.spindra-extension .hold-card.held .playing-card {
+  box-shadow:
+    0 0 0 2px #ffc85f,
+    0 0 25px #e1ad5333;
+}
+.spindra-extension .hold-card > span {
+  border-radius: 5px;
+  padding: 4px 12px;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+.spindra-extension .roulette-game {
+  padding: 28px;
+  background: radial-gradient(ellipse at top, #203932, #0a171a);
+  border-radius: 24px;
+  gap: 35px;
+}
+.spindra-extension .wheel {
+  box-shadow:
+    0 0 0 5px #ba8647,
+    0 0 0 13px #3d2c27,
+    0 0 0 15px #b58445,
+    0 20px 35px #0008;
+}
+.spindra-extension .wheel-hub {
+  background: radial-gradient(circle at 35% 25%, #ffe9b1, #a47542 60%, #432d24);
+  border: 5px solid #b28a56;
+  box-shadow: 0 10px 12px #0006;
+  color: #fff0d0;
+}
+.spindra-extension .wheel-holder {
+  position: relative;
+  margin: 15px;
+}
+.spindra-extension .roulette-ball {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 6%;
+  left: calc(50% - 5px);
+  background: radial-gradient(circle at 30% 25%, #fff, #d3caba 60%, #6f6352);
+  border-radius: 50%;
+  z-index: 3;
+  box-shadow: 0 2px 4px #000;
+}
+.spindra-extension .ball-spinning {
+  animation: ball-orbit 1.8s cubic-bezier(0.2, 0.7, 0.4, 1);
+  transform-origin: 5px 135px;
+}
+.spindra-extension .roulette-board {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 3px;
+  margin: 15px 0;
+}
+.spindra-extension .roulette-board button {
+  min-width: 0;
+  padding: 9px 0;
+  border: 1px solid #fff3;
+  border-radius: 4px;
+  color: white;
+  font-size: 11px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.spindra-extension .roulette-board .zero {
+  grid-column: 1/-1;
+  background: #1c7250;
+}
+.spindra-extension .roulette-board .red,
+.spindra-extension .roulette-history .red {
+  background: #9d344b;
+}
+.spindra-extension .roulette-board .black,
+.spindra-extension .roulette-history .black {
+  background: #151b25;
+}
+.spindra-extension .roulette-board .chosen {
+  outline: 2px solid #ffc967;
+  outline-offset: -2px;
+  box-shadow: inset 0 0 12px #ffdb7a55;
+}
+.spindra-extension .roulette-board .landed {
+  animation: winning-pocket 1s infinite alternate;
+}
+.spindra-extension .roulette-board button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.spindra-extension .roulette-history {
+  display: flex;
+  gap: 5px;
+  min-height: 25px;
+}
+.spindra-extension .roulette-history span {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 10px;
+  border: 1px solid #fff2;
+}
+.spindra-extension .roulette-history .zero {
+  background: #1c7250;
+}
+@keyframes reel-rush {
+  from {
+    transform: translateY(-65%);
+  }
+  to {
+    transform: translateY(65%);
+  }
+}
+@keyframes reel-land {
+  0% {
+    transform: translateY(-12px);
+  }
+  65% {
+    transform: translateY(4px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes winning-gem {
+  50% {
+    transform: scale(1.08);
+  }
+}
+@keyframes spark-flash {
+  50% {
+    opacity: 0.1;
+    transform: rotate(90deg) scale(0.6);
+  }
+}
+@keyframes line-trace {
+  from {
+    stroke-dashoffset: 900;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes cabinet-glow {
+  to {
+    box-shadow:
+      0 0 30px #ffc75866,
+      0 14px 35px #0009;
+  }
+}
+@keyframes cabinet-drift {
+  to {
+    transform: translate(80px, -50px);
+  }
+}
+@keyframes emblem-pulse {
+  50% {
+    transform: translateY(-4px);
+    filter: drop-shadow(0 0 22px var(--accent));
+  }
+}
+@keyframes ember-rise {
+  from {
+    transform: translateY(150px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.16;
+  }
+  to {
+    transform: translateY(-200px);
+    opacity: 0;
+  }
+}
+@keyframes premium-deal {
+  from {
+    transform: translate(25px, -65px) rotateY(65deg) rotate(8deg);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+@keyframes ball-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-2160deg);
+  }
+}
+@keyframes winning-pocket {
+  to {
+    box-shadow: 0 0 12px #ffe08a;
+    outline: 2px solid #ffda77;
+  }
+}
+@media (max-width: 700px) {
+  .spindra-extension .advanced-slot {
+    padding: 18px 16px;
+  }
+  .spindra-extension .cabinet-heading {
+    gap: 10px;
+  }
+  .spindra-extension .cabinet-mark {
+    font-size: 30px;
+  }
+  .spindra-extension .cabinet-badge {
+    display: none;
+  }
+  .spindra-extension .cabinet-heading small {
+    letter-spacing: 2px;
+  }
+  .spindra-extension .slot-marquee {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .spindra-extension .reel-cabinet {
+    padding: 7px;
+  }
+  .spindra-extension .symbol-art {
+    width: 85%;
+  }
+  .spindra-extension .slot-console {
+    gap: 8px;
+  }
+  .spindra-extension .slot-console b {
+    font-size: 12px;
+  }
+  .spindra-extension .spin-control {
+    width: 72px;
+    height: 72px;
+  }
+  .spindra-extension .slot-console small {
+    font-size: 8px;
+  }
+  .spindra-extension .premium-felt {
+    border-width: 7px;
+    border-radius: 60px;
+    padding: 28px 10px;
+  }
+  .spindra-extension .chip-stack {
+    display: none;
+  }
+  .spindra-extension .poker-payboard {
+    grid-template-columns: repeat(2, 1fr);
+    font-size: 9px;
+    gap: 2px;
+  }
+  .spindra-extension .roulette-game {
+    padding: 15px;
+  }
+  .spindra-extension .roulette-board {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .spindra-extension .table-inscription {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .advanced-slot *,
+  .spindra-extension .premium-felt *,
+  .spindra-extension .roulette-game * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+.spindra-extension .payline-guide {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+.spindra-extension .payline-guide > div {
+  background: #ffffff06;
+  padding: 7px;
+  border-radius: 8px;
+}
+.spindra-extension .payline-guide small {
+  font-size: 9px;
+  color: #b4a2bc;
+}
+.spindra-extension .payline-guide svg {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+}
+@media (max-width: 600px) {
+  .spindra-extension .payline-guide {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

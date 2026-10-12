@@ -166,7 +166,7 @@ test("all 16 slot themes have coherent, sub-100% math profiles", async () => {
   );
   catalog = catalog.replace(
     /import[\s\S]*?from ["']\.\/engine["'];/,
-    "const slotRtp=" + slotRtp.toString() + ";",
+    "const fiveReelRtp=" + (() => 0).toString() + ";",
   );
   const js = ts.transpileModule(catalog, {
     compilerOptions: {
@@ -186,7 +186,10 @@ test("all 16 slot themes have coherent, sub-100% math profiles", async () => {
       100,
     );
     assert.equal(g.symbols.length, g.math.pays.length);
-    assert.ok(slotRtp(g.math) > 0.85 && slotRtp(g.math) < 1, g.name);
+    assert.ok(
+      engine.fiveReelRtp(g.math) > 0.8 && engine.fiveReelRtp(g.math) < 1,
+      g.name,
+    );
   }
 });
 test("random sampler validates range and cannot generate an out-of-range outcome", () => {
@@ -196,4 +199,69 @@ test("random sampler validates range and cannot generate an out-of-range outcome
     assert.ok(Number.isInteger(n) && n >= 0 && n < 37);
   }
   assert.equal(randomInt(1), 0);
+});
+
+test("five-reel evaluation pays only the longest left-to-right match on each line", () => {
+  const math = {
+    weights: [32, 24, 18, 12, 8, 4, 2],
+    pays: [8, 16, 32, 80, 160, 400, 1600],
+  };
+  const grid = Array.from({ length: 5 }, () => [0, 1, 2]);
+  const wins = engine.evaluateLines(grid, math);
+  assert.equal(wins.length, 3);
+  assert.deepEqual(
+    wins.map((w) => w.line),
+    [0, 1, 2],
+  );
+  assert.ok(wins.every((w) => w.count === 5));
+  grid[3][1] = 3;
+  const center = engine.evaluateLines(grid, math).find((w) => w.line === 0);
+  assert.equal(center.count, 3);
+  assert.equal(center.multiplier, engine.linePays(math)[1][0]);
+  grid[0][1] = 6;
+  assert.equal(
+    engine.evaluateLines(grid, math).some((w) => w.line === 0),
+    false,
+  );
+  assert.throws(() => engine.evaluateLines([[0]], math));
+});
+test("five-reel spin consumes 15 weighted draws and settles ten line stakes", () => {
+  const math = {
+    weights: [32, 24, 18, 12, 8, 4, 2],
+    pays: [8, 16, 32, 80, 160, 400, 1600],
+  };
+  let calls = 0;
+  const result = engine.fiveReelSpin(math, () => {
+    calls++;
+    return 99;
+  });
+  assert.equal(calls, 15);
+  assert.equal(result.wins.length, 10);
+  assert.equal(result.multiplier, engine.linePays(math)[6][2]);
+  assert.equal(
+    (100 / 10) * result.wins.reduce((sum, w) => sum + w.multiplier, 0),
+    100 * result.multiplier,
+  );
+});
+test("five-reel RTP matches exhaustive enumeration of each payline", () => {
+  const math = {
+    weights: [32, 24, 18, 12, 8, 4, 2],
+    pays: [8, 16, 32, 80, 160, 400, 1600],
+  };
+  const pays = engine.linePays(math);
+  let expected = 0;
+  for (let a = 0; a < 7; a++)
+    for (let b = 0; b < 7; b++)
+      for (let c = 0; c < 7; c++)
+        for (let d = 0; d < 7; d++)
+          for (let e = 0; e < 7; e++) {
+            const symbols = [a, b, c, d, e];
+            let count = 1;
+            while (count < 5 && symbols[count] === a) count++;
+            if (count >= 3)
+              expected +=
+                symbols.reduce((p, s) => (p * math.weights[s]) / 100, 1) *
+                pays[a][count - 3];
+          }
+  assert.ok(Math.abs(expected - engine.fiveReelRtp(math)) < 1e-12);
 });

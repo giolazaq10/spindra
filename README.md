@@ -6,7 +6,8 @@ React/Vite casino preparation platform, retaining the Bolt + Supabase architectu
 
 - Dedicated sign-in, registration, email confirmation redirect and password recovery pages using Supabase Auth.
 - Protected account page with cash wallet, verification status and transaction history.
-- 16 animated original slot themes across four published math profiles, plus single-deck blackjack, Jacks or Better video poker and European roulette.
+- Original Bolt homepage, navigation, typography, colors and promotional layouts retained.
+- 16 original slot themes with five reels, three rows, ten paylines, staggered stops, faceted symbol artwork and animated winning lines across four published math profiles, plus animated single-deck blackjack, Jacks or Better video poker with an in-game paytable and European roulette with a number board and result history.
 - Free session-only demo wallet, round history, demo loss limits and session pause.
 - Supabase migration for private player data, server-owned cash balances, atomic wallet events, idempotent provider callbacks, account loss limits and 30-day exclusion.
 - Responsive lobby with categories, search, sort, original artwork, reduced-motion support and accessible controls.
