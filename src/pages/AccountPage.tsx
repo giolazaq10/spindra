@@ -80,7 +80,7 @@ export default function AccountPage() {
     return () => {
       alive = false;
     };
-  }, [user?.id]);
+  }, [user]);
   if (loading)
     return (
       <div className="page empty-state" role="status">

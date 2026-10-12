@@ -8,14 +8,24 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from "@/context/Auth";
 import { DemoProvider } from "@/context/Demo";
-import { Header, Footer } from "@/components/Shell";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import HomePage from "@/pages/HomePage";
+import "./extension.css";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import CasinoPage from "@/pages/CasinoPage";
 import AuthPage from "@/pages/AuthPage";
 import AccountPage from "@/pages/AccountPage";
-import { ResponsiblePage, ProvidersPage, InfoPage } from "@/pages/InfoPages";
+import { ResponsiblePage, InfoPage } from "@/pages/InfoPages";
+import ProvidersPage from "@/pages/ProvidersPage";
+import AboutPage from "@/pages/AboutPage";
+import PromotionsPage from "@/pages/PromotionsPage";
 import OriginalGame from "@/components/OriginalGame";
 import { originals } from "@/lib/catalog";
+import type { ReactNode } from "react";
+function Styled({ children }: { children: ReactNode }) {
+  return <div className="spindra-extension">{children}</div>;
+}
 function GameRoute() {
   const { slug } = useParams();
   const game = originals.find((g) => g.slug === slug);
@@ -42,13 +52,24 @@ export default function App() {
             <Header />
             <main id="main">
               <Routes>
-                <Route path="/" element={<CasinoPage home />} />
+                <Route path="/" element={<HomePage />} />
                 <Route path="/games" element={<CasinoPage />} />
                 <Route path="/games/:categorySlug" element={<CasinoPage />} />
-                <Route path="/game/:slug" element={<GameRoute />} />
+                <Route
+                  path="/game/:slug"
+                  element={
+                    <Styled>
+                      <GameRoute />
+                    </Styled>
+                  }
+                />
                 <Route
                   path="/sign-in"
-                  element={<AuthPage key="login" mode="login" />}
+                  element={
+                    <Styled>
+                      <AuthPage key="login" mode="login" />
+                    </Styled>
+                  }
                 />
                 <Route
                   path="/login"
@@ -56,42 +77,70 @@ export default function App() {
                 />
                 <Route
                   path="/register"
-                  element={<AuthPage key="register" mode="register" />}
+                  element={
+                    <Styled>
+                      <AuthPage key="register" mode="register" />
+                    </Styled>
+                  }
                 />
                 <Route
                   path="/forgot-password"
-                  element={<AuthPage key="forgot" mode="forgot" />}
+                  element={
+                    <Styled>
+                      <AuthPage key="forgot" mode="forgot" />
+                    </Styled>
+                  }
                 />
                 <Route
                   path="/reset-password"
-                  element={<AuthPage key="reset" mode="reset" />}
+                  element={
+                    <Styled>
+                      <AuthPage key="reset" mode="reset" />
+                    </Styled>
+                  }
                 />
                 <Route
                   path="/auth/callback"
                   element={<Navigate to="/account" replace />}
                 />
-                <Route path="/account" element={<AccountPage />} />
+                <Route
+                  path="/account"
+                  element={
+                    <Styled>
+                      <AccountPage />
+                    </Styled>
+                  }
+                />
                 <Route
                   path="/responsible-gaming"
-                  element={<ResponsiblePage />}
+                  element={
+                    <Styled>
+                      <ResponsiblePage />
+                    </Styled>
+                  }
                 />
                 <Route path="/providers" element={<ProvidersPage />} />
-                {(
-                  [
-                    "terms",
-                    "privacy",
-                    "support",
-                    "about",
-                    "promotions",
-                  ] as const
-                ).map((kind) => (
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/promotions" element={<PromotionsPage />} />
+                {(["terms", "privacy", "support"] as const).map((kind) => (
                   <Route
                     key={kind}
                     path={"/" + kind}
-                    element={<InfoPage kind={kind} />}
+                    element={
+                      <Styled>
+                        <InfoPage kind={kind} />
+                      </Styled>
+                    }
                   />
                 ))}
-                <Route path="*" element={<Missing />} />
+                <Route
+                  path="*"
+                  element={
+                    <Styled>
+                      <Missing />
+                    </Styled>
+                  }
+                />
               </Routes>
             </main>
             <Footer />

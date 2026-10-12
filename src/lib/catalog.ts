@@ -1,4 +1,4 @@
-import { slotRtp, type SlotMath } from "./engine";
+import { fiveReelRtp, type SlotMath } from "./engine";
 export type Original = {
   slug: string;
   name: string;
@@ -234,7 +234,7 @@ originals.push(
 );
 export const rtpLabel = (g: Original) =>
   g.kind === "slots"
-    ? (slotRtp(g.math) * 100).toFixed(2) + "% theoretical RTP"
+    ? (fiveReelRtp(g.math) * 100).toFixed(2) + "% theoretical RTP"
     : g.kind === "roulette"
       ? "97.30% theoretical RTP"
       : "Returns depend on decisions";

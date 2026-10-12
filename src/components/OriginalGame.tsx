@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, RotateCw, Info } from "lucide-react";
+import { ArrowLeft, Info } from "lucide-react";
 import { type Original, rtpLabel } from "@/lib/catalog";
 import {
   blackjackReturn,
@@ -10,12 +10,15 @@ import {
   pokerRank,
   randomInt,
   rouletteReturn,
-  slotSpin,
+  linePays,
+  slotLines,
+  redNumbers,
   type Card,
   type RouletteBet,
 } from "@/lib/engine";
+import AdvancedSlots from "./AdvancedSlots";
 import { credits, useDemo } from "@/context/Demo";
-type Controls = {
+export type Controls = {
   bet: number;
   start: (extra?: number) => boolean;
   finish: (returned: number) => void;
@@ -24,9 +27,11 @@ type Controls = {
 function PlayingCard({
   card,
   hidden = false,
+  delay = 0,
 }: {
   card?: Card;
   hidden?: boolean;
+  delay?: number;
 }) {
   if (hidden || !card)
     return (
@@ -40,7 +45,10 @@ function PlayingCard({
     ] || card.rank;
   const suit = ["♠", "♥", "♣", "♦"][card.suit];
   return (
-    <div className={"playing-card " + (card.suit % 2 === 1 ? "red-card" : "")}>
+    <div
+      style={{ animationDelay: delay + "ms" }}
+      className={"playing-card " + (card.suit % 2 === 1 ? "red-card" : "")}
+    >
       <small>
         {rank}
         <br />
@@ -59,7 +67,9 @@ export default function OriginalGame({ game }: { game: Original }) {
     [busy, setBusy] = useState(false);
   const wager = useRef(0),
     settler = useRef(demo.settle);
-  settler.current = demo.settle;
+  useEffect(() => {
+    settler.current = demo.settle;
+  }, [demo.settle]);
   useEffect(
     () => () => {
       if (wager.current) {
@@ -124,7 +134,7 @@ export default function OriginalGame({ game }: { game: Original }) {
           <span>{rtpLabel(game)}</span>
         </div>
         {game.kind === "slots" ? (
-          <Slots game={game} controls={c} />
+          <AdvancedSlots game={game} controls={c} />
         ) : game.kind === "blackjack" ? (
           <Blackjack controls={c} />
         ) : game.kind === "poker" ? (
@@ -168,19 +178,46 @@ export default function OriginalGame({ game }: { game: Original }) {
           {game.kind === "slots" ? (
             <>
               <p>
-                Three independent weighted reels, one center payline. Match all
-                three symbols on that line. No wilds, scatters, bonus rounds or
-                progressive jackpots. Top and bottom symbols are decoration.
-                Theoretical RTP is calculated from the published weights and
-                payouts; it does not predict a session result.
+                Five independent weighted reels, three visible rows and ten
+                fixed paylines. Match three, four or five identical symbols from
+                the leftmost reel. The total stake is split equally across all
+                ten lines; only the longest match pays on each line. No wilds,
+                scatters, bonus rounds or progressive jackpots. Every visible
+                symbol participates in the published lines. Theoretical RTP is
+                calculated from the published weights and payouts; it does not
+                predict a session result.
               </p>
+              <div className="payline-guide">
+                {slotLines.map((rows, i) => (
+                  <div key={i}>
+                    <small>LINE {i + 1}</small>
+                    <svg viewBox="0 0 100 60">
+                      <path
+                        d="M0 20H100M0 40H100M20 0V60M40 0V60M60 0V60M80 0V60"
+                        stroke="#ffffff18"
+                      />
+                      <polyline
+                        points={rows
+                          .map(
+                            (row, col) => `${col * 20 + 10},${row * 20 + 10}`,
+                          )
+                          .join(" ")}
+                        fill="none"
+                        stroke="#ffc768"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                  </div>
+                ))}
+              </div>
               <div className="paytable">
                 {game.symbols.map((s, i) => (
                   <div key={i}>
-                    <b>
-                      {s} {s} {s}
-                    </b>
-                    <span>{game.math.pays[i]}× stake</span>
+                    <b>{s}</b>
+                    <span>
+                      3 / 4 / 5: {linePays(game.math)[i].join(" / ")}× line
+                      stake
+                    </span>
                     <small>Reel weight {game.math.weights[i]}/100</small>
                   </div>
                 ))}
@@ -231,60 +268,6 @@ export default function OriginalGame({ game }: { game: Original }) {
         <Link to="/account">view account status</Link>.
       </div>
     </section>
-  );
-}
-function Slots({ game, controls: c }: { game: Original; controls: Controls }) {
-  const [reels, setReels] = useState([0, 1, 2]),
-    [spinning, setSpinning] = useState(false),
-    [win, setWin] = useState(false);
-  const lock = useRef(false),
-    timer = useRef<ReturnType<typeof setTimeout>>();
-  useEffect(() => () => clearTimeout(timer.current), []);
-  function spin() {
-    if (lock.current || !c.start()) return;
-    lock.current = true;
-    setSpinning(true);
-    setWin(false);
-    const result = slotSpin(game.math),
-      stake = c.bet;
-    timer.current = setTimeout(() => {
-      setReels(result.reels);
-      setSpinning(false);
-      setWin(result.multiplier > 0);
-      c.finish(stake * result.multiplier);
-      lock.current = false;
-    }, 1100);
-  }
-  return (
-    <div className="slot-machine">
-      <span className="slot-title">{game.name.toUpperCase()}</span>
-      <div
-        className={
-          "reels " + (spinning ? "spinning " : "") + (win ? "win" : "")
-        }
-      >
-        {reels.map((r, i) => (
-          <div
-            className="reel"
-            key={i}
-            style={{ animationDelay: i * 0.1 + "s" }}
-          >
-            <span className="ghost-symbol">{game.symbols[(r + 6) % 7]}</span>
-            <span className="pay-symbol">{game.symbols[r]}</span>
-            <span className="ghost-symbol">{game.symbols[(r + 1) % 7]}</span>
-          </div>
-        ))}
-      </div>
-      <div className="payline-label">01 — CENTER PAYLINE</div>
-      <button
-        className="button primary play-button"
-        disabled={spinning}
-        onClick={spin}
-      >
-        <RotateCw size={19} />
-        {spinning ? "Spinning…" : "Spin reels"}
-      </button>
-    </div>
   );
 }
 type BJHand = {
@@ -406,7 +389,16 @@ function Blackjack({ controls: c }: { controls: Controls }) {
   }
   const hand = state && !state.done ? state.hands[state.active] : null;
   return (
-    <div className="table-game">
+    <div className="table-game premium-felt blackjack">
+      <div className="felt-brand">
+        SPINDRA <span>NOIR CLUB</span>
+      </div>
+      <div className="chip-stack" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <i />
+      </div>
       <p className="table-inscription">
         BLACKJACK PAYS 3:2 · DEALER STANDS ON SOFT 17
       </p>
@@ -416,7 +408,12 @@ function Blackjack({ controls: c }: { controls: Controls }) {
       <div className="cards-row">
         {state ? (
           state.dealer.map((card, i) => (
-            <PlayingCard key={i} card={card} hidden={!state.done && i === 1} />
+            <PlayingCard
+              key={i + ":" + card.rank + ":" + card.suit}
+              card={card}
+              delay={i * 120}
+              hidden={!state.done && i === 1}
+            />
           ))
         ) : (
           <>
@@ -440,7 +437,11 @@ function Blackjack({ controls: c }: { controls: Controls }) {
             </span>
             <div className="cards-row">
               {h.cards.map((card, j) => (
-                <PlayingCard card={card} key={j} />
+                <PlayingCard
+                  card={card}
+                  delay={j * 100}
+                  key={card.rank + ":" + card.suit}
+                />
               ))}
             </div>
             {state.done && (
@@ -524,7 +525,20 @@ function Poker({ controls: c }: { controls: Controls }) {
     c.finish(stake.current * pokerPays[result]);
   }
   return (
-    <div className="table-game poker">
+    <div className="table-game poker premium-felt">
+      <div className="felt-brand">
+        SPINDRA <span>ROYAL DRAW</span>
+      </div>
+      <div className="poker-payboard">
+        {Object.entries(pokerPays)
+          .filter(([, pay]) => pay > 0)
+          .map(([name, pay]) => (
+            <span key={name} className={rank === name ? "payboard-win" : ""}>
+              {name}
+              <b>{pay}×</b>
+            </span>
+          ))}
+      </div>
       <p className="table-inscription">
         JACKS OR BETTER · 9/6 PAYTABLE · ONE DRAW
       </p>
@@ -538,7 +552,11 @@ function Poker({ controls: c }: { controls: Controls }) {
             aria-label={"Card " + (i + 1) + (held[i] ? " held" : " not held")}
             aria-pressed={held[i]}
           >
-            <PlayingCard card={cards[i]} />
+            <PlayingCard
+              card={cards[i]}
+              delay={i * 110}
+              key={cards[i] ? cards[i].rank + ":" + cards[i].suit : "back"}
+            />
             <span>{held[i] ? "HELD" : "HOLD"}</span>
           </button>
         ))}
@@ -570,7 +588,8 @@ function Roulette({ controls: c }: { controls: Controls }) {
     [straight, setStraight] = useState(0),
     [number, setNumber] = useState<number | null>(null),
     [spinning, setSpinning] = useState(false),
-    [turn, setTurn] = useState(0);
+    [turn, setTurn] = useState(0),
+    [history, setHistory] = useState<number[]>([]);
   const lock = useRef(false),
     timer = useRef<ReturnType<typeof setTimeout>>();
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -590,6 +609,7 @@ function Roulette({ controls: c }: { controls: Controls }) {
     setTurn(target);
     timer.current = setTimeout(() => {
       setNumber(n);
+      setHistory((h) => [n, ...h].slice(0, 10));
       setSpinning(false);
       c.finish(rouletteReturn(n, kind, stake, straight));
       lock.current = false;
@@ -599,6 +619,10 @@ function Roulette({ controls: c }: { controls: Controls }) {
     <div className="roulette-game">
       <div className="wheel-holder">
         <span className="wheel-pointer">▼</span>
+        <span
+          className={"roulette-ball " + (spinning ? "ball-spinning" : "")}
+          aria-hidden="true"
+        />
         <div className="wheel" style={{ transform: "rotate(" + turn + "deg)" }}>
           {pockets.map((n, i) => (
             <span
@@ -616,7 +640,39 @@ function Roulette({ controls: c }: { controls: Controls }) {
         <div className="wheel-result">{number ?? "·"}</div>
       </div>
       <div className="roulette-controls">
-        <p className="eyebrow">PLACE ONE BET</p>
+        <p className="eyebrow">EUROPEAN ROULETTE · PLACE ONE BET</p>
+        <div className="roulette-history" aria-label="Recent results">
+          {history.map((n, i) => (
+            <span
+              key={i}
+              className={
+                n === 0 ? "zero" : redNumbers.includes(n) ? "red" : "black"
+              }
+            >
+              {n}
+            </span>
+          ))}
+        </div>
+        <div className="roulette-board">
+          {Array.from({ length: 37 }, (_, n) => (
+            <button
+              key={n}
+              disabled={spinning}
+              aria-pressed={kind === "straight" && straight === n}
+              className={
+                (n === 0 ? "zero" : redNumbers.includes(n) ? "red" : "black") +
+                (kind === "straight" && straight === n ? " chosen" : "") +
+                (number === n ? " landed" : "")
+              }
+              onClick={() => {
+                setStraight(n);
+                setKind("straight");
+              }}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
         <div className="bet-options">
           {(
             [
