@@ -12,7 +12,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HomePage from "@/pages/HomePage";
 import "./extension.css";
-import ErrorBoundary from "@/components/ErrorBoundary";
+import RouteBoundary from "@/components/RouteBoundary";
 import CasinoPage from "@/pages/CasinoPage";
 import AuthPage from "@/pages/AuthPage";
 import AccountPage from "@/pages/AccountPage";
@@ -48,7 +48,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <DemoProvider>
-          <ErrorBoundary>
+          <RouteBoundary>
             <Header />
             <main id="main">
               <Routes>
@@ -144,7 +144,7 @@ export default function App() {
               </Routes>
             </main>
             <Footer />
-          </ErrorBoundary>
+          </RouteBoundary>
         </DemoProvider>
       </AuthProvider>
     </BrowserRouter>

@@ -1,4 +1,5 @@
-import { fiveReelRtp, type SlotMath } from "./engine";
+import { makeSlotSpec, modelRtp, type SlotSpec } from "./slotModels";
+import { type SlotMath } from "./engine";
 export type Original = {
   slug: string;
   name: string;
@@ -10,6 +11,7 @@ export type Original = {
   animation: string;
   tagline: string;
   math: SlotMath;
+  slot?: SlotSpec;
 };
 const profiles: SlotMath[] = [
   { weights: [32, 24, 18, 12, 8, 4, 2], pays: [8, 16, 32, 80, 160, 400, 1600] },
@@ -193,6 +195,7 @@ export const originals: Original[] = themes.map((t, i) => ({
   tagline: t[7],
   kind: "slots",
   math: profiles[i % 4],
+  slot: makeSlotSpec(i, profiles[i % 4]),
 }));
 originals.push(
   {
@@ -209,14 +212,14 @@ originals.push(
   },
   {
     slug: "royal-draw",
-    name: "Royal Draw",
+    name: "Royal Hold’em",
     kind: "poker",
     color: "#31213d",
     accent: "#dcc0ff",
     emblem: "♣",
     symbols: [],
     animation: "bloom",
-    tagline: "Five cards. Your next move.",
+    tagline: "Your two cards. Five on the board. Make your move.",
     math: profiles[0],
   },
   {
@@ -234,7 +237,7 @@ originals.push(
 );
 export const rtpLabel = (g: Original) =>
   g.kind === "slots"
-    ? (fiveReelRtp(g.math) * 100).toFixed(2) + "% theoretical RTP"
+    ? (modelRtp(g.slot!) * 100).toFixed(2) + "% theoretical RTP"
     : g.kind === "roulette"
       ? "97.30% theoretical RTP"
       : "Returns depend on decisions";

@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { DemoLedger } from "../lib/demoLedger";
 export type Round = {
   id: string;
   game: string;
@@ -18,61 +19,40 @@ type Demo = {
   blocked: boolean;
   limit: number;
   loss: number;
-  reserve: (n: number) => boolean;
-  settle: (game: string, bet: number, returned: number) => void;
+  reserve: (amount: number, id: string) => boolean;
+  settle: (game: string, id: string, returned: number) => void;
   reset: () => void;
-  setLimit: (n: number) => void;
+  setLimit: (amount: number) => void;
   exclude: () => void;
 };
 const Context = createContext<Demo>(null!);
 export function DemoProvider({ children }: { children: ReactNode }) {
-  const funds = useRef(100000);
-  const pending = useRef(false);
-  const spent = useRef(0);
-  const locked = useRef(false);
-  const cap = useRef(50000);
+  const ledger = useRef(new DemoLedger());
   const [balance, setBalance] = useState(100000),
     [rounds, setRounds] = useState<Round[]>([]),
     [blocked, setBlocked] = useState(false),
     [limit, setLimitState] = useState(50000),
     [loss, setLoss] = useState(0);
-  const reserve = (n: number) => {
-    if (
-      locked.current ||
-      !Number.isSafeInteger(n) ||
-      n <= 0 ||
-      n > funds.current ||
-      spent.current + n > cap.current
-    )
-      return false;
-    funds.current -= n;
-    spent.current += n;
-    pending.current = true;
-    setBalance(funds.current);
-    setLoss(spent.current);
-    return true;
-  };
-  const settle = (game: string, bet: number, returned: number) => {
-    if (!Number.isSafeInteger(returned) || returned < 0 || !pending.current)
-      throw new Error("Invalid demo settlement");
-    funds.current += returned;
-    spent.current = Math.max(0, spent.current - returned);
-    pending.current = false;
-    setBalance(funds.current);
-    setLoss(spent.current);
+  function sync() {
+    setBalance(ledger.current.balance);
+    setLoss(ledger.current.loss);
+  }
+  function reserve(amount: number, id: string) {
+    const accepted = ledger.current.reserve(amount, id);
+    if (accepted) sync();
+    return accepted;
+  }
+  function settle(game: string, id: string, returned: number) {
+    const bet = ledger.current.settle(id, returned);
+    if (bet === null) return;
+    sync();
     setRounds((r) =>
-      [
-        {
-          id: crypto.randomUUID(),
-          game,
-          bet,
-          returned,
-          time: new Date().toISOString(),
-        },
-        ...r,
-      ].slice(0, 100),
+      [{ id, game, bet, returned, time: new Date().toISOString() }, ...r].slice(
+        0,
+        100,
+      ),
     );
-  };
+  }
   return (
     <Context.Provider
       value={{
@@ -84,21 +64,19 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         reserve,
         settle,
         reset: () => {
-          if (pending.current || locked.current) return;
-          funds.current = 100000;
-          setBalance(100000);
-          spent.current = 0;
-          setLoss(0);
-          setRounds([]);
+          if (ledger.current.reset()) {
+            sync();
+            setRounds([]);
+          }
         },
         setLimit: (n) => {
           if (Number.isSafeInteger(n) && n > 0) {
-            cap.current = n;
+            ledger.current.limit = n;
             setLimitState(n);
           }
         },
         exclude: () => {
-          locked.current = true;
+          ledger.current.blocked = true;
           setBlocked(true);
         },
       }}
