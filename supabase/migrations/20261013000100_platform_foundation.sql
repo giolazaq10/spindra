@@ -11,10 +11,7 @@ begin
     execute format('revoke insert, update, delete on public.%I from anon, authenticated',t);
   end loop;
 end $$;
--- Hide fictitious provider seed data and unsupported promotions.
-update public.providers set status='inactive';
-update public.games set status='inactive';
-update public.promotions set status='expired';
+-- Retain catalog visibility when installing the account and wallet schema.
 
 create table public.platform_settings (
   id boolean primary key default true check(id),

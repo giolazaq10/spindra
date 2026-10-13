@@ -1,0 +1,243 @@
+.bank-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #030615d9;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.bank-dialog {
+  width: 560px;
+  max-height: 92dvh;
+  overflow: auto;
+  background: linear-gradient(145deg, #17213a, #0d1326);
+  border: 1px solid #ffffff20;
+  box-shadow: 0 30px 100px #0009;
+  border-radius: 24px;
+  padding: 28px;
+  color: #f4f5fa;
+  font-family: inherit;
+}
+.bank-dialog header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.bank-dialog header span {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #f7be54;
+}
+.bank-dialog h2 {
+  font-size: 24px;
+  font-weight: 800;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 8px 0 22px;
+}
+.bank-dialog header button {
+  background: transparent;
+  border: 0;
+  color: #abb4ce;
+  align-self: start;
+}
+.bank-dialog p,
+.bank-dialog small {
+  color: #b4bfd5;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.bank-dialog h3 {
+  margin: 18px 0 10px;
+  font-weight: 700;
+}
+.bank-dialog label,
+.bank-security label {
+  display: block;
+  margin: 14px 0;
+  color: #d4dbee;
+  font-size: 13px;
+}
+.bank-dialog input,
+.bank-dialog select,
+.bank-admin input,
+.bank-admin select,
+.bank-security input {
+  background: #090f21;
+  color: white;
+  border: 1px solid #ffffff24;
+  border-radius: 10px;
+  padding: 12px;
+  width: 100%;
+  margin: 7px 0;
+}
+.bank-dialog nav {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0;
+}
+.bank-dialog nav button {
+  flex: 1;
+  padding: 12px;
+  text-transform: capitalize;
+  border: 1px solid #ffffff1a;
+  border-radius: 12px;
+  background: #ffffff06;
+  color: #b7c1d8;
+}
+.bank-dialog nav button[aria-pressed="true"] {
+  background: #fbbf2420;
+  border-color: #fbbf2477;
+  color: #ffd98a;
+}
+.bank-balance {
+  background: #ffffff06;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+.bank-balance strong {
+  font-size: 18px;
+}
+.bank-dialog .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 11px;
+  font-weight: 700;
+  margin: 6px 8px 6px 0;
+}
+.bank-dialog .primary {
+  background: linear-gradient(95deg, #ffc456, #ff9c49);
+  color: #1a1422;
+  border: 0;
+}
+.bank-dialog .secondary {
+  background: #ffffff09;
+  color: white;
+  border: 1px solid #ffffff24;
+}
+.bank-dialog button:disabled {
+  opacity: 0.45;
+}
+.bank-dialog code,
+.bank-admin code {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  padding: 12px;
+  background: #070d1b;
+  border-radius: 10px;
+  color: #ffe1a0;
+}
+.bank-address {
+  text-align: center;
+}
+.bank-address img {
+  margin: 20px auto;
+  border-radius: 14px;
+}
+.bank-note {
+  padding: 14px;
+  border-left: 3px solid #f4bc56;
+  background: #f4bc5609;
+}
+.bank-error {
+  background: #ef476f15;
+  border: 1px solid #ef476f55;
+  color: #ffa7b9 !important;
+  padding: 12px;
+  border-radius: 10px;
+}
+.bank-check {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+}
+.bank-check input {
+  width: 18px;
+}
+.bank-history article {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 14px 0;
+  border-bottom: 1px solid #ffffff13;
+}
+.bank-history article small,
+.bank-history article code,
+.bank-history article p {
+  grid-column: 1/-1;
+}
+.bank-dialog footer {
+  margin-top: 24px;
+  font-size: 11px;
+  color: #7784a3;
+  text-align: center;
+}
+.bank-security {
+  border-top: 1px solid #ffffff15;
+  margin-top: 20px;
+  padding-top: 14px;
+}
+.bank-admin .admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
+}
+.bank-admin article {
+  padding: 20px;
+  margin: 16px 0;
+}
+.bank-admin pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  color: #b9c4d9;
+}
+.bank-admin label {
+  display: block;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.bank-admin .admin-row {
+  padding: 16px 0;
+  border-bottom: 1px solid #ffffff18;
+}
+.bank-admin .admin-row button {
+  margin: 6px;
+}
+.bank-admin input[type="checkbox"] {
+  width: 18px;
+  margin-right: 10px;
+}
+.bank-admin .admin-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .bank-dialog {
+    padding: 20px;
+    border-radius: 18px;
+  }
+  .bank-dialog h2 {
+    font-size: 20px;
+  }
+  .bank-balance {
+    display: block;
+  }
+  .bank-balance strong {
+    display: block;
+    margin-top: 8px;
+  }
+}
