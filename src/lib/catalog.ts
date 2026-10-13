@@ -207,7 +207,7 @@ originals.push(
     emblem: "♠",
     symbols: [],
     animation: "orbit",
-    tagline: "Take your seat at twenty-one.",
+    tagline: "Five hands. One dealer. Your table.",
     math: profiles[0],
   },
   {

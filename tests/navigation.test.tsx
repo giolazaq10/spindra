@@ -202,11 +202,11 @@ test("blackjack deals one card at a time, locks actions, and cancels its sequenc
 
 test("blackjack reveals the hole card, draws at intervals, and settles after the final card lands", async (t) => {
   t.mock.timers.enable({ apis: ["setTimeout"] });
-  const ordered = Array.from({ length: 52 }, (_, i) => i),
+  const ordered = Array.from({ length: 416 }, (_, i) => i),
     draws = [8, 1, 5, 3, 4, 18],
     randoms: number[] = [];
-  for (let i = 51; i > 0; i--) {
-    const j = 51 - i < draws.length ? ordered.indexOf(draws[51 - i]) : i;
+  for (let i = 415; i > 0; i--) {
+    const j = 415 - i < draws.length ? ordered.indexOf(draws[415 - i]) : i;
     randoms.push(j);
     [ordered[i], ordered[j]] = [ordered[j], ordered[i]];
   }
@@ -225,7 +225,10 @@ test("blackjack reveals the hole card, draws at intervals, and settles after the
     false,
   );
   fireEvent.click(screen.getByRole("button", { name: "Stand" }));
-  const dealer = () => app.container.querySelector(".blackjack>.cards-row")!;
+  await act(async () => {
+    t.mock.timers.tick(450);
+  });
+  const dealer = () => app.container.querySelector(".bj-dealer .cards-row")!;
   assert.equal(dealer().querySelectorAll(".playing-card").length, 2);
   assert.ok(dealer().querySelector(".card-back"));
   await act(async () => {
@@ -247,5 +250,87 @@ test("blackjack reveals the hole card, draws at intervals, and settles after the
   });
   assert.equal(screen.getByTestId("rounds").textContent, "1");
   assert.ok(screen.getByRole("button", { name: "Deal cards" }));
+  cleanup();
+});
+
+test("five blackjack main bets and side bets reserve atomically; Back retains a resolved pair award once", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const draws = [0, 1, 6, 3, 4, 8, 14, 15, 19, 17, 18, 5],
+    remaining = Array.from({ length: 416 }, (_, i) => i),
+    randoms: number[] = [];
+  for (let i = 415; i > 0; i--) {
+    const j = 415 - i < draws.length ? remaining.indexOf(draws[415 - i]) : i;
+    randoms.push(j);
+    [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
+  }
+  t.mock.method(crypto, "getRandomValues", (buffer: Uint32Array) => {
+    buffer.fill(randoms.shift()!);
+    return buffer;
+  });
+  const { router } = setup("noir-blackjack");
+  for (const i of [1, 2, 4, 5])
+    fireEvent.click(
+      screen.getByRole("button", { name: "Main bet for hand " + i }),
+    );
+  fireEvent.click(screen.getByRole("button", { name: "21+3 bet for hand 3" }));
+  fireEvent.click(
+    screen.getByRole("button", { name: "Perfect Pair bet for hand 3" }),
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Deal cards" }));
+  assert.equal(screen.getByTestId("balance").textContent, "99300");
+  await act(async () => {
+    t.mock.timers.tick(8000);
+  });
+  assert.equal(
+    (screen.getByRole("button", { name: "Stand" }) as HTMLButtonElement)
+      .disabled,
+    false,
+  );
+  assert.ok(screen.getByText("PP: Mixed pair · 6.00"));
+  await act(async () => {
+    void router.navigate(-1);
+  });
+  await act(async () => {
+    t.mock.timers.tick(30000);
+  });
+  assert.equal(screen.getByTestId("balance").textContent, "99900");
+  assert.equal(screen.getByTestId("rounds").textContent, "1");
+  cleanup();
+});
+
+test("blackjack insurance reserves only selected half-stakes and dealer blackjack settles exactly once", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const draws = [8, 12, 7, 11],
+    remaining = Array.from({ length: 416 }, (_, i) => i),
+    randoms: number[] = [];
+  for (let i = 415; i > 0; i--) {
+    const j = 415 - i < draws.length ? remaining.indexOf(draws[415 - i]) : i;
+    randoms.push(j);
+    [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
+  }
+  t.mock.method(crypto, "getRandomValues", (buffer: Uint32Array) => {
+    buffer.fill(randoms.shift()!);
+    return buffer;
+  });
+  setup("noir-blackjack");
+  fireEvent.click(screen.getByRole("button", { name: "Deal cards" }));
+  await act(async () => {
+    t.mock.timers.tick(2800);
+  });
+  assert.ok(screen.getByRole("region", { name: "Insurance offer" }));
+  fireEvent.click(screen.getByRole("checkbox", { name: "Hand 3 · 0.50" }));
+  fireEvent.click(
+    screen.getByRole("button", { name: "Insure selected · 0.50" }),
+  );
+  assert.equal(screen.getByTestId("balance").textContent, "99850");
+  await act(async () => {
+    t.mock.timers.tick(2000);
+  });
+  assert.equal(screen.getByTestId("balance").textContent, "100000");
+  assert.equal(screen.getByTestId("rounds").textContent, "1");
+  await act(async () => {
+    t.mock.timers.tick(20000);
+  });
+  assert.equal(screen.getByTestId("rounds").textContent, "1");
   cleanup();
 });

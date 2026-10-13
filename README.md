@@ -8,7 +8,7 @@ React/Vite casino preparation platform, retaining the Bolt + Supabase architectu
 - Protected account page with cash wallet, verification status and transaction history.
 - Original Bolt homepage, navigation, typography, colors and promotional layouts retained.
 - 16 individually specified slot cabinets with distinct scenery, themed symbol sets, 3–5 reels, 2–4 rows, paylines or adjacent-reel ways, left/right win directions, match thresholds and scatter awards. Each cabinet publishes its own rules, weights, paytable and exact theoretical RTP.
-- No-limit Texas Hold’em against two computer opponents, with visible private cards, rotating blinds, betting streets, full hand/kicker evaluation, all-ins, side pots and split pots. Animated blackjack and European roulette are also included.
+- No-limit Texas Hold’em against two computer opponents, with visible private cards, rotating blinds, betting streets, full hand/kicker evaluation, all-ins, side pots and split pots. Five-spot, eight-deck blackjack includes 21+3, Perfect Pair, insurance, late surrender, split/double, chip betting, undo/rebet, hints, sound, optional turbo, fullscreen and round history. European roulette is also included.
 - Stake selectors, balances, rules and result messages are embedded in each cabinet/table.
 - Free session-only demo wallet, round history, demo loss limits and session pause.
 - Supabase migration for private player data, server-owned cash balances, atomic wallet events, idempotent provider callbacks, account loss limits and 30-day exclusion.
