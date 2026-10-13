@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import QRCode from "qrcode";
+import QRCode from "@/lib/vendor/qr-code.js";
 import { X, Copy, Wallet } from "lucide-react";
 import { useAuth } from "@/context/Auth";
 import { useWallet } from "@/context/Wallet";

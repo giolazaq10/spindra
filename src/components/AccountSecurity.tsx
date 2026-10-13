@@ -1,5 +1,5 @@
 import { useState } from "react";
-import QRCode from "qrcode";
+import QRCode from "@/lib/vendor/qr-code.js";
 import { supabase } from "@/lib/supabase";
 export default function AccountSecurity({
   onVerified,
