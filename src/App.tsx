@@ -6,7 +6,7 @@ import {
   Navigate,
   useParams,
 } from "react-router-dom";
-import { AuthProvider } from "@/context/Auth";
+import { AuthProvider, useAuth } from "@/context/Auth";
 import { DemoProvider } from "@/context/Demo";
 import { WalletProvider } from "@/context/Wallet";
 import Header from "@/components/Header";
@@ -16,6 +16,7 @@ import "./extension.css";
 import RouteBoundary from "@/components/RouteBoundary";
 import CasinoPage from "@/pages/CasinoPage";
 import AuthPage from "@/pages/AuthPage";
+import AdminPage from "@/pages/AdminPage";
 import AccountPage from "@/pages/AccountPage";
 import { ResponsiblePage, InfoPage } from "@/pages/InfoPages";
 import ProvidersPage from "@/pages/ProvidersPage";
@@ -26,6 +27,14 @@ import { originals } from "@/lib/catalog";
 import type { ReactNode } from "react";
 function Styled({ children }: { children: ReactNode }) {
   return <div className="spindra-extension">{children}</div>;
+}
+function AccountRoute() {
+  const { user } = useAuth();
+  return <AccountPage key={user?.id || "guest"} />;
+}
+function AdminRoute() {
+  const { user } = useAuth();
+  return <AdminPage key={user?.id || "guest"} />;
 }
 function GameRoute() {
   const { slug } = useParams();
@@ -106,10 +115,18 @@ export default function App() {
                     element={<Navigate to="/account" replace />}
                   />
                   <Route
+                    path="/admin"
+                    element={
+                      <Styled>
+                        <AdminRoute />
+                      </Styled>
+                    }
+                  />
+                  <Route
                     path="/account"
                     element={
                       <Styled>
-                        <AccountPage />
+                        <AccountRoute />
                       </Styled>
                     }
                   />

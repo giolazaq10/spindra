@@ -13,6 +13,7 @@ import { useAuth } from "@/context/Auth";
 import { credits, useDemo } from "@/context/Demo";
 import { useWallet } from "@/context/Wallet";
 import { supabase } from "@/lib/supabase";
+import AccountSecurity from "@/components/AccountSecurity";
 import DepositModal from "@/components/DepositModal";
 type Profile = {
   display_name: string;
@@ -25,7 +26,7 @@ type Balance = { balance_minor: number; currency: string };
 type Entry = {
   id: string;
   kind: string;
-  amount_minor: number;
+  delta_minor: number;
   created_at: string;
 };
 export default function AccountPage() {
@@ -40,10 +41,17 @@ export default function AccountPage() {
     [error, setError] = useState(""),
     [busy, setBusy] = useState(true),
     [signingOut, setSigningOut] = useState(false),
-    [depositOpen, setDepositOpen] = useState(false);
+    [depositOpen, setDepositOpen] = useState(false),
+    [walletTab, setWalletTab] = useState<"deposit" | "withdraw" | "history">(
+      "deposit",
+    ),
+    [adminRole, setAdminRole] = useState<string | null>(null);
   useEffect(() => {
     if (!user) return;
     let alive = true;
+    supabase.rpc("my_admin_role").then(({ data }) => {
+      if (alive) setAdminRole(data);
+    });
     (async () => {
       try {
         const [p, w, e] = await Promise.all([
@@ -60,8 +68,8 @@ export default function AccountPage() {
             .eq("user_id", user.id)
             .maybeSingle(),
           supabase
-            .from("wallet_events")
-            .select("id,kind,amount_minor,created_at")
+            .from("cash_events")
+            .select("id,kind,delta_minor,created_at")
             .eq("user_id", user.id)
             .order("created_at", { ascending: false })
             .limit(50),
@@ -108,6 +116,7 @@ export default function AccountPage() {
     <section className="page">
       <DepositModal
         open={depositOpen}
+        initialTab={walletTab}
         onClose={() => setDepositOpen(false)}
         onDeposited={wallet.refresh}
       />
@@ -145,19 +154,41 @@ export default function AccountPage() {
           <span className="eyebrow">CASH WALLET</span>
           <h2>
             {walletData
-              ? credits(walletData.balance_minor) + " " + walletData.currency
+              ? credits(wallet.realBalance) + " " + walletData.currency
               : busy
                 ? "Loading..."
                 : "Not provisioned"}
           </h2>
           <p>
-            Deposit crypto to fund your wallet and play with real balance.
+            Deposit crypto to your cash wallet. Cash games require enabled
+            provider integrations.
           </p>
           <button
             className="button primary"
-            onClick={() => setDepositOpen(true)}
+            onClick={() => {
+              setWalletTab("deposit");
+              setDepositOpen(true);
+            }}
           >
             <Plus size={16} /> Deposit Crypto
+          </button>
+          <button
+            className="button secondary"
+            onClick={() => {
+              setWalletTab("withdraw");
+              setDepositOpen(true);
+            }}
+          >
+            Withdraw
+          </button>
+          <button
+            className="button secondary"
+            onClick={() => {
+              setWalletTab("history");
+              setDepositOpen(true);
+            }}
+          >
+            Wallet activity
           </button>
         </article>
         <article className="panel account-tile">
@@ -183,8 +214,8 @@ export default function AccountPage() {
           <span className="eyebrow">PRACTICE WALLET</span>
           <h2>{credits(demo.balance)} credits</h2>
           <p>
-            Session-only practice credits. They cannot be deposited,
-            transferred or withdrawn.
+            Session-only practice credits. They cannot be deposited, transferred
+            or withdrawn.
           </p>
           <button
             className="button secondary"
@@ -194,6 +225,14 @@ export default function AccountPage() {
             <RefreshCw size={15} /> Reset balance
           </button>
         </article>
+      </div>
+      <div className="panel account-details">
+        <AccountSecurity />
+        {adminRole && (
+          <Link className="button secondary" to="/admin">
+            Open admin control center
+          </Link>
+        )}
       </div>
       <div className="panel account-details">
         <h2>Account details</h2>
@@ -245,7 +284,7 @@ export default function AccountPage() {
                     <td>{new Date(e.created_at).toLocaleString()}</td>
                     <td>{e.kind}</td>
                     <td>
-                      {credits(e.amount_minor)} {walletData?.currency}
+                      {credits(e.delta_minor)} {walletData?.currency}
                     </td>
                   </tr>
                 ))}

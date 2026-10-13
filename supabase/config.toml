@@ -7,3 +7,9 @@ verify_jwt = false
 [functions.crypto-deposit]
 # Validates the bearer token through Supabase Auth before proxying to NowPayments.
 verify_jwt = false
+[functions.wallet-api]
+verify_jwt = false
+[functions.nowpayments-ipn]
+verify_jwt = false
+[functions.wallet-worker]
+verify_jwt = false
