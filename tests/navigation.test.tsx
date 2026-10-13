@@ -3,7 +3,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
 import React, { StrictMode } from "react";
-import { createMemoryRouter, RouterProvider, Link, Outlet } from "react-router-dom";
+import {
+  createMemoryRouter,
+  RouterProvider,
+  Link,
+  Outlet,
+} from "react-router-dom";
 import { DemoProvider, useDemo } from "../src/context/Demo";
 import OriginalGame from "../src/components/OriginalGame";
 import { originals } from "../src/lib/catalog";
@@ -98,6 +103,11 @@ test("Texas Hold’em always shows two player cards and Back refunds uncommitted
       .getAllByRole("img")
       .every((card) => card.getAttribute("aria-label") !== "Face-down card"),
   );
+  assert.ok(screen.getByText("Dealing & moving chips"));
+  assert.equal(screen.queryByRole("button", { name: /^Call / }), null);
+  await act(async () => {
+    t.mock.timers.tick(3200);
+  });
   fireEvent.click(screen.getByRole("button", { name: /^Call / }));
   await act(async () => {
     void router.navigate(-1);
@@ -153,5 +163,89 @@ test("browser Back recovers from a failed route instead of retaining the previou
   });
   assert.ok(screen.getByRole("heading", { name: "RECOVERED LOBBY" }));
   assert.equal(screen.queryByRole("alert"), null);
+  cleanup();
+});
+
+test("blackjack deals one card at a time, locks actions, and cancels its sequence on Back", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const { app, router } = setup("noir-blackjack");
+  fireEvent.click(screen.getByRole("button", { name: "Deal cards" }));
+  const cards = () =>
+    app.container.querySelectorAll(".blackjack .playing-card").length;
+  assert.equal(cards(), 0);
+  assert.equal(
+    (screen.getByRole("button", { name: "Hit" }) as HTMLButtonElement).disabled,
+    true,
+  );
+  await act(async () => {
+    t.mock.timers.tick(200);
+  });
+  assert.equal(cards(), 1);
+  await act(async () => {
+    t.mock.timers.tick(650);
+  });
+  assert.equal(cards(), 2);
+  await act(async () => {
+    t.mock.timers.tick(650);
+  });
+  assert.equal(cards(), 3);
+  await act(async () => {
+    void router.navigate(-1);
+  });
+  await act(async () => {
+    t.mock.timers.tick(15000);
+  });
+  assert.equal(screen.getByTestId("rounds").textContent, "1");
+  assert.equal(screen.getByTestId("balance").textContent, "99900");
+  cleanup();
+});
+
+test("blackjack reveals the hole card, draws at intervals, and settles after the final card lands", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const ordered = Array.from({ length: 52 }, (_, i) => i),
+    draws = [8, 1, 5, 3, 4, 18],
+    randoms: number[] = [];
+  for (let i = 51; i > 0; i--) {
+    const j = 51 - i < draws.length ? ordered.indexOf(draws[51 - i]) : i;
+    randoms.push(j);
+    [ordered[i], ordered[j]] = [ordered[j], ordered[i]];
+  }
+  t.mock.method(crypto, "getRandomValues", (buffer: Uint32Array) => {
+    buffer.fill(randoms.shift()!);
+    return buffer;
+  });
+  const { app } = setup("noir-blackjack");
+  fireEvent.click(screen.getByRole("button", { name: "Deal cards" }));
+  await act(async () => {
+    t.mock.timers.tick(2800);
+  });
+  assert.equal(
+    (screen.getByRole("button", { name: "Stand" }) as HTMLButtonElement)
+      .disabled,
+    false,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Stand" }));
+  const dealer = () => app.container.querySelector(".blackjack>.cards-row")!;
+  assert.equal(dealer().querySelectorAll(".playing-card").length, 2);
+  assert.ok(dealer().querySelector(".card-back"));
+  await act(async () => {
+    t.mock.timers.tick(400);
+  });
+  assert.equal(dealer().querySelector(".card-back"), null);
+  assert.equal(screen.getByTestId("rounds").textContent, "0");
+  await act(async () => {
+    t.mock.timers.tick(1100);
+  });
+  assert.equal(dealer().querySelectorAll(".playing-card").length, 3);
+  await act(async () => {
+    t.mock.timers.tick(1100);
+  });
+  assert.equal(dealer().querySelectorAll(".playing-card").length, 4);
+  assert.equal(screen.getByTestId("rounds").textContent, "0");
+  await act(async () => {
+    t.mock.timers.tick(1100);
+  });
+  assert.equal(screen.getByTestId("rounds").textContent, "1");
+  assert.ok(screen.getByRole("button", { name: "Deal cards" }));
   cleanup();
 });

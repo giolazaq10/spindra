@@ -3731,3 +3731,629 @@
   display: grid;
   place-items: center;
 }
+/* Paced dealing: slide from the shoe, turn, then settle on the felt. */
+.spindra-extension .playing-card {
+  animation: table-card-arrive 0.62s cubic-bezier(0.2, 0.72, 0.23, 1) both;
+  transform-origin: 50% 80%;
+  backface-visibility: hidden;
+}
+.spindra-extension .playing-card.card-back {
+  animation-name: table-card-slide;
+}
+@keyframes table-card-arrive {
+  0% {
+    opacity: 0;
+    transform: translate(90px, -95px) rotate(-25deg) rotateY(85deg) scale(0.82);
+    filter: brightness(0.7);
+  }
+  38% {
+    opacity: 1;
+    transform: translate(30px, -28px) rotate(-9deg) rotateY(65deg) scale(0.95);
+  }
+  75% {
+    transform: translate(-3px, 2px) rotate(2deg) rotateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes table-card-slide {
+  0% {
+    opacity: 0;
+    transform: translate(90px, -95px) rotate(-25deg) scale(0.82);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(-3px, 2px) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+.spindra-extension .dealer-shoe {
+  position: absolute;
+  right: 7%;
+  top: 65px;
+  width: 66px;
+  height: 85px;
+  border: 3px solid #d3b373;
+  border-radius: 10px;
+  background: repeating-linear-gradient(45deg, #293964 0 4px, #172346 4px 8px);
+  transform: rotate(14deg);
+  box-shadow:
+    3px 4px 0 #dfdfd8,
+    6px 7px 0 #bdc0bc,
+    8px 12px 15px #0008;
+  display: grid;
+  place-items: center;
+  color: #ead49a;
+  font-size: 32px;
+}
+.spindra-extension .dealing-caption {
+  text-align: center;
+  color: #fff1cb;
+  font-size: 14px;
+  min-height: 24px;
+  margin: 18px 0;
+}
+.spindra-extension .blackjack .cards-row {
+  min-height: 130px;
+  perspective: 900px;
+}
+.spindra-extension .table-dealing .dealer-shoe {
+  box-shadow:
+    3px 4px 0 #dfdfd8,
+    6px 7px 0 #bdc0bc,
+    0 0 22px #ffe39b55;
+}
+.spindra-extension .roulette-game .wheel {
+  transition: transform 4.2s cubic-bezier(0.1, 0.62, 0.15, 1);
+}
+.spindra-extension .ball-spinning {
+  animation-duration: 4.2s;
+}
+/* Bright independent worlds, with neutral control panels and readable reels. */
+.spindra-extension .distinct-slot {
+  --world-top: #145bb1;
+  --world-bottom: #082858;
+  --reel-paper: #fff5df;
+  --reel-edge: #dfc18b;
+  --world-ink: #fff;
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(160deg, var(--world-top), var(--world-bottom));
+  border-radius: 22px;
+  max-width: 1000px;
+  padding: 22px 28px 18px;
+  border: 1px solid #fff4;
+  overflow: hidden;
+  box-shadow: 0 18px 45px #0006;
+}
+.spindra-extension .scene-solar {
+  --world-top: #ef8e21;
+  --world-bottom: #743615;
+  --reel-paper: #fff2c5;
+  --reel-edge: #e1ae51;
+}
+.spindra-extension .scene-city {
+  --world-top: #5419a0;
+  --world-bottom: #14244c;
+  --reel-paper: #e8e6ff;
+  --reel-edge: #a99dde;
+}
+.spindra-extension .scene-temple {
+  --world-top: #267f52;
+  --world-bottom: #114330;
+  --reel-paper: #f3f5db;
+  --reel-edge: #b4c477;
+}
+.spindra-extension .scene-moon {
+  --world-top: #1a77b0;
+  --world-bottom: #0b265b;
+  --reel-paper: #e0f7ff;
+  --reel-edge: #80bdd5;
+}
+.spindra-extension .scene-castle {
+  --world-top: #be492c;
+  --world-bottom: #4e1824;
+  --reel-paper: #ffe5cf;
+  --reel-edge: #d5905c;
+}
+.spindra-extension .scene-cosmos {
+  --world-top: #8945ba;
+  --world-bottom: #32164c;
+  --reel-paper: #f5e5ff;
+  --reel-edge: #c09ed8;
+}
+.spindra-extension .scene-reef {
+  --world-top: #15a8a3;
+  --world-bottom: #07535e;
+  --reel-paper: #d9fff3;
+  --reel-edge: #72d4bd;
+}
+.spindra-extension .scene-train {
+  --world-top: #426388;
+  --world-bottom: #172c46;
+  --reel-paper: #e9edf6;
+  --reel-edge: #a1a9c5;
+}
+.spindra-extension .scene-desert {
+  --world-top: #e5a044;
+  --world-bottom: #974e2a;
+  --reel-paper: #fff0d4;
+  --reel-edge: #d1a06a;
+}
+.spindra-extension .scene-ice {
+  --world-top: #6caed7;
+  --world-bottom: #234d91;
+  --reel-paper: #f0fcff;
+  --reel-edge: #a9dcea;
+}
+.spindra-extension .scene-cave {
+  --world-top: #795bba;
+  --world-bottom: #2e2445;
+  --reel-paper: #e8e0f5;
+  --reel-edge: #a895c6;
+}
+.spindra-extension .scene-garden {
+  --world-top: #82a72b;
+  --world-bottom: #2a623e;
+  --reel-paper: #faffd3;
+  --reel-edge: #b9cc75;
+}
+.spindra-extension .scene-royal {
+  --world-top: #bd3471;
+  --world-bottom: #4e173e;
+  --reel-paper: #fff0f5;
+  --reel-edge: #dc99b6;
+}
+.spindra-extension .scene-canyon {
+  --world-top: #cb783f;
+  --world-bottom: #65312b;
+  --reel-paper: #fff2df;
+  --reel-edge: #d5a278;
+}
+.spindra-extension .scene-arcade {
+  --world-top: #374bb6;
+  --world-bottom: #18294c;
+  --reel-paper: #dbf9ff;
+  --reel-edge: #72c4e7;
+}
+.spindra-extension .scene-map {
+  --world-top: #a68c4e;
+  --world-bottom: #4d5332;
+  --reel-paper: #fff6d8;
+  --reel-edge: #cbbb7d;
+}
+.spindra-extension .distinct-slot .slot-scenery {
+  opacity: 0.85;
+  inset: 0;
+  height: 100%;
+}
+.spindra-extension .distinct-slot .scene-overlay {
+  background: linear-gradient(#0001, transparent 45%, #0003);
+}
+.spindra-extension .distinct-slot .cabinet-heading {
+  min-height: 95px;
+  margin: 0 0 10px;
+}
+.spindra-extension .distinct-slot .cabinet-heading h2 {
+  color: #fff7ce;
+  font-size: clamp(27px, 4vw, 42px);
+  text-shadow:
+    0 3px 0 #22102a,
+    0 5px 8px #0006;
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+.spindra-extension .distinct-slot .cabinet-heading small {
+  color: #fff;
+  letter-spacing: 3px;
+  font-size: 10px;
+}
+.spindra-extension .distinct-slot .cabinet-mark {
+  color: #ffe59a;
+  filter: drop-shadow(0 2px 1px #231930);
+}
+.spindra-extension .distinct-slot .cabinet-badge {
+  background: #131b34ec;
+  color: #fff5d4;
+  font-size: 12px;
+  border-color: #fff5;
+}
+.spindra-extension .distinct-slot .mechanic-banner {
+  background: #141e34e8;
+  border: 1px solid #fff3;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #fff5bd;
+  font-size: 13px;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+.spindra-extension .distinct-slot .mechanic-banner span {
+  font-size: 11px;
+  color: #fff;
+}
+.spindra-extension .distinct-slot .slot-marquee {
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: #fff;
+  text-shadow: 0 1px 3px #000;
+  min-height: 40px;
+  margin: 4px 0;
+}
+.spindra-extension .distinct-slot .reel-cabinet {
+  position: relative;
+  z-index: 1;
+  padding: 10px;
+  background: linear-gradient(
+    120deg,
+    #ffe6a1,
+    #b27e37 28%,
+    #ffdc8a 52%,
+    #826034 70%,
+    #ffefb2
+  );
+  box-shadow:
+    0 8px 20px #0006,
+    inset 0 2px 1px #fff9;
+}
+.spindra-extension .scene-city .reel-cabinet,
+.spindra-extension .scene-arcade .reel-cabinet {
+  background: linear-gradient(120deg, #ed6bff, #82eaff, #565de9);
+  box-shadow: 0 0 20px #90afff66;
+}
+.spindra-extension .scene-ice .reel-cabinet,
+.spindra-extension .scene-moon .reel-cabinet {
+  background: linear-gradient(120deg, #fff, #a5d9ff, #e3f9ff);
+}
+.spindra-extension .scene-reef .reel-cabinet {
+  background: linear-gradient(120deg, #ffc3b7, #de897c, #ffe6cc);
+}
+.spindra-extension .scene-temple .reel-cabinet,
+.spindra-extension .scene-garden .reel-cabinet {
+  background: linear-gradient(120deg, #bff3a9, #43874f, #f4df88);
+}
+.spindra-extension .distinct-slot .advanced-reels {
+  --cell-height: 110px;
+  height: calc(var(--slot-rows) * var(--cell-height));
+  gap: 2px;
+  border: 2px solid #382e42;
+  box-shadow: none;
+  background: var(--reel-edge);
+}
+.spindra-extension .distinct-slot .advanced-reel {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--reel-edge),
+    var(--reel-paper) 15%,
+    var(--reel-paper) 85%,
+    var(--reel-edge)
+  );
+}
+.spindra-extension .distinct-slot .advanced-reel:after {
+  background: linear-gradient(
+    #19213b24,
+    transparent 12%,
+    transparent 88%,
+    #19213b24
+  );
+}
+.spindra-extension .distinct-slot .symbol-cell {
+  height: var(--cell-height);
+  border-bottom: 1px solid #53485a18;
+  animation: none;
+}
+.spindra-extension .distinct-slot .reel-strip {
+  display: flex;
+  flex-direction: column;
+}
+.spindra-extension .distinct-slot .strip-running {
+  animation: reel-strip-roll 0.24s linear infinite;
+  will-change: transform;
+}
+@keyframes reel-strip-roll {
+  from {
+    transform: translateY(calc(-2 * var(--cell-height) * var(--slot-rows)));
+  }
+  to {
+    transform: translateY(calc(-1 * var(--cell-height) * var(--slot-rows)));
+  }
+}
+.spindra-extension .distinct-slot .reel-moving .themed-symbol {
+  animation: none;
+  filter: blur(1px);
+  opacity: 0.95;
+}
+.spindra-extension .distinct-slot .reel-stopped .reel-strip {
+  animation: reel-brake 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes reel-brake {
+  0% {
+    transform: translateY(-24px);
+  }
+  45% {
+    transform: translateY(8px);
+  }
+  75% {
+    transform: translateY(-3px);
+  }
+  100% {
+    transform: none;
+  }
+}
+.spindra-extension .distinct-slot .illustrated-symbol {
+  width: 96px;
+  height: 100px;
+  filter: drop-shadow(0 3px 1px #232c3744);
+}
+.spindra-extension .distinct-slot .illustrated-symbol .symbol-frame {
+  transform: none;
+}
+.spindra-extension .distinct-slot .symbol-name {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #252b44;
+  text-shadow: 0 1px #fff8;
+  letter-spacing: 0.3px;
+  background: none;
+  padding: 0;
+}
+.spindra-extension .distinct-slot .symbol-winning {
+  background: radial-gradient(#fff1a0, #ffde6733);
+  box-shadow: inset 0 0 0 2px #eaa735;
+}
+.spindra-extension .distinct-slot .symbol-winning .themed-symbol {
+  animation: jewel-celebrate 0.9s ease-in-out 3;
+}
+@keyframes jewel-celebrate {
+  0%,
+  100% {
+    transform: scale(1) rotate(0);
+  }
+  30% {
+    transform: scale(1.12) rotate(-6deg);
+    filter: drop-shadow(0 0 9px #ffd642);
+  }
+  65% {
+    transform: scale(1.05) rotate(5deg);
+  }
+}
+.spindra-extension .distinct-slot .slot-console {
+  color: #fff;
+  padding: 15px 4px;
+}
+.spindra-extension .distinct-slot .slot-console small {
+  font-size: 11px;
+  color: #fff;
+  letter-spacing: 1px;
+}
+.spindra-extension .distinct-slot .slot-console b {
+  font-size: 23px;
+  color: #fff6ba;
+  text-shadow: 0 2px #33272d;
+}
+.spindra-extension .distinct-slot .integrated-controls {
+  background: #11192fee;
+  border: 1px solid #ffffff55;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 15px #0003;
+}
+.spindra-extension .distinct-slot .integrated-controls small {
+  color: #e1e9ff;
+}
+.spindra-extension .distinct-slot .integrated-controls select {
+  background: #f3f4fa;
+  color: #151c33;
+  font-weight: 800;
+  font-size: 15px;
+}
+.spindra-extension .distinct-slot .line-results {
+  font-size: 12px;
+  color: #fff;
+  line-height: 1.6;
+  background: #11192fcc;
+  padding: 10px;
+  border-radius: 8px;
+  position: relative;
+  z-index: 1;
+}
+.spindra-extension .scene-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+.spindra-extension .scene-particles i {
+  position: absolute;
+  left: calc(8% + var(--particle) * 12%);
+  top: 110%;
+  width: 5px;
+  height: 5px;
+  background: #fff0aa;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #fff3b9;
+  animation: world-motes 8s linear infinite;
+  animation-delay: calc(var(--particle) * -1.3s);
+}
+.spindra-extension .scene-ice .scene-particles i {
+  border-radius: 0;
+  background: #fff;
+  transform: rotate(45deg);
+}
+.spindra-extension .scene-reef .scene-particles i,
+.spindra-extension .scene-moon .scene-particles i {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+  border: 1px solid #b0ffec;
+}
+.spindra-extension .scene-castle .scene-particles i {
+  background: #ffbf44;
+  box-shadow: 0 0 10px #ff531a;
+}
+@keyframes world-motes {
+  0% {
+    top: 110%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    top: -5%;
+    transform: translateX(30px);
+    opacity: 0;
+  }
+}
+.spindra-extension .win-celebration {
+  position: relative;
+  text-align: center;
+  margin: 12px auto 0;
+  padding: 12px;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #161e3500, #141e34ee, #161e3500);
+  animation: win-banner-in 0.6s ease-out both;
+  color: #fff3c1;
+}
+.spindra-extension .win-celebration strong {
+  display: block;
+  letter-spacing: 3px;
+  font-size: 17px;
+  text-shadow: 0 2px 1px #000;
+}
+.spindra-extension .win-celebration > span {
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1.3;
+  color: #ffeb9f;
+  text-shadow: 0 3px 0 #6f3b13;
+}
+.spindra-extension .win-celebration i {
+  position: absolute;
+  left: calc(var(--coin) * 8%);
+  top: -30px;
+  color: #ffe888;
+  font-style: normal;
+  font-size: 20px;
+  animation: win-coins 1.8s ease-in infinite;
+  animation-delay: calc(var(--coin) * -0.17s);
+}
+.spindra-extension .win-celebration.big-win strong {
+  font-size: 26px;
+}
+@keyframes win-banner-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+  70% {
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes win-coins {
+  from {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(170px) rotate(190deg);
+    opacity: 0;
+  }
+}
+@media (max-width: 600px) {
+  .spindra-extension .distinct-slot {
+    padding: 16px 10px;
+    border-radius: 16px;
+  }
+  .spindra-extension .distinct-slot .cabinet-heading {
+    min-height: 85px;
+  }
+  .spindra-extension .distinct-slot .cabinet-heading h2 {
+    font-size: 27px;
+    letter-spacing: 0;
+  }
+  .spindra-extension .distinct-slot .cabinet-badge {
+    position: static;
+    font-size: 10px;
+  }
+  .spindra-extension .distinct-slot .mechanic-banner {
+    flex-direction: column;
+    gap: 5px;
+    font-size: 12px;
+    padding: 9px;
+  }
+  .spindra-extension .distinct-slot .mechanic-banner span {
+    font-size: 10px;
+    border: 0;
+    padding: 0;
+  }
+  .spindra-extension .distinct-slot .slot-marquee {
+    font-size: 12px;
+    padding: 6px 2px;
+  }
+  .spindra-extension .distinct-slot .advanced-reels {
+    --cell-height: 72px;
+  }
+  .spindra-extension .distinct-slot .reel-cabinet {
+    padding: 5px;
+  }
+  .spindra-extension .distinct-slot .illustrated-symbol {
+    width: 100%;
+    max-width: 68px;
+    height: 70px;
+  }
+  .spindra-extension .distinct-slot .symbol-name {
+    font-size: 8px;
+    letter-spacing: 0;
+    bottom: 1px;
+  }
+  .spindra-extension .distinct-slot .slot-console b {
+    font-size: 17px;
+  }
+  .spindra-extension .distinct-slot .slot-console small {
+    font-size: 9px;
+  }
+  .spindra-extension .dealer-shoe {
+    right: 4%;
+    top: 55px;
+    width: 40px;
+    height: 55px;
+    font-size: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .playing-card,
+  .spindra-extension .distinct-slot * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .spindra-extension .strip-running {
+    transform: translateY(calc(-1 * var(--cell-height) * var(--slot-rows)));
+  }
+}

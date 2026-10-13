@@ -49,7 +49,7 @@ import {
   Feather,
   type LucideIcon,
 } from "lucide-react";
-import { useId } from "react";
+import { useId, type CSSProperties } from "react";
 import type { SlotSpec } from "../lib/slotModels";
 const icons: Record<string, LucideIcon> = {
   sun: Sun,
@@ -108,49 +108,88 @@ export function CoverIcon({ spec }: { spec: SlotSpec }) {
     <Icon width={190} height={190} strokeWidth={1.15} color="var(--accent)" />
   );
 }
+const sceneTints: Record<string, number> = {
+  solar: 0,
+  city: 2,
+  temple: 3,
+  moon: 4,
+  castle: 1,
+  cosmos: 5,
+  reef: 4,
+  train: 0,
+  desert: 1,
+  ice: 4,
+  cave: 5,
+  garden: 3,
+  royal: 1,
+  canyon: 0,
+  arcade: 2,
+  map: 0,
+};
+const jewelColors = [
+  "#ffbf32",
+  "#ff5a72",
+  "#9d70ff",
+  "#47d878",
+  "#36c9f3",
+  "#ee6bd9",
+  "#ff9c41",
+];
 export function SlotSymbol({ spec, index }: { spec: SlotSpec; index: number }) {
-  const id = useId().replace(/:/g, "");
-  const scatter = index === 7,
-    Icon = scatter
-      ? icons[spec.icons[0]] || Star
-      : icons[spec.icons[index]] || Gem;
+  const id = useId().replace(/:/g, ""),
+    scatter = index === 7;
+  const Icon = icons[spec.icons[scatter ? 0 : index]] || Gem;
   const name = scatter ? spec.scatter!.name : spec.symbolNames[index];
+  const color = scatter
+    ? "#ffcd42"
+    : jewelColors[(index + (sceneTints[spec.scene] || 0)) % 7];
   return (
     <div
       className={
-        "themed-symbol symbol-tier-" +
+        "themed-symbol illustrated-symbol symbol-tier-" +
         index +
         (scatter ? " scatter-symbol" : "")
       }
       role="img"
       aria-label={name}
+      style={{ "--symbol-color": color } as CSSProperties}
     >
       <svg className="symbol-frame" viewBox="0 0 100 100" aria-hidden="true">
         <defs>
-          <linearGradient id={id} x2=".7" y2="1">
-            <stop stopColor="var(--accent)" />
-            <stop offset=".5" stopColor="var(--theme)" />
-            <stop offset="1" stopColor="#0a091b" />
+          <linearGradient id={id} x1="0" y1="0" x2=".8" y2="1">
+            <stop stopColor="#ffffff" />
+            <stop offset=".22" stopColor={color} />
+            <stop offset="1" stopColor={color} stopOpacity=".7" />
           </linearGradient>
         </defs>
-        <g fill={"url(#" + id + ")"} stroke="var(--accent)" strokeWidth="2">
-          {spec.scene === "city" || spec.scene === "arcade" ? (
-            <path d="M12 3H88L98 13V87L88 97H12L2 87V13Z" />
-          ) : spec.scene === "royal" || spec.scene === "train" ? (
-            <rect x="8" y="3" width="84" height="94" rx="13" />
-          ) : spec.scene === "reef" ||
-            spec.scene === "moon" ||
-            spec.scene === "cosmos" ? (
-            <circle cx="50" cy="50" r="43" />
-          ) : spec.scene === "temple" || spec.scene === "garden" ? (
-            <path d="M50 3Q100 12 93 52Q87 93 50 97Q7 90 7 50Q3 10 50 3Z" />
-          ) : (
-            <path d="M50 3L91 24L97 67L50 97L3 67L9 24Z" />
-          )}
-        </g>
+        {index >= 5 && (
+          <path
+            d="M50 4L62 15L79 12L82 29L96 39L87 54L91 72L73 76L63 93L48 84L30 91L24 75L7 66L16 49L10 31L29 28L35 10Z"
+            fill={color}
+            stroke="#fff4b1"
+            strokeWidth="2"
+            opacity=".65"
+          />
+        )}
+        <ellipse cx="50" cy="87" rx="28" ry="5" fill="#172243" opacity=".18" />
+        <Icon
+          x={index >= 5 ? 21 : 13}
+          y={index >= 5 ? 20 : 10}
+          width={index >= 5 ? 60 : 76}
+          height={index >= 5 ? 60 : 76}
+          color="#252340"
+          strokeWidth="1.35"
+          fill={"url(#" + id + ")"}
+        />
+        <path
+          d="M20 22L24 14L28 22L36 26L28 30L24 38L20 30L12 26Z"
+          fill="#fff9d9"
+          opacity=".85"
+        />
+        <circle cx="78" cy="17" r="3" fill="#fff" />
+        <circle cx="85" cy="71" r="2" fill={color} />
       </svg>
-      <Icon className="symbol-icon" strokeWidth={index >= 5 ? 1.8 : 1.4} />
-      {scatter && <small>SCATTER</small>}
+      <small className="symbol-name">{scatter ? "SCATTER" : name}</small>
     </div>
   );
 }

@@ -23,7 +23,12 @@ export default function PlayingCard({
 }) {
   if (hidden || !card)
     return (
-      <div className="playing-card card-back" aria-label="Face-down card">
+      <div
+        key="back"
+        style={{ animationDelay: delay + "ms" }}
+        className="playing-card card-back"
+        aria-label="Face-down card"
+      >
         <span>✦</span>
       </div>
     );
@@ -34,6 +39,7 @@ export default function PlayingCard({
   const suit = ["♠", "♥", "♣", "♦"][card.suit];
   return (
     <div
+      key="face"
       role="img"
       aria-label={cardLabel(card)}
       style={{ animationDelay: delay + "ms" }}

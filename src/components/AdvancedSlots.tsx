@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { RotateCw, Trophy } from "lucide-react";
 import type { Original } from "../lib/catalog";
 import { modelSpin, type SlotWin } from "../lib/slotModels";
+import AnimatedCredits from "./AnimatedCredits";
 import { credits } from "../context/Demo";
 import type { Controls } from "./OriginalGame";
 import GameControls from "./GameControls";
@@ -53,9 +54,9 @@ export default function AdvancedSlots({
               c.finish(payout);
             }
           },
-          520 +
+          1100 +
             col *
-              (s.scene === "train" ? 230 : s.scene === "arcade" ? 115 : 170),
+              (s.scene === "train" ? 420 : s.scene === "arcade" ? 280 : 340),
         ),
       ),
     );
@@ -71,6 +72,11 @@ export default function AdvancedSlots({
     >
       <SlotScenery scene={s.scene} />
       <div className="scene-overlay" />
+      <div className="scene-particles" aria-hidden="true">
+        {Array.from({ length: 8 }, (_, i) => (
+          <i key={i} style={{ "--particle": i } as CSSProperties} />
+        ))}
+      </div>
       <div className="cabinet-heading">
         <span className="cabinet-mark">{game.emblem}</span>
         <div>
@@ -112,26 +118,38 @@ export default function AdvancedSlots({
               }
               key={col}
             >
-              {column.map((symbol, row) => {
-                const winning = wins.some((w) =>
-                  w.cells.some(([x, y]) => col === x && row === y),
-                );
-                return (
-                  <div
-                    key={row + ":" + (moving[col] ? "motion" : round)}
-                    className={
-                      "symbol-cell " + (winning ? "symbol-winning" : "")
-                    }
-                  >
-                    <SlotSymbol spec={s} index={symbol} />
-                    {winning && (
-                      <span className="symbol-spark" aria-hidden="true">
-                        ✦
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
+              <div
+                className={
+                  moving[col] ? "reel-strip strip-running" : "reel-strip"
+                }
+              >
+                {(moving[col]
+                  ? Array.from(
+                      { length: s.rows * 3 },
+                      (_, i) => (i + col * 2 + round) % (s.scatter ? 8 : 7),
+                    )
+                  : column
+                ).map((symbol, row) => {
+                  const winning = wins.some((w) =>
+                    w.cells.some(([x, y]) => col === x && row === y),
+                  );
+                  return (
+                    <div
+                      key={row + ":" + (moving[col] ? "motion" : round)}
+                      className={
+                        "symbol-cell " + (winning ? "symbol-winning" : "")
+                      }
+                    >
+                      <SlotSymbol spec={s} index={symbol} />
+                      {winning && (
+                        <span className="symbol-spark" aria-hidden="true">
+                          ✦
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           ))}
           <svg
@@ -158,6 +176,33 @@ export default function AdvancedSlots({
           </svg>
         </div>
       </div>
+      {wins.length > 0 && (
+        <div
+          key={round}
+          className={
+            "win-celebration " + (returned >= lastStake * 5 ? "big-win" : "")
+          }
+          aria-hidden="true"
+        >
+          <strong>
+            {returned >= lastStake * 10
+              ? "SPECTACULAR WIN"
+              : returned >= lastStake * 5
+                ? "BIG WIN"
+                : returned > lastStake
+                  ? "YOU WIN"
+                  : "REEL RETURN"}
+          </strong>
+          <span>
+            <AnimatedCredits amount={returned} />
+          </span>
+          {Array.from({ length: 12 }, (_, i) => (
+            <i key={i} style={{ "--coin": i } as CSSProperties}>
+              ✦
+            </i>
+          ))}
+        </div>
+      )}
       <div className="slot-console">
         <div>
           <small>ACTIVE PATTERNS</small>
@@ -167,7 +212,9 @@ export default function AdvancedSlots({
           <small>
             <Trophy size={12} /> LAST RETURN
           </small>
-          <b>{credits(returned)}</b>
+          <b>
+            <AnimatedCredits amount={returned} />
+          </b>
         </div>
         <button
           className="spin-control"
