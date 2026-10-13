@@ -2713,3 +2713,1021 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* Stakes, balances and status live inside each game's cabinet or table. */
+.spindra-extension .integrated-controls {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 18px;
+  margin: 10px 0 5px;
+  border: 1px solid #fff2;
+  border-radius: 15px;
+  background: linear-gradient(140deg, #090812dd, #171324cc);
+  box-shadow: inset 0 1px 0 #fff1;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+.spindra-extension .integrated-controls small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  color: #b1a5bb;
+  margin-bottom: 5px;
+}
+.spindra-extension .cabinet-wallet strong {
+  font-size: 21px;
+  color: #f1ddb2;
+  font-variant-numeric: tabular-nums;
+}
+.spindra-extension .stake-dial > div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.spindra-extension .stake-dial button {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d5b17144;
+  background: #312335;
+  border-radius: 50%;
+  color: #f3d29c;
+}
+.spindra-extension .stake-dial select {
+  width: 98px;
+  height: 34px;
+  text-align: center;
+  border: 1px solid #f4bf5355;
+  border-radius: 7px;
+  background: #0c0b17;
+  color: #ffe3aa;
+  padding: 0 5px;
+}
+.spindra-extension .cabinet-rules {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  border: 1px solid #fff2;
+  border-radius: 8px;
+  padding: 10px;
+  color: #d8c39f;
+  background: #ffffff05;
+  cursor: pointer;
+}
+.spindra-extension .cabinet-status {
+  grid-column: 1/-1;
+  font-size: 11px;
+  color: #b1a7c1;
+  line-height: 1.5;
+  padding-top: 8px;
+  border-top: 1px solid #fff1;
+}
+.spindra-extension .embedded-rules {
+  margin: 12px 28px 28px;
+  background: #0b0a18;
+  border-radius: 14px;
+  font-size: 12px;
+  max-height: 550px;
+  overflow: auto;
+}
+.spindra-extension .embedded-rules h3 {
+  font-size: 22px;
+  color: var(--accent);
+  margin: 8px 0;
+}
+.spindra-extension .slot-paytable {
+  overflow: auto;
+  margin: 20px 0;
+  border: 1px solid #fff1;
+  border-radius: 10px;
+  padding: 12px;
+}
+.spindra-extension .slot-paytable > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #fff1;
+  padding: 9px 3px;
+  min-width: 350px;
+}
+.spindra-extension .slot-paytable > div > * {
+  flex: 1;
+  font-size: 11px;
+  text-align: right;
+}
+.spindra-extension .slot-paytable > div > :first-child {
+  flex: 1.6;
+  text-align: left;
+}
+.spindra-extension .slot-paytable > div span {
+  color: #ebd1a1;
+}
+.spindra-extension .game-page > .section-heading {
+  margin: 15px 0 25px;
+}
+.spindra-extension .game-top {
+  padding: 18px 25px;
+}
+.spindra-extension .distinct-slot {
+  padding: 18px 28px;
+  max-width: 1000px;
+}
+.spindra-extension .slot-scenery {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  opacity: 0.8;
+  pointer-events: none;
+}
+.spindra-extension .scene-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(#07061022, #07061044 65%, #070610cc);
+}
+.spindra-extension .distinct-slot .cabinet-heading {
+  margin-bottom: 8px;
+}
+.spindra-extension .distinct-slot .cabinet-heading h2 {
+  font-size: clamp(24px, 4vw, 39px);
+}
+.spindra-extension .distinct-slot .cabinet-badge {
+  top: 24px;
+  right: 28px;
+}
+.spindra-extension .mechanic-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent);
+  font-size: 11px;
+  margin: 10px 0 0;
+}
+.spindra-extension .mechanic-banner span {
+  font-size: 9px;
+  color: #fff9;
+  border-left: 1px solid #fff3;
+  padding-left: 12px;
+}
+.spindra-extension .distinct-slot .slot-marquee {
+  letter-spacing: 0.8px;
+  font-size: 10px;
+  margin: 8px 0;
+  padding: 8px 12px;
+  color: #ddd1db;
+}
+.spindra-extension .distinct-slot .advanced-reels {
+  grid-template-columns: repeat(var(--slot-reels), minmax(0, 1fr));
+  height: calc(var(--slot-rows) * 105px);
+}
+.spindra-extension .distinct-slot .advanced-reel {
+  grid-template-rows: repeat(var(--slot-rows), 1fr);
+}
+.spindra-extension .distinct-slot .symbol-cell {
+  aspect-ratio: auto;
+  min-height: 0;
+}
+.spindra-extension .themed-symbol {
+  position: relative;
+  width: 85px;
+  height: 90px;
+  filter: drop-shadow(0 5px 4px #0008);
+  display: grid;
+  place-items: center;
+}
+.spindra-extension .symbol-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.spindra-extension .symbol-icon {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  color: #fff5d5;
+  filter: drop-shadow(0 2px 1px #0008);
+}
+.spindra-extension .symbol-tier-0 {
+  filter: brightness(0.9) drop-shadow(0 5px 4px #0008);
+}
+.spindra-extension .symbol-tier-6 {
+  filter: brightness(1.4) drop-shadow(0 0 12px var(--accent));
+}
+.spindra-extension .scatter-symbol {
+  filter: drop-shadow(0 0 10px #ffd061);
+}
+.spindra-extension .scatter-symbol .symbol-frame {
+  transform: rotate(15deg);
+}
+.spindra-extension .scatter-symbol small {
+  position: absolute;
+  bottom: 10px;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: #fff4b9;
+  background: #0007;
+  padding: 2px 4px;
+}
+.spindra-extension .symbol-winning .themed-symbol {
+  animation: winning-gem 1.4s ease-in-out infinite;
+}
+.spindra-extension .reel-moving .themed-symbol {
+  animation: reel-rush 0.13s linear infinite;
+  filter: blur(3px);
+  opacity: 0.7;
+}
+.spindra-extension .distinct-slot .slot-console {
+  grid-template-columns: 1fr 1fr auto;
+  padding: 13px 14px 0;
+}
+.spindra-extension .distinct-slot .spin-control {
+  width: 78px;
+  height: 78px;
+}
+.spindra-extension .distinct-slot .line-results {
+  margin-top: 9px;
+}
+.spindra-extension .scene-solar .reel-cabinet {
+  border-radius: 32px;
+  background: linear-gradient(125deg, #ffdc7f, #9e5b15, #eed196, #9e5b15);
+}
+.spindra-extension .scene-solar .advanced-reel {
+  background: radial-gradient(#503516, #160c0b);
+}
+.spindra-extension .scenery-solar {
+  animation: scene-sun 28s linear infinite;
+}
+.spindra-extension .scene-city .reel-cabinet {
+  border-radius: 3px;
+  background: linear-gradient(90deg, #d641fd, #26233f, #48eafa);
+  box-shadow:
+    -7px 0 20px #d641fd44,
+    7px 0 20px #48eafa44;
+}
+.spindra-extension .scene-city .advanced-reels {
+  border-radius: 0;
+  gap: 5px;
+}
+.spindra-extension .scene-city .advanced-reel {
+  background: repeating-linear-gradient(0deg, #191428 0 5px, #1c193b 5px 6px);
+}
+.spindra-extension .scene-city .cabinet-heading h2 {
+  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(#fff, #bc72ff);
+  background-clip: text;
+}
+.spindra-extension .scene-city .symbol-icon {
+  color: #c4f8ff;
+}
+.spindra-extension .scene-temple .reel-cabinet {
+  border-left: 18px ridge #83a673;
+  border-right: 18px ridge #83a673;
+  border-radius: 10px 10px 30px 30px;
+  background: linear-gradient(#d3cd8e, #365b3b);
+}
+.spindra-extension .scene-temple .advanced-reel {
+  background: linear-gradient(#324e32, #67745e 45%, #273b28);
+}
+.spindra-extension .scene-temple .symbol-icon {
+  color: #e8eab6;
+}
+.spindra-extension .scene-temple .symbol-frame {
+  opacity: 0.7;
+}
+.spindra-extension .scene-temple .cabinet-heading h2 {
+  font-family: Georgia, serif;
+  letter-spacing: 3px;
+}
+.spindra-extension .scene-moon .reel-cabinet {
+  background: linear-gradient(110deg, #dcf6ff, #40758a, #e1f3ff);
+  border-radius: 45px;
+}
+.spindra-extension .scene-moon .advanced-reel {
+  background: linear-gradient(#15283b, #23536a, #101b31);
+}
+.spindra-extension .scene-moon .symbol-frame {
+  opacity: 0.6;
+}
+.spindra-extension .scenery-moon {
+  animation: scene-wave 8s ease-in-out infinite alternate;
+}
+.spindra-extension .scene-castle .reel-cabinet {
+  background: linear-gradient(135deg, #cf754d, #45202a, #dfb86b);
+  border-radius: 8px;
+  outline: 3px solid #371826;
+}
+.spindra-extension .scene-castle .advanced-reel {
+  background: linear-gradient(#321016, #52171e, #260b15);
+}
+.spindra-extension .scene-castle .cabinet-heading h2 {
+  font-family: Georgia, serif;
+  letter-spacing: 1px;
+}
+.spindra-extension .scenery-castle {
+  animation: scene-fire 3s infinite alternate;
+}
+.spindra-extension .scene-cosmos .reel-cabinet {
+  background: linear-gradient(110deg, #eaaeff, #4a2667, #93a9ef);
+  border-radius: 55px;
+  padding: 15px;
+}
+.spindra-extension .scene-cosmos .advanced-reel {
+  background: radial-gradient(#442659, #190e2d);
+}
+.spindra-extension .scene-cosmos .symbol-icon {
+  color: #eed5ff;
+}
+.spindra-extension .scenery-cosmos {
+  animation: scene-orbit 18s ease-in-out infinite alternate;
+}
+.spindra-extension .scene-reef .reel-cabinet {
+  background: linear-gradient(120deg, #abe6c7, #4b8b88, #e2bead);
+  border-radius: 28px 55px 28px 55px;
+}
+.spindra-extension .scene-reef .advanced-reel {
+  background: linear-gradient(#1a525c, #144747, #153047);
+}
+.spindra-extension .scene-reef .symbol-icon {
+  color: #baf9ed;
+}
+.spindra-extension .scenery-reef {
+  animation: scene-wave 6s infinite alternate;
+}
+.spindra-extension .scene-train .reel-cabinet {
+  max-width: 650px;
+  margin: auto;
+  border-radius: 14px;
+  background: linear-gradient(#c4c8ce, #3b3f4a, #939ba5);
+  border: 4px solid #202534;
+}
+.spindra-extension .scene-train .advanced-reel {
+  background: linear-gradient(#e3ddc2, #faf0d3, #bfc2be);
+}
+.spindra-extension .scene-train .symbol-icon {
+  color: #e3f0fa;
+}
+.spindra-extension .scene-train .cabinet-heading h2 {
+  font-family: Georgia, serif;
+  letter-spacing: 3px;
+}
+.spindra-extension .scene-train .slot-marquee {
+  font-family: monospace;
+}
+.spindra-extension .scene-desert .reel-cabinet {
+  background: linear-gradient(120deg, #f8cf7b, #be8252, #edbf79);
+  border-radius: 55px 55px 12px 12px;
+  border: 5px double #775329;
+}
+.spindra-extension .scene-desert .advanced-reel {
+  background: linear-gradient(#644719, #9c773a, #4d3318);
+}
+.spindra-extension .scene-desert .cabinet-heading h2 {
+  font-family: Georgia, serif;
+}
+.spindra-extension .scene-ice .reel-cabinet {
+  background: linear-gradient(140deg, #fff, #7190b2, #d8fcff, #7190b2);
+  border-radius: 4px 24px 4px 24px;
+  box-shadow: 0 0 30px #bceaff33;
+}
+.spindra-extension .scene-ice .advanced-reel {
+  background: linear-gradient(#26425e, #3f7082, #203344);
+}
+.spindra-extension .scene-ice .symbol-icon {
+  color: #fff;
+}
+.spindra-extension .scene-ice .symbol-frame {
+  opacity: 0.65;
+}
+.spindra-extension .scenery-ice {
+  animation: scene-fire 6s infinite alternate;
+}
+.spindra-extension .scene-cave .reel-cabinet {
+  border-radius: 3px;
+  background: linear-gradient(130deg, #9d8cad, #37313e, #b79dc9);
+  border: 8px ridge #514558;
+}
+.spindra-extension .scene-cave .advanced-reel {
+  background: radial-gradient(#403048, #19111e);
+}
+.spindra-extension .scene-cave .symbol-icon {
+  color: #e9bfff;
+}
+.spindra-extension .scenery-cave {
+  animation: scene-fire 5s infinite alternate;
+}
+.spindra-extension .scene-garden .reel-cabinet {
+  background: linear-gradient(120deg, #bedc78, #437b29, #d5a7f4);
+  border-radius: 45px 10px 45px 10px;
+}
+.spindra-extension .scene-garden .advanced-reel {
+  background: linear-gradient(#283e1a, #4e6540, #24361e);
+}
+.spindra-extension .scene-garden .symbol-icon {
+  color: #e3ffc5;
+}
+.spindra-extension .scenery-garden {
+  animation: scene-wave 4s infinite alternate;
+}
+.spindra-extension .scene-royal .reel-cabinet {
+  max-width: 650px;
+  margin: auto;
+  background: linear-gradient(100deg, #ffe3a1, #b47553, #ffcf8c);
+  border-radius: 18px;
+  border: 8px double #be8a5c;
+}
+.spindra-extension .scene-royal .advanced-reel {
+  background: linear-gradient(#4d112c, #832b4b, #380d27);
+}
+.spindra-extension .scene-royal .cabinet-heading h2 {
+  font-family: Georgia, serif;
+  letter-spacing: 2px;
+}
+.spindra-extension .scene-royal .symbol-icon {
+  color: #ffc3d8;
+}
+.spindra-extension .scene-canyon .reel-cabinet {
+  background: linear-gradient(#d4a782, #845139, #dfb689);
+  border: 9px ridge #83563d;
+  border-radius: 6px;
+}
+.spindra-extension .scene-canyon .advanced-reel {
+  background: linear-gradient(#684734, #9b6c48, #543729);
+}
+.spindra-extension .scene-canyon .cabinet-heading h2 {
+  font-family: Georgia, serif;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-size: 30px;
+}
+.spindra-extension .scene-arcade .reel-cabinet {
+  background: linear-gradient(90deg, #72edc9, #f781ec, #6ee4c2);
+  border-radius: 0;
+  padding: 7px;
+  box-shadow: 0 0 30px #3cffbd33;
+}
+.spindra-extension .scene-arcade .advanced-reel {
+  background: repeating-linear-gradient(#132c30 0 3px, #173136 3px 5px);
+}
+.spindra-extension .scene-arcade .cabinet-heading h2 {
+  font-family: monospace;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.spindra-extension .scene-arcade .symbol-icon {
+  color: #c3ffdf;
+}
+.spindra-extension .scene-arcade .symbol-frame {
+  opacity: 0.5;
+}
+.spindra-extension .scenery-arcade {
+  animation: scene-wave 5s infinite alternate;
+}
+.spindra-extension .scene-map .reel-cabinet {
+  background: linear-gradient(130deg, #e7de9d, #6f734b, #e5d5a0);
+  border: 8px double #8c784f;
+  border-radius: 8px 35px 8px 35px;
+}
+.spindra-extension .scene-map .advanced-reel {
+  background: linear-gradient(#545540, #8b8865, #414733);
+}
+.spindra-extension .scene-map .cabinet-heading h2 {
+  font-family: Georgia, serif;
+  letter-spacing: 2px;
+}
+.spindra-extension .scene-map .symbol-icon {
+  color: #fff2b9;
+}
+@keyframes scene-wave {
+  to {
+    transform: translateY(-12px) scale(1.03);
+  }
+}
+@keyframes scene-fire {
+  to {
+    opacity: 0.45;
+    filter: brightness(1.3);
+  }
+}
+@keyframes scene-orbit {
+  to {
+    transform: rotate(8deg) scale(1.05);
+  }
+}
+@keyframes scene-sun {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* Hold'em: private cards remain face-up and are never inside a disabled hold button. */
+.spindra-extension .holdem-cabinet {
+  padding: 10px 25px 22px;
+  max-width: 1050px;
+  margin: auto;
+}
+.spindra-extension .holdem-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 12px;
+}
+.spindra-extension .holdem-title small {
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: #bcb1c8;
+}
+.spindra-extension .holdem-title h2 {
+  font-family: Sora, sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  margin: 3px 0;
+  color: #f3d8a0;
+}
+.spindra-extension .holdem-title > span {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-align: right;
+  color: #c7b5d4;
+  line-height: 1.7;
+}
+.spindra-extension .holdem-table {
+  background: radial-gradient(ellipse at 50% 40%, #31504b, #142d2c 80%);
+  padding: 20px 30px 15px;
+  border: 9px solid #332633;
+  outline: 1px solid #b99468;
+  box-shadow:
+    inset 0 0 0 2px #d6b78055,
+    inset 0 12px 40px #0006,
+    0 16px 28px #0005;
+  border-radius: 130px 130px 80px 80px;
+  position: relative;
+}
+.spindra-extension .holdem-opponents {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+.spindra-extension .poker-seat {
+  padding: 8px 20px;
+  text-align: center;
+  min-width: 180px;
+  border: 1px solid #ffffff15;
+  border-radius: 16px;
+  background: #050c1022;
+  transition: box-shadow 0.2s;
+}
+.spindra-extension .seat-active {
+  border-color: #ffd28777;
+  box-shadow: 0 0 20px #eeb46922;
+}
+.spindra-extension .seat-folded {
+  opacity: 0.55;
+}
+.spindra-extension .seat-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: #e9ddce;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.spindra-extension .dealer-button {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  background: #f6e8ce;
+  border-radius: 50%;
+  color: #17151f;
+  font-size: 10px;
+}
+.spindra-extension .poker-seat > strong {
+  display: block;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: #f0d6a0;
+}
+.spindra-extension .poker-seat small {
+  font-size: 8px;
+  font-weight: 400;
+  color: #aaadaa;
+}
+.spindra-extension .hole-cards {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin: 7px 0;
+  min-height: 72px;
+}
+.spindra-extension .holdem-opponents .playing-card {
+  width: 45px;
+  height: 65px;
+}
+.spindra-extension .holdem-opponents .playing-card small {
+  font-size: 11px;
+}
+.spindra-extension .holdem-opponents .playing-card strong {
+  font-size: 22px;
+}
+.spindra-extension .seat-action {
+  display: block;
+  font-size: 9px;
+  color: #b2bbad;
+  min-height: 13px;
+}
+.spindra-extension .seat-award {
+  display: block;
+  font-size: 10px;
+  color: #f9d58b;
+  margin-top: 3px;
+}
+.spindra-extension .holdem-community {
+  text-align: center;
+  margin: 12px 0;
+}
+.spindra-extension .pot-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 10px;
+  color: #cbd4c6;
+}
+.spindra-extension .pot-display b {
+  font-size: 21px;
+  color: #ffdf9c;
+  font-variant-numeric: tabular-nums;
+}
+.spindra-extension .pot-display small {
+  font-size: 8px;
+  letter-spacing: 1px;
+  background: #0003;
+  border-radius: 5px;
+  padding: 5px 8px;
+}
+.spindra-extension .community-cards {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin: 8px 0;
+}
+.spindra-extension .community-position {
+  width: 58px;
+  height: 80px;
+}
+.spindra-extension .community-position .playing-card {
+  width: 58px;
+  height: 80px;
+}
+.spindra-extension .community-position .playing-card small {
+  font-size: 12px;
+}
+.spindra-extension .community-position .playing-card strong {
+  font-size: 30px;
+}
+.spindra-extension .card-placeholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: 1px dashed #ffffff28;
+  border-radius: 8px;
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #ffffff45;
+  background: #0001;
+}
+.spindra-extension .blind-label {
+  font-size: 9px;
+  color: #a1afa2;
+}
+.spindra-extension .player-seat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  width: max-content;
+  min-width: 330px;
+  margin: auto;
+  background: #05121366;
+  padding: 9px 22px;
+}
+.spindra-extension .player-hole {
+  min-height: 90px;
+  margin: 4px 0;
+}
+.spindra-extension .player-hole .playing-card {
+  width: 65px;
+  height: 88px;
+  flex-shrink: 0;
+}
+.spindra-extension .player-hole .playing-card small {
+  font-size: 15px;
+}
+.spindra-extension .player-hole .playing-card strong {
+  font-size: 36px;
+}
+.spindra-extension .player-stack {
+  text-align: left;
+  min-width: 120px;
+}
+.spindra-extension .player-stack small {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #95ac9f;
+  display: block;
+}
+.spindra-extension .player-stack strong {
+  font-size: 25px;
+  color: #fff0bf;
+  display: block;
+}
+.spindra-extension .player-stack > span {
+  display: block;
+  font-size: 10px;
+  color: #c7dabf;
+  margin-top: 5px;
+}
+.spindra-extension .holdem-actionbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 10px;
+  min-height: 46px;
+}
+.spindra-extension .holdem-actionbar .button {
+  font-size: 11px;
+  padding: 10px 14px;
+}
+.spindra-extension .raise-control {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  color: #c6b5cd;
+}
+.spindra-extension .raise-control input {
+  width: 80px;
+  background: #090916;
+  border: 1px solid #fff2;
+  border-radius: 6px;
+  padding: 9px;
+  color: #ffe3a7;
+}
+.spindra-extension .opponent-thinking {
+  font-size: 12px;
+  color: #c2b3cc;
+}
+.spindra-extension .opponent-thinking span {
+  margin-left: 10px;
+  color: #f9d282;
+  letter-spacing: 4px;
+  animation: spark-flash 1.1s infinite;
+}
+.spindra-extension .poker-commentary {
+  text-align: center;
+  color: #bcaec4;
+  font-size: 11px;
+  margin: 8px 0 12px;
+}
+.spindra-extension .face-up {
+  opacity: 1;
+  visibility: visible;
+  color: #211b2a;
+}
+.spindra-extension .face-up.red-card {
+  color: #ae2944;
+}
+@media (max-width: 700px) {
+  .spindra-extension .distinct-slot {
+    padding: 14px 12px;
+  }
+  .spindra-extension .distinct-slot .advanced-reels {
+    height: calc(var(--slot-rows) * 72px);
+  }
+  .spindra-extension .themed-symbol {
+    width: 57px;
+    height: 62px;
+  }
+  .spindra-extension .symbol-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .spindra-extension .scatter-symbol small {
+    font-size: 6px;
+    bottom: 5px;
+  }
+  .spindra-extension .integrated-controls {
+    grid-template-columns: 1fr 1.2fr;
+    gap: 9px;
+    padding: 12px;
+  }
+  .spindra-extension .cabinet-rules {
+    grid-column: 1/-1;
+    justify-content: center;
+    padding: 7px;
+  }
+  .spindra-extension .cabinet-wallet strong {
+    font-size: 18px;
+  }
+  .spindra-extension .stake-dial select {
+    width: 78px;
+  }
+  .spindra-extension .stake-dial button {
+    width: 27px;
+    height: 27px;
+  }
+  .spindra-extension .mechanic-banner {
+    flex-direction: column;
+    gap: 5px;
+  }
+  .spindra-extension .mechanic-banner span {
+    border: 0;
+    padding: 0;
+  }
+  .spindra-extension .scene-canyon .cabinet-heading h2 {
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+  .spindra-extension .holdem-cabinet {
+    padding: 6px 12px 15px;
+  }
+  .spindra-extension .holdem-title h2 {
+    font-size: 23px;
+  }
+  .spindra-extension .holdem-title > span {
+    font-size: 7px;
+  }
+  .spindra-extension .holdem-table {
+    padding: 14px 8px;
+    border-width: 6px;
+    border-radius: 60px;
+  }
+  .spindra-extension .holdem-opponents {
+    gap: 7px;
+  }
+  .spindra-extension .poker-seat {
+    min-width: 0;
+    padding: 8px 9px;
+    flex: 1;
+  }
+  .spindra-extension .holdem-opponents .playing-card {
+    width: 36px;
+    height: 53px;
+  }
+  .spindra-extension .hole-cards {
+    min-height: 55px;
+  }
+  .spindra-extension .holdem-opponents .playing-card small {
+    font-size: 9px;
+  }
+  .spindra-extension .holdem-opponents .playing-card strong {
+    font-size: 19px;
+  }
+  .spindra-extension .community-position,
+  .spindra-extension .community-position .playing-card {
+    width: 44px;
+    height: 65px;
+  }
+  .spindra-extension .community-position .playing-card small {
+    font-size: 10px;
+  }
+  .spindra-extension .community-position .playing-card strong {
+    font-size: 25px;
+  }
+  .spindra-extension .pot-display {
+    gap: 5px;
+  }
+  .spindra-extension .pot-display small {
+    font-size: 7px;
+    padding: 4px;
+  }
+  .spindra-extension .player-seat {
+    min-width: 0;
+    width: auto;
+    gap: 20px;
+    margin: 0 10px;
+  }
+  .spindra-extension .player-hole .playing-card {
+    width: 54px;
+    height: 75px;
+  }
+  .spindra-extension .player-hole {
+    min-height: 75px;
+  }
+  .spindra-extension .player-stack {
+    min-width: 90px;
+  }
+  .spindra-extension .player-stack strong {
+    font-size: 21px;
+  }
+  .spindra-extension .player-hole .playing-card strong {
+    font-size: 28px;
+  }
+  .spindra-extension .holdem-actionbar .button {
+    font-size: 10px;
+    padding: 8px 11px;
+  }
+  .spindra-extension .embedded-rules {
+    margin: 12px;
+  }
+  .spindra-extension .scene-temple .reel-cabinet {
+    border-left-width: 10px;
+    border-right-width: 10px;
+  }
+}
+@media (max-width: 420px) {
+  .spindra-extension .distinct-slot .advanced-reels {
+    height: calc(var(--slot-rows) * 58px);
+  }
+  .spindra-extension .themed-symbol {
+    width: 43px;
+    height: 49px;
+  }
+  .spindra-extension .symbol-icon {
+    width: 24px;
+    height: 24px;
+  }
+  .spindra-extension .scatter-symbol small {
+    font-size: 5px;
+    padding: 1px 2px;
+  }
+  .spindra-extension .reel-cabinet {
+    padding: 5px;
+  }
+  .spindra-extension .slot-console {
+    gap: 5px;
+  }
+  .spindra-extension .scene-cosmos .reel-cabinet {
+    padding: 8px;
+  }
+  .spindra-extension .scene-cave .reel-cabinet,
+  .spindra-extension .scene-canyon .reel-cabinet {
+    border-width: 4px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .distinct-slot *,
+  .spindra-extension .holdem-cabinet * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .spindra-extension .reel-moving .themed-symbol {
+    filter: none;
+  }
+}
+.spindra-extension .face-up {
+  position: relative;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+}
+.spindra-extension .face-up small {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  text-align: center;
+  line-height: 0.95;
+}
+.spindra-extension .face-up small:last-child {
+  top: auto;
+  left: auto;
+  bottom: 6px;
+  right: 6px;
+  transform: rotate(180deg);
+}
+.spindra-extension .face-up strong {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1;
+}
+.spindra-extension .holdem-opponents .face-up small {
+  top: 4px;
+  left: 4px;
+}
+.spindra-extension .holdem-opponents .face-up small:last-child {
+  top: auto;
+  left: auto;
+  bottom: 4px;
+  right: 4px;
+}
+.spindra-extension .card-back {
+  display: grid;
+  place-items: center;
+}

@@ -68,7 +68,7 @@ A reviewed payment integration needs:
 
 ## Original games
 
-All 16 slots share four explicit reel-weight/paytable profiles. Their names, symbols, palettes, artwork and motion differ; they are not 16 independently certified mathematical games. The published theoretical RTP values derive exactly from the configured single-payline model. Blackjack, video poker and roulette also run locally.
+Each of the 16 slots now has an independent published specification: grid size, fixed lines or adjacent-reel ways, paying direction, minimum match, symbol weights, paytable and optional scatter awards. Theoretical RTP includes line/ways and scatter awards, and payouts use integer minor demo credits. Scenery and vector symbol artwork differ between cabinets. Blackjack, no-limit Texas Hold’em against two local computer opponents and European roulette run locally. Demo round identifiers make settlement idempotent; leaving a poker hand refunds uncommitted chips and folds committed chips.
 
 Moving originals to cash play requires an authoritative game server with persistent round state and idempotent commands, audited RNG and game math, wallet reservations/settlement, reconnection recovery, exclusion/limit enforcement and certification appropriate to the selected market. Never trust client-generated outcomes, stake values or winnings for cash settlement.
 

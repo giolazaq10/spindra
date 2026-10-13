@@ -282,7 +282,7 @@ export function InfoPage({
       sections: [
         [
           "The originals",
-          "Sixteen named slot themes share four disclosed math profiles, with their own palettes, symbols and motion. Three table games round out the collection.",
+          "Sixteen original slot cabinets each publish distinct rules, paytables, reel layouts and artwork. Blackjack, Texas Hold’em and roulette round out the collection.",
         ],
         [
           "A platform in preparation",

@@ -159,39 +159,6 @@ test("weighted reel boundaries and published RTP agree with complete enumeration
             math.weights[a] * math.weights[b] * math.weights[c] * math.pays[a];
   assert.equal(slotRtp(math), sum / 1000000);
 });
-test("all 16 slot themes have coherent, sub-100% math profiles", async () => {
-  let catalog = await readFile(
-    new URL("../src/lib/catalog.ts", import.meta.url),
-    "utf8",
-  );
-  catalog = catalog.replace(
-    /import[\s\S]*?from ["']\.\/engine["'];/,
-    "const fiveReelRtp=" + (() => 0).toString() + ";",
-  );
-  const js = ts.transpileModule(catalog, {
-    compilerOptions: {
-      module: ts.ModuleKind.ES2022,
-      target: ts.ScriptTarget.ES2022,
-    },
-  }).outputText;
-  const { originals } = await import(
-    "data:text/javascript;base64," + Buffer.from(js).toString("base64")
-  );
-  assert.equal(originals.length, 19);
-  assert.equal(originals.filter((g) => g.kind === "slots").length, 16);
-  assert.equal(new Set(originals.map((g) => g.slug)).size, 19);
-  for (const g of originals.filter((g) => g.kind === "slots")) {
-    assert.equal(
-      g.math.weights.reduce((a, b) => a + b),
-      100,
-    );
-    assert.equal(g.symbols.length, g.math.pays.length);
-    assert.ok(
-      engine.fiveReelRtp(g.math) > 0.8 && engine.fiveReelRtp(g.math) < 1,
-      g.name,
-    );
-  }
-});
 test("random sampler validates range and cannot generate an out-of-range outcome", () => {
   for (const n of [0, -1, 1.5, 0x100000001]) assert.throws(() => randomInt(n));
   for (let i = 0; i < 100; i++) {

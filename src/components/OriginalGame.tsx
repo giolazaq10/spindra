@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Info } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { type Original, rtpLabel } from "@/lib/catalog";
 import {
   blackjackReturn,
   deck,
   handValue,
-  pokerPays,
-  pokerRank,
   randomInt,
   rouletteReturn,
-  linePays,
-  slotLines,
   redNumbers,
   type Card,
   type RouletteBet,
 } from "@/lib/engine";
+import TexasHoldem from "./TexasHoldem";
+import PlayingCard from "./PlayingCard";
+import GameControls from "./GameControls";
+import SlotRules from "./SlotRules";
+import { demoRoundId } from "../lib/demoLedger";
 import AdvancedSlots from "./AdvancedSlots";
 import { credits, useDemo } from "@/context/Demo";
 export type Controls = {
@@ -23,49 +24,27 @@ export type Controls = {
   start: (extra?: number) => boolean;
   finish: (returned: number) => void;
   setMessage: (message: string) => void;
+  balance: number;
+  busy: boolean;
+  setBet: (bet: number) => void;
+  stakes: number[];
+  message: string;
+  rules: boolean;
+  toggleRules: () => void;
+  poker: boolean;
+  setLeaveReturn: (returned: number) => void;
 };
-function PlayingCard({
-  card,
-  hidden = false,
-  delay = 0,
-}: {
-  card?: Card;
-  hidden?: boolean;
-  delay?: number;
-}) {
-  if (hidden || !card)
-    return (
-      <div className="playing-card card-back">
-        <span>✦</span>
-      </div>
-    );
-  const rank =
-    ({ 11: "J", 12: "Q", 13: "K", 14: "A" } as Record<number, string>)[
-      card.rank
-    ] || card.rank;
-  const suit = ["♠", "♥", "♣", "♦"][card.suit];
-  return (
-    <div
-      style={{ animationDelay: delay + "ms" }}
-      className={"playing-card " + (card.suit % 2 === 1 ? "red-card" : "")}
-    >
-      <small>
-        {rank}
-        <br />
-        {suit}
-      </small>
-      <strong>{suit}</strong>
-      <small>{rank}</small>
-    </div>
-  );
-}
 export default function OriginalGame({ game }: { game: Original }) {
   const demo = useDemo(),
-    [bet, setBet] = useState(100),
+    [bet, setBet] = useState(game.kind === "poker" ? 5000 : 100),
     [message, setMessage] = useState("Choose your stake and enjoy the demo."),
     [rules, setRules] = useState(false),
     [busy, setBusy] = useState(false);
-  const wager = useRef(0),
+  const wager = useRef<{
+      id: string;
+      amount: number;
+      leaveReturn: number;
+    } | null>(null),
     settler = useRef(demo.settle);
   useEffect(() => {
     settler.current = demo.settle;
@@ -73,14 +52,16 @@ export default function OriginalGame({ game }: { game: Original }) {
   useEffect(
     () => () => {
       if (wager.current) {
-        settler.current(game.name, wager.current, 0);
-        wager.current = 0;
+        const abandoned = wager.current;
+        wager.current = null;
+        settler.current(game.name, abandoned.id, abandoned.leaveReturn);
       }
     },
     [game.name],
   );
   function start(extra = bet) {
-    if (!demo.reserve(extra)) {
+    const id = wager.current?.id || demoRoundId();
+    if (!demo.reserve(extra, id)) {
       setMessage(
         demo.blocked
           ? "Demo play is paused for this session."
@@ -88,22 +69,48 @@ export default function OriginalGame({ game }: { game: Original }) {
       );
       return false;
     }
-    wager.current += extra;
+    wager.current = {
+      id,
+      amount: (wager.current?.amount || 0) + extra,
+      leaveReturn: 0,
+    };
     setBusy(true);
     return true;
   }
   function finish(returned: number) {
     if (!wager.current) return;
-    demo.settle(game.name, wager.current, returned);
-    wager.current = 0;
+    const completed = wager.current;
+    wager.current = null;
+    demo.settle(game.name, completed.id, returned);
     setBusy(false);
     setMessage(
-      returned > 0
+      game.kind === "poker"
+        ? "Hand settled · " + credits(returned) + " chips returned to your demo wallet."
+        : returned > 0
         ? "Returned " + credits(returned) + " credits (includes stake)."
         : "No return this round. Take your time.",
     );
   }
-  const c = { bet, start, finish, setMessage };
+  const c: Controls = {
+    bet,
+    start,
+    finish,
+    setMessage,
+    balance: demo.balance,
+    busy,
+    setBet,
+    stakes:
+      game.kind === "poker"
+        ? [1000, 2000, 5000, 10000, 20000]
+        : [100, 200, 500, 1000, 2000],
+    message,
+    rules,
+    toggleRules: () => setRules((r) => !r),
+    poker: game.kind === "poker",
+    setLeaveReturn: (returned) => {
+      if (wager.current) wager.current.leaveReturn = returned;
+    },
+  };
   return (
     <section className="page game-page">
       <Link className="text-link" to="/games">
@@ -115,13 +122,6 @@ export default function OriginalGame({ game }: { game: Original }) {
           <h1>{game.name}</h1>
           <p className="muted">{game.tagline}</p>
         </div>
-        <button
-          className="button secondary"
-          onClick={() => setRules(!rules)}
-          aria-expanded={rules}
-        >
-          <Info size={17} /> Rules & payouts
-        </button>
       </div>
       <div
         className={"game-surface " + game.animation}
@@ -138,130 +138,73 @@ export default function OriginalGame({ game }: { game: Original }) {
         ) : game.kind === "blackjack" ? (
           <Blackjack controls={c} />
         ) : game.kind === "poker" ? (
-          <Poker controls={c} />
+          <TexasHoldem controls={c} />
         ) : (
           <Roulette controls={c} />
         )}
-        <div className="game-bottom">
-          <div>
-            <span className="eyebrow">DEMO BALANCE</span>
-            <strong>{credits(demo.balance)}</strong>
+        {rules && (
+          <div className="panel rules embedded-rules">
+            <h2>Know your game</h2>
+            <p>
+              All wagers and payouts shown here use demo credits. Returns
+              include the original stake. Original game engines run in your
+              browser and are disabled for cash wagering. Leaving an unfinished
+              round forfeits committed demo chips; uncommitted poker chips are
+              returned.
+            </p>
+            {game.kind === "slots" ? (
+              <SlotRules game={game} />
+            ) : game.kind === "blackjack" ? (
+              <p>
+                Single shuffled 52-card deck each round. Dealer peeks for
+                blackjack and stands on all 17s, including soft 17. Natural
+                blackjack pays 3:2; other wins pay 1:1; ties push. Double on any
+                first two cards, including after a split. Split equal ranks up
+                to four hands; split aces get one card each and cannot be
+                resplit. A split 21 pays 1:1. No insurance or surrender. All
+                hands settle together.
+              </p>
+            ) : game.kind === "poker" ? (
+              <>
+                <p>
+                  No-limit Texas Hold’em against two computer opponents. Each
+                  hand starts with equal stacks matching your hand buy-in.
+                  Dealer button rotates; small blind is 1/20 of the buy-in and
+                  big blind is 1/10. You receive two private cards, then a flop
+                  (three cards), turn and river. Make the best five-card hand
+                  from any combination of your two cards and five community
+                  cards. Ace can be low only in A–2–3–4–5. Suits never break
+                  ties.
+                </p>
+                <p>
+                  Check, call, fold or raise on your turn. A minimum raise
+                  equals the previous full bet or raise; short all-in raises do
+                  not reopen action to players who already acted. All-ins create
+                  separate side pots; folded hands cannot win. Ties split each
+                  pot and odd minor chips go clockwise from the dealer. No rake,
+                  antes, insurance or rebuy mid-hand. Leaving a hand folds your
+                  committed bets and returns uncommitted chips. Computer
+                  opponents use only their own cards and public information.
+                </p>
+                <p>
+                  Hands rank: straight flush, four of a kind, full house, flush,
+                  straight, three of a kind, two pair, pair, high card. A royal
+                  flush is the highest straight flush. Higher ranks and then
+                  kickers resolve ties.
+                </p>
+              </>
+            ) : (
+              <p>
+                European single-zero roulette: 37 equally likely pockets (0–36).
+                Straight bets pay 35:1 (36× returned); red, black, odd, even,
+                1–18 and 19–36 pay 1:1 (2× returned). Zero loses every outside
+                bet. No la partage or en prison. One bet per spin. Wheel colors
+                and final pocket follow the same result.
+              </p>
+            )}
           </div>
-          <label>
-            Stake
-            <select
-              disabled={busy}
-              value={bet}
-              onChange={(e) => setBet(Number(e.target.value))}
-            >
-              {[100, 200, 500, 1000, 2000].map((n) => (
-                <option key={n} value={n}>
-                  {credits(n)} credits
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="game-result" role="status" aria-live="polite">
-            {message}
-          </div>
-        </div>
+        )}
       </div>
-      {rules && (
-        <div className="panel rules">
-          <h2>Know your game</h2>
-          <p>
-            All wagers and payouts shown here use demo credits. Returns include
-            the original stake. Original game engines run in your browser and
-            are disabled for cash wagering. Leaving an unfinished round forfeits
-            its demo stake.
-          </p>
-          {game.kind === "slots" ? (
-            <>
-              <p>
-                Five independent weighted reels, three visible rows and ten
-                fixed paylines. Match three, four or five identical symbols from
-                the leftmost reel. The total stake is split equally across all
-                ten lines; only the longest match pays on each line. No wilds,
-                scatters, bonus rounds or progressive jackpots. Every visible
-                symbol participates in the published lines. Theoretical RTP is
-                calculated from the published weights and payouts; it does not
-                predict a session result.
-              </p>
-              <div className="payline-guide">
-                {slotLines.map((rows, i) => (
-                  <div key={i}>
-                    <small>LINE {i + 1}</small>
-                    <svg viewBox="0 0 100 60">
-                      <path
-                        d="M0 20H100M0 40H100M20 0V60M40 0V60M60 0V60M80 0V60"
-                        stroke="#ffffff18"
-                      />
-                      <polyline
-                        points={rows
-                          .map(
-                            (row, col) => `${col * 20 + 10},${row * 20 + 10}`,
-                          )
-                          .join(" ")}
-                        fill="none"
-                        stroke="#ffc768"
-                        strokeWidth="2"
-                      />
-                    </svg>
-                  </div>
-                ))}
-              </div>
-              <div className="paytable">
-                {game.symbols.map((s, i) => (
-                  <div key={i}>
-                    <b>{s}</b>
-                    <span>
-                      3 / 4 / 5: {linePays(game.math)[i].join(" / ")}× line
-                      stake
-                    </span>
-                    <small>Reel weight {game.math.weights[i]}/100</small>
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : game.kind === "blackjack" ? (
-            <p>
-              Single shuffled 52-card deck each round. Dealer peeks for
-              blackjack and stands on all 17s, including soft 17. Natural
-              blackjack pays 3:2; other wins pay 1:1; ties push. Double on any
-              first two cards, including after a split. Split equal ranks up to
-              four hands; split aces get one card each and cannot be resplit. A
-              split 21 pays 1:1. No insurance or surrender. All hands settle
-              together.
-            </p>
-          ) : game.kind === "poker" ? (
-            <>
-              <p>
-                Jacks or Better video poker, one 52-card deck per round. Deal
-                five cards, hold any selection, then draw once. Discarded cards
-                cannot return. Aces play high, or low in A–2–3–4–5. Fixed
-                single-credit paytable; royal flush returns 250× at every stake.
-                This is video poker, not multiplayer poker.
-              </p>
-              <div className="paytable">
-                {Object.entries(pokerPays).map(([name, n]) => (
-                  <div key={name}>
-                    <b>{name}</b>
-                    <span>{n}× stake</span>
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : (
-            <p>
-              European single-zero roulette: 37 equally likely pockets (0–36).
-              Straight bets pay 35:1 (36× returned); red, black, odd, even, 1–18
-              and 19–36 pay 1:1 (2× returned). Zero loses every outside bet. No
-              la partage or en prison. One bet per spin. Wheel colors and final
-              pocket follow the same result.
-            </p>
-          )}
-        </div>
-      )}
       <div className="notice">
         Real-money play is unavailable while the platform is being prepared.{" "}
         <Link to="/responsible-gaming">Set your demo limits</Link> or{" "}
@@ -455,6 +398,7 @@ function Blackjack({ controls: c }: { controls: Controls }) {
           </div>
         ))}
       </div>
+      <GameControls controls={c} />
       <div className="game-actions">
         {!state || state.done ? (
           <button className="button primary" onClick={deal}>
@@ -489,95 +433,6 @@ function Blackjack({ controls: c }: { controls: Controls }) {
               Split
             </button>
           </>
-        )}
-      </div>
-    </div>
-  );
-}
-function Poker({ controls: c }: { controls: Controls }) {
-  const [cards, setCards] = useState<Card[]>([]),
-    [held, setHeld] = useState<boolean[]>(Array(5).fill(false)),
-    [phase, setPhase] = useState<"ready" | "hold" | "done">("ready"),
-    [rank, setRank] = useState("");
-  const shoe = useRef<Card[]>([]),
-    stake = useRef(0),
-    phaseRef = useRef(phase);
-  function deal() {
-    if (phaseRef.current === "hold" || !c.start()) return;
-    shoe.current = deck();
-    stake.current = c.bet;
-    setCards(shoe.current.splice(0, 5));
-    setHeld(Array(5).fill(false));
-    phaseRef.current = "hold";
-    setPhase("hold");
-    setRank("Select cards to hold, then draw.");
-  }
-  function draw() {
-    if (phaseRef.current !== "hold") return;
-    phaseRef.current = "done";
-    const final = cards.map((card, i) =>
-      held[i] ? card : shoe.current.pop()!,
-    );
-    const result = pokerRank(final);
-    setCards(final);
-    setRank(result);
-    setPhase("done");
-    c.finish(stake.current * pokerPays[result]);
-  }
-  return (
-    <div className="table-game poker premium-felt">
-      <div className="felt-brand">
-        SPINDRA <span>ROYAL DRAW</span>
-      </div>
-      <div className="poker-payboard">
-        {Object.entries(pokerPays)
-          .filter(([, pay]) => pay > 0)
-          .map(([name, pay]) => (
-            <span key={name} className={rank === name ? "payboard-win" : ""}>
-              {name}
-              <b>{pay}×</b>
-            </span>
-          ))}
-      </div>
-      <p className="table-inscription">
-        JACKS OR BETTER · 9/6 PAYTABLE · ONE DRAW
-      </p>
-      <div className="cards-row poker-cards">
-        {Array.from({ length: 5 }, (_, i) => (
-          <button
-            key={i}
-            className={"hold-card " + (held[i] ? "held" : "")}
-            disabled={phase !== "hold"}
-            onClick={() => setHeld((h) => h.map((v, j) => (i === j ? !v : v)))}
-            aria-label={"Card " + (i + 1) + (held[i] ? " held" : " not held")}
-            aria-pressed={held[i]}
-          >
-            <PlayingCard
-              card={cards[i]}
-              delay={i * 110}
-              key={cards[i] ? cards[i].rank + ":" + cards[i].suit : "back"}
-            />
-            <span>{held[i] ? "HELD" : "HOLD"}</span>
-          </button>
-        ))}
-      </div>
-      <p className="hand-label" aria-live="polite">
-        {rank || "Five cards. Choose your hand."}
-      </p>
-      <div className="game-actions">
-        <button
-          className="button primary"
-          onClick={phase === "hold" ? draw : deal}
-        >
-          {phase === "hold" ? "Draw cards" : "Deal hand"}
-        </button>
-        {phase === "hold" && (
-          <button
-            className="button secondary"
-            onClick={() => setHeld(Array(5).fill(true))}
-          >
-            Hold all
-          </button>
         )}
       </div>
     </div>
@@ -719,6 +574,7 @@ function Roulette({ controls: c }: { controls: Controls }) {
             />
           </label>
         )}
+        <GameControls controls={c} />
         <button className="button primary" disabled={spinning} onClick={spin}>
           {spinning ? "Wheel spinning…" : "Spin wheel"}
         </button>

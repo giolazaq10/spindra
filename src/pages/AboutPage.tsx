@@ -20,7 +20,7 @@ const features = [
   {
     icon: Zap,
     title: "Playable Originals",
-    desc: "Explore original slots, blackjack, video poker and roulette with free demo credits.",
+    desc: "Explore original slots, blackjack, Texas Hold’em and roulette with free demo credits.",
   },
   {
     icon: Trophy,

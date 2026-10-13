@@ -1,5 +1,5 @@
 import { originals } from "./catalog";
-import { fiveReelRtp } from "./engine";
+import { modelRtp } from "./slotModels";
 import type { Game, GameCategory, Promotion } from "./types";
 export const categories: GameCategory[] = [
   ["slots", "Slots", "Coins"],
@@ -54,10 +54,12 @@ export const games: Game[] = originals.map((g, i) => {
     slug: g.slug,
     provider_id: provider.id,
     category_id: g.kind,
-    image_url: "data:image/svg+xml," + encodeURIComponent(image),
+    image_url: g.slot
+      ? "/originals/" + g.slug + ".svg"
+      : "data:image/svg+xml," + encodeURIComponent(image),
     rtp:
       g.kind === "slots"
-        ? (fiveReelRtp(g.math) * 100).toFixed(2) + "%"
+        ? (modelRtp(g.slot!) * 100).toFixed(2) + "%"
         : g.kind === "roulette"
           ? "97.30%"
           : null,
