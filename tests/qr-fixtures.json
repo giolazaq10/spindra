@@ -1,0 +1,14 @@
+[
+  {
+    "text": "bc1qexampleaddressforencodingtest",
+    "sha": "2706743c573b2a82bcbfc0724725892eb6e0a26b4abc41f7d8fbf523241df6c6"
+  },
+  {
+    "text": "0x0123456789012345678901234567890123456789",
+    "sha": "952ca4eed9af7661ecfd232454a8e1e52d94f6a468bdae228927a8a46fcd20eb"
+  },
+  {
+    "text": "otpauth://totp/Spindra%3Afixture?secret=JBSWY3DPEHPK3PXP&issuer=Spindra",
+    "sha": "08c81f06aaf94939169a44507abc1dd7e1fcb4fb82c79b1f9e4c0a678be11268"
+  }
+]
