@@ -9,6 +9,7 @@ import {
   type RouletteBet,
 } from "@/lib/engine";
 import TexasHoldem from "./TexasHoldem";
+import BlackjackRules from "./BlackjackRules";
 import Blackjack from "./Blackjack";
 import GameControls from "./GameControls";
 import SlotRules from "./SlotRules";
@@ -153,15 +154,7 @@ export default function OriginalGame({ game }: { game: Original }) {
             {game.kind === "slots" ? (
               <SlotRules game={game} />
             ) : game.kind === "blackjack" ? (
-              <p>
-                Single shuffled 52-card deck each round. Dealer peeks for
-                blackjack and stands on all 17s, including soft 17. Natural
-                blackjack pays 3:2; other wins pay 1:1; ties push. Double on any
-                first two cards, including after a split. Split equal ranks up
-                to four hands; split aces get one card each and cannot be
-                resplit. A split 21 pays 1:1. No insurance or surrender. All
-                hands settle together.
-              </p>
+              <BlackjackRules />
             ) : game.kind === "poker" ? (
               <>
                 <p>
