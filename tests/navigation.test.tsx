@@ -10,6 +10,10 @@ import {
   Outlet,
 } from "react-router-dom";
 import { DemoProvider, useDemo } from "../src/context/Demo";
+import { AuthProvider } from "../src/context/Auth";
+import { WalletProvider } from "../src/context/Wallet";
+import BlackjackResults from "../src/components/BlackjackResults";
+import { createBlackjack } from "../src/lib/blackjack";
 import OriginalGame from "../src/components/OriginalGame";
 import { originals } from "../src/lib/catalog";
 
@@ -56,13 +60,18 @@ function setup(slug: string) {
   );
   const app = render(
     <StrictMode>
-      <DemoProvider>
-        <RouterProvider router={router} />
-        <Probe />
-      </DemoProvider>
+      <AuthProvider>
+        <WalletProvider>
+          <DemoProvider>
+            <RouterProvider router={router} />
+            <Probe />
+          </DemoProvider>
+        </WalletProvider>
+      </AuthProvider>
     </StrictMode>,
   );
   fireEvent.click(screen.getByRole("link", { name: "Open game" }));
+  fireEvent.click(screen.getByRole("button", { name: /Practice Play/ }));
   return { app, router };
 }
 test("browser Back during a spin cancels timers, settles once, and allows a new game under Strict Mode", async (t) => {
@@ -333,4 +342,35 @@ test("blackjack insurance reserves only selected half-stakes and dealer blackjac
   });
   assert.equal(screen.getByTestId("rounds").textContent, "1");
   cleanup();
+});
+
+test("massive result banners distinguish net losses, profits, and pushes without affecting settlement", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const base = createBlackjack(
+    Array.from({ length: 5 }, (_, i) => ({
+      main: i === 0 ? 100 : 0,
+      three: 0,
+      pair: 0,
+    })),
+    (n) => n - 1,
+  );
+  for (const [returned, title, kind] of [
+    [200, "ROUND LOST", "loss"],
+    [2000, "YOU WIN", "win"],
+    [700, "ROUND PUSH", "push"],
+  ] as const) {
+    const { container } = render(
+      <BlackjackResults
+        round={{ ...base, phase: "done", totalStake: 700, returned }}
+      />,
+    );
+    assert.ok(screen.getByText(title));
+    assert.ok(container.querySelector(".result-" + kind + ".result-expanded"));
+    assert.ok(screen.getByRole("region", { name: "Round result" }));
+    await act(async () => {
+      t.mock.timers.tick(4800);
+    });
+    assert.ok(container.querySelector(".result-compact"));
+    cleanup();
+  }
 });

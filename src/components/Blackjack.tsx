@@ -40,6 +40,8 @@ import { credits } from "../context/Demo";
 import type { Controls } from "./OriginalGame";
 import PlayingCard from "./PlayingCard";
 import useTableMotion from "./useTableMotion";
+import BlackjackResults from "./BlackjackResults";
+import AnimatedCredits from "./AnimatedCredits";
 import BlackjackRules from "./BlackjackRules";
 const chips = [100, 200, 500, 1000, 2500, 10000];
 const initialBets = () =>
@@ -78,7 +80,7 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
     },
     [],
   );
-  function tone(hz = 650) {
+  function tone(hz = 650, delay = 0, duration = 0.1) {
     if (!sound) return;
     try {
       audio.current ??= new AudioContext();
@@ -88,10 +90,11 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
         gain = ctx.createGain();
       osc.connect(gain);
       gain.connect(ctx.destination);
-      gain.gain.setValueAtTime(0.025, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+      const start = ctx.currentTime + delay;
+      gain.gain.setValueAtTime(0.025, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
       osc.frequency.value = hz;
-      osc.start();
+      osc.start(start);
       osc.stop(ctx.currentTime + 0.1);
     } catch {
       /* Audio is optional on browsers without Web Audio. */
@@ -149,7 +152,13 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
         credits(final.returned) +
         " returned. Rebet or change your chips.",
     );
-    tone(880);
+    const net = final.returned - final.totalStake;
+    (net > 0
+      ? [523, 659, 784, 1046]
+      : net < 0
+        ? [330, 220, 146]
+        : [440, 440]
+    ).forEach((hz, i) => tone(hz, i * 0.16, 0.24));
   }
   function dealer(s: BlackjackRound) {
     let next = copyRound(s),
@@ -415,13 +424,23 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
     }
     change(next);
   }
+  const settled = state?.phase === "done" && !c.busy;
+  const net = state ? state.returned - state.totalStake : 0;
   const uninsuredCost =
     state?.phase === "insurance" ? insuranceCost(state, insured) : 0;
   return (
     <div
       ref={table}
       className={
-        "blackjack bj-pro " + (motion.animating ? "table-dealing" : "")
+        "blackjack bj-pro " +
+        (motion.animating ? "table-dealing " : "") +
+        (settled
+          ? net > 0
+            ? "table-result-win"
+            : net < 0
+              ? "table-result-loss"
+              : "table-result-push"
+          : "")
       }
     >
       <header className="bj-pro-header">
@@ -547,6 +566,17 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
                   <div
                     className={
                       "bj-subhand " +
+                      (settled && state
+                        ? "hand-result-" +
+                          (h.surrendered
+                            ? "surrender"
+                            : mainReturn(h, state.dealer) > h.bet
+                              ? "win"
+                              : mainReturn(h, state.dealer) === h.bet
+                                ? "push"
+                                : "loss") +
+                          " "
+                        : "") +
                       (active?.id === h.id && state?.phase === "playing"
                         ? "subhand-active"
                         : "")
@@ -576,10 +606,30 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
                         {h.split && <small> · SPLIT</small>}
                       </span>
                     )}
-                    {state?.phase === "done" && (
-                      <small className="bj-hand-return">
-                        Return {credits(mainReturn(h, state.dealer))}
-                      </small>
+                    {settled && state && (
+                      <div className="bj-hand-verdict">
+                        <b>
+                          {h.surrendered
+                            ? "SURRENDER"
+                            : mainReturn(h, state.dealer) > h.bet
+                              ? !h.split &&
+                                h.cards.length === 2 &&
+                                handValue(h.cards).total === 21
+                                ? "BLACKJACK!"
+                                : "WINNER"
+                              : mainReturn(h, state.dealer) === h.bet
+                                ? "PUSH"
+                                : handValue(h.cards).total > 21
+                                  ? "BUST"
+                                  : "LOST"}
+                        </b>
+                        <small>
+                          Total return{" "}
+                          <AnimatedCredits
+                            amount={mainReturn(h, state.dealer)}
+                          />
+                        </small>
+                      </div>
                     )}
                   </div>
                 ))}
@@ -639,6 +689,7 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
           );
         })}
       </div>
+      {settled && state && <BlackjackResults round={state} />}
       <p className="bj-status" role="status">
         {caption}
       </p>
