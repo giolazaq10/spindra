@@ -12,8 +12,7 @@ export default class ErrorBoundary extends Component<
       <div className="page empty-state" role="alert">
         <h1>Something went wrong.</h1>
         <p>
-          Your cash wallet is not affected by demo play. Reload the page to try
-          again.
+          Your wallet is not affected. Reload the page to try again.
         </p>
         <button
           className="button primary"

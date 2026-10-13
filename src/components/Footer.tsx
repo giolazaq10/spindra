@@ -37,8 +37,8 @@ export default function Footer() {
               Ready to Win Big?
             </h2>
             <p className="text-white/80 mb-6 max-w-xl mx-auto">
-              Create your account and explore Spindra originals with free demo
-              credits.
+              Create your account and explore Spindra originals with free
+              practice credits.
             </p>
             <Link
               to="/register"
@@ -320,7 +320,7 @@ export default function Footer() {
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg glass">
               <Lock className="w-4 h-4 text-cyan-400" />
               <span className="text-xs text-gray-400 font-medium">
-                Prelaunch · Demo play
+                Crypto deposits enabled
               </span>
             </div>
           </div>
@@ -337,8 +337,7 @@ export default function Footer() {
             </span>
           </div>
           <p className="text-xs text-gray-600">
-            © 2026 Spindra Casino. All rights reserved. This is a prototype
-            website for demonstration purposes only.
+            © 2026 Spindra Casino. All rights reserved.
           </p>
         </div>
       </div>

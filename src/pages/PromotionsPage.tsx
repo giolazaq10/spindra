@@ -24,7 +24,7 @@ export default function PromotionsPage() {
             Bonuses & <span className="text-gradient-pink">Promotions</span>
           </h1>
           <p className="text-gray-400 mt-3 max-w-xl mx-auto">
-            Explore demo play while welcome offers and weekly rewards are being
+            Explore original games while welcome offers and weekly rewards are being
             prepared
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function PromotionsPage() {
                       </p>
 
                       <Link
-                        to={promo.badge === "DEMO" ? "/games/slots" : "/terms"}
+                        to={promo.badge === "PLAY" ? "/games/slots" : "/terms"}
                         className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/20 backdrop-blur-sm text-white font-semibold text-sm hover:bg-white/30 transition-all duration-300 group-hover:gap-3"
                       >
                         View Details
@@ -92,16 +92,12 @@ export default function PromotionsPage() {
           </h3>
           <ul className="space-y-2 text-sm text-gray-400">
             <li className="flex items-start gap-2">
-              <span className="text-amber-400 mt-0.5">•</span> No cash bonuses
-              are active during preparation.
+              <span className="text-amber-400 mt-0.5">•</span> Crypto deposits
+              are live through NowPayments.
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-amber-400 mt-0.5">•</span> Deposits and
-              withdrawals are currently disabled.
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-amber-400 mt-0.5">•</span> Demo credits have
-              no cash value and reset when you reload.
+              <span className="text-amber-400 mt-0.5">•</span> Practice credits
+              have no cash value and reset when you reload.
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-400 mt-0.5">•</span> Live offers

@@ -63,7 +63,7 @@ export default function Hero() {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6 animate-[slide-in-right_0.6s_ease]">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span className="text-xs font-semibold text-gray-200 tracking-wide">
-                Spindra Original Games · Demo Play
+                Spindra Original Games · Play Now
               </span>
             </div>
 
@@ -74,7 +74,7 @@ export default function Hero() {
 
             <p className="text-lg text-gray-400 mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed">
               Explore 16 original slots, blackjack, poker, and roulette on
-              Spindra — all playable with free demo credits.
+              Spindra — all playable with free practice credits.
             </p>
 
             {/* Jackpot counter */}
@@ -82,14 +82,14 @@ export default function Hero() {
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-4 h-4 text-amber-400" />
                 <span className="text-xs font-semibold text-amber-400 tracking-widest uppercase">
-                  Demo Jackpot Illustration
+                  Jackpot
                 </span>
               </div>
               <div className="text-4xl sm:text-5xl font-extrabold text-gradient-gold tabular-nums tracking-tight">
                 ${jackpot.toLocaleString()}
               </div>
               <div className="text-xs text-gray-500 mt-2">
-                Illustrative counter — no active cash jackpot
+                Illustrative counter
               </div>
             </div>
 

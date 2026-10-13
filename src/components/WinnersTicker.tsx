@@ -18,7 +18,7 @@ export default function WinnersTicker() {
     .filter((r) => r.returned > r.bet)
     .map((r) => ({
       id: r.id,
-      player: "Your demo session",
+      player: "Your session",
       game: r.game,
       amount: credits(r.returned) + " credits",
       avatar: "D",
@@ -35,18 +35,18 @@ export default function WinnersTicker() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-3">
             <Trophy className="w-4 h-4 text-amber-400" />
             <span className="text-xs font-semibold text-gray-200 tracking-wide">
-              Demo Session Feed
+              Session Feed
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold">
-            Your Session, <span className="text-gradient-gold">Demo Wins</span>
+            Your Session, <span className="text-gradient-gold">Recent Wins</span>
           </h2>
         </div>
       </div>
 
       {winners.length === 0 && (
         <p className="text-center text-sm text-gray-500">
-          Your demo wins will appear here after you play.
+          Your wins will appear here after you play.
         </p>
       )}
       {/* Ticker */}

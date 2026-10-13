@@ -7,10 +7,13 @@ import {
   Clock,
   ArrowRight,
   RefreshCw,
+  Plus,
 } from "lucide-react";
 import { useAuth } from "@/context/Auth";
 import { credits, useDemo } from "@/context/Demo";
+import { useWallet } from "@/context/Wallet";
 import { supabase } from "@/lib/supabase";
+import DepositModal from "@/components/DepositModal";
 type Profile = {
   display_name: string;
   kyc_status: string;
@@ -28,14 +31,16 @@ type Entry = {
 export default function AccountPage() {
   const { user, loading } = useAuth(),
     demo = useDemo(),
+    wallet = useWallet(),
     location = useLocation(),
     navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null),
-    [wallet, setWallet] = useState<Balance | null>(null),
+    [walletData, setWalletData] = useState<Balance | null>(null),
     [entries, setEntries] = useState<Entry[]>([]),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(true),
-    [signingOut, setSigningOut] = useState(false);
+    [signingOut, setSigningOut] = useState(false),
+    [depositOpen, setDepositOpen] = useState(false);
   useEffect(() => {
     if (!user) return;
     let alive = true;
@@ -67,7 +72,7 @@ export default function AccountPage() {
           );
         if (alive) {
           setProfile(p.data);
-          setWallet(w.data);
+          setWalletData(w.data);
           setEntries(e.data || []);
         }
       } catch (e) {
@@ -84,7 +89,7 @@ export default function AccountPage() {
   if (loading)
     return (
       <div className="page empty-state" role="status">
-        Loading account…
+        Loading account...
       </div>
     );
   if (!user)
@@ -101,6 +106,11 @@ export default function AccountPage() {
   }
   return (
     <section className="page">
+      <DepositModal
+        open={depositOpen}
+        onClose={() => setDepositOpen(false)}
+        onDeposited={wallet.refresh}
+      />
       <div className="section-heading">
         <div>
           <span className="eyebrow">YOUR SPINDRA</span>
@@ -134,17 +144,20 @@ export default function AccountPage() {
           <Wallet />
           <span className="eyebrow">CASH WALLET</span>
           <h2>
-            {wallet
-              ? credits(wallet.balance_minor) + " " + wallet.currency
+            {walletData
+              ? credits(walletData.balance_minor) + " " + walletData.currency
               : busy
-                ? "Loading…"
+                ? "Loading..."
                 : "Not provisioned"}
           </h2>
           <p>
-            Deposits, withdrawals and cash bets are disabled during preparation.
+            Deposit crypto to fund your wallet and play with real balance.
           </p>
-          <button className="button secondary" disabled>
-            Deposits unavailable
+          <button
+            className="button primary"
+            onClick={() => setDepositOpen(true)}
+          >
+            <Plus size={16} /> Deposit Crypto
           </button>
         </article>
         <article className="panel account-tile">
@@ -159,8 +172,7 @@ export default function AccountPage() {
             {user?.email_confirmed_at
               ? "Email confirmed"
               : "Email confirmation pending"}{" "}
-            · Identity checks must be connected by the operator before cash
-            play.
+            · Identity checks must be connected before cash play.
           </p>
           <Link className="text-link" to="/support">
             Account help <ArrowRight size={15} />
@@ -168,18 +180,18 @@ export default function AccountPage() {
         </article>
         <article className="panel account-tile">
           <Clock />
-          <span className="eyebrow">DEMO WALLET</span>
+          <span className="eyebrow">PRACTICE WALLET</span>
           <h2>{credits(demo.balance)} credits</h2>
           <p>
-            Session-only credits. They cannot be deposited, transferred or
-            withdrawn.
+            Session-only practice credits. They cannot be deposited,
+            transferred or withdrawn.
           </p>
           <button
             className="button secondary"
             disabled={demo.blocked}
             onClick={demo.reset}
           >
-            <RefreshCw size={15} /> Reset demo balance
+            <RefreshCw size={15} /> Reset balance
           </button>
         </article>
       </div>
@@ -233,7 +245,7 @@ export default function AccountPage() {
                     <td>{new Date(e.created_at).toLocaleString()}</td>
                     <td>{e.kind}</td>
                     <td>
-                      {credits(e.amount_minor)} {wallet?.currency}
+                      {credits(e.amount_minor)} {walletData?.currency}
                     </td>
                   </tr>
                 ))}
@@ -244,15 +256,15 @@ export default function AccountPage() {
           <p className="muted">No cash transactions to display.</p>
         )}
       </div>
-      <DemoHistory />
+      <PracticeHistory />
     </section>
   );
 }
-export function DemoHistory() {
+export function PracticeHistory() {
   const { rounds } = useDemo();
   return (
     <div className="panel history">
-      <h2>Demo session history</h2>
+      <h2>Practice session history</h2>
       <p className="muted">
         This browser session only. Returned amounts include the stake.
       </p>

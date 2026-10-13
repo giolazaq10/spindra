@@ -20,7 +20,7 @@ const features = [
   {
     icon: Zap,
     title: "Playable Originals",
-    desc: "Explore original slots, blackjack, Texas Hold’em and roulette with free demo credits.",
+    desc: "Explore original slots, blackjack, Texas Hold’em and roulette with free practice credits.",
   },
   {
     icon: Trophy,
@@ -121,7 +121,7 @@ export default function AboutPage() {
             </h2>
             <p className="text-gray-400 leading-relaxed mb-4">
               We are committed to promoting responsible gaming. Our platform
-              includes demo session loss limits, self-exclusion options, and
+              includes session loss limits, self-exclusion options, and
               resources for those who need support.
             </p>
             <div className="flex flex-wrap gap-2">
@@ -151,7 +151,7 @@ export default function AboutPage() {
               Ready to Join the Fun?
             </h2>
             <p className="text-white/80 mb-6 max-w-xl mx-auto">
-              Explore 19 playable Spindra originals with free demo credits.
+              Explore 19 playable Spindra originals with free practice credits.
             </p>
             <Link
               to="/games"

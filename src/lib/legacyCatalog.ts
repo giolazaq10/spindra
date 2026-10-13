@@ -21,7 +21,7 @@ const provider = {
   name: "Spindra Originals",
   slug: "spindra",
   logo_url: null,
-  description: "Original Spindra games. Demo play only.",
+  description: "Original Spindra games.",
   status: "active" as const,
   created_at: "",
 };
@@ -86,8 +86,8 @@ export const promotions: Promotion[] = [
     title: "Free Spins Friday",
     subtitle: "Original games to explore",
     description:
-      "Try every Spindra slot with free demo credits while live promotions are being prepared.",
-    badge: "DEMO",
+      "Try every Spindra slot with free practice credits while live promotions are being prepared.",
+    badge: "PLAY",
     icon: "Sparkles",
     gradient: "from-cyan-400 via-blue-500 to-indigo-500",
   },

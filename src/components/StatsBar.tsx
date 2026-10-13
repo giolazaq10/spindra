@@ -10,8 +10,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 const stats = [
   { label: "Original Slots", value: "16", icon: "Users" },
   { label: "Games Available", value: "19", icon: "Gamepad2" },
-  { label: "Demo Credits", value: "1,000", icon: "DollarSign" },
-  { label: "Cash Play", value: "Soon", icon: "Zap" },
+  { label: "Practice Credits", value: "1,000", icon: "DollarSign" },
+  { label: "Crypto Deposits", value: "Live", icon: "Zap" },
 ];
 
 export default function StatsBar() {

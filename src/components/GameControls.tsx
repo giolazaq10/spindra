@@ -7,7 +7,7 @@ export default function GameControls({ controls: c }: { controls: Controls }) {
   return (
     <div className="integrated-controls">
       <div className="cabinet-wallet">
-        <small>DEMO BALANCE</small>
+        <small>{c.modeLabel} BALANCE</small>
         <strong>{credits(c.balance)}</strong>
       </div>
       <div className="stake-dial">

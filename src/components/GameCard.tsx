@@ -24,7 +24,7 @@ export default function GameCard({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a14] via-transparent to-transparent" />
         <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wide bg-cyan-400 text-black">
-          DEMO
+          PLAY
         </span>
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300">
           <div className="w-14 h-14 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center glow-gold">
@@ -41,7 +41,7 @@ export default function GameCard({
           {g.rtp && <span>RTP {g.rtp}</span>}
         </div>
         <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
-          <span>Free demo play</span>
+          <span>Play now</span>
           <span className="flex items-center gap-1">
             <Building2 className="w-3 h-3" />
             Spindra

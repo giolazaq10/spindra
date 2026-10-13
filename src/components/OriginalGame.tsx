@@ -15,6 +15,9 @@ import SlotRules from "./SlotRules";
 import { demoRoundId } from "../lib/demoLedger";
 import AdvancedSlots from "./AdvancedSlots";
 import { credits, useDemo } from "@/context/Demo";
+import { useWallet, type GameMode } from "@/context/Wallet";
+import { useAuth } from "@/context/Auth";
+import GameModeSelect from "./GameModeSelect";
 export type Controls = {
   bet: number;
   start: (extra?: number) => boolean;
@@ -29,13 +32,18 @@ export type Controls = {
   toggleRules: () => void;
   poker: boolean;
   setLeaveReturn: (returned: number) => void;
+  modeLabel: string;
 };
 export default function OriginalGame({ game }: { game: Original }) {
   const demo = useDemo(),
+    wallet = useWallet(),
+    { user } = useAuth(),
     [bet, setBet] = useState(game.kind === "poker" ? 5000 : 100),
-    [message, setMessage] = useState("Choose your stake and enjoy the demo."),
+    [message, setMessage] = useState("Choose your stake and enjoy the game."),
     [rules, setRules] = useState(false),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [modeSelected, setModeSelected] = useState(false),
+    [gameMode, setGameMode] = useState<GameMode>("practice");
   const wager = useRef<{
       id: string;
       amount: number;
@@ -55,13 +63,18 @@ export default function OriginalGame({ game }: { game: Original }) {
     },
     [game.name],
   );
+  const activeBalance = gameMode === "practice" ? demo.balance : wallet.realBalance;
   function start(extra = bet) {
+    if (gameMode === "real") {
+      setMessage("Real balance play requires a funded wallet. Deposit to enable.");
+      return false;
+    }
     const id = wager.current?.id || demoRoundId();
     if (!demo.reserve(extra, id)) {
       setMessage(
         demo.blocked
-          ? "Demo play is paused for this session."
-          : "Not enough demo credits, or your session loss limit has been reached.",
+          ? "Play is paused for this session."
+          : "Not enough credits, or your session loss limit has been reached.",
       );
       return false;
     }
@@ -77,13 +90,15 @@ export default function OriginalGame({ game }: { game: Original }) {
     if (!wager.current) return;
     const completed = wager.current;
     wager.current = null;
-    demo.settle(game.name, completed.id, returned);
+    if (gameMode === "practice") {
+      demo.settle(game.name, completed.id, returned);
+    }
     setBusy(false);
     setMessage(
       game.kind === "poker"
         ? "Hand settled · " +
             credits(returned) +
-            " chips returned to your demo wallet."
+            " chips returned to your wallet."
         : returned > 0
           ? "Returned " + credits(returned) + " credits (includes stake)."
           : "No return this round. Take your time.",
@@ -94,7 +109,7 @@ export default function OriginalGame({ game }: { game: Original }) {
     start,
     finish,
     setMessage,
-    balance: demo.balance,
+    balance: activeBalance,
     busy,
     setBet,
     stakes:
@@ -108,7 +123,11 @@ export default function OriginalGame({ game }: { game: Original }) {
     setLeaveReturn: (returned) => {
       if (wager.current) wager.current.leaveReturn = returned;
     },
+    modeLabel: gameMode === "real" ? "REAL" : "PRACTICE",
   };
+
+  const realEnabled = user !== null && wallet.realBalance > 0;
+
   return (
     <section className="page game-page">
       <Link className="text-link" to="/games">
@@ -116,11 +135,29 @@ export default function OriginalGame({ game }: { game: Original }) {
       </Link>
       <div className="section-heading">
         <div>
-          <span className="eyebrow">SPINDRA ORIGINAL / DEMO</span>
+          <span className="eyebrow">SPINDRA ORIGINAL</span>
           <h1>{game.name}</h1>
           <p className="muted">{game.tagline}</p>
         </div>
       </div>
+
+      <GameModeSelect
+        open={!modeSelected}
+        onClose={() => {
+          setModeSelected(true);
+          setGameMode("practice");
+        }}
+        onSelect={(m) => {
+          setGameMode(m);
+          setModeSelected(true);
+        }}
+        practiceBalance={demo.balance}
+        realBalance={wallet.realBalance}
+        currency={wallet.currency}
+        gameName={game.name}
+        realEnabled={realEnabled}
+      />
+
       <div
         className={"game-surface " + game.animation}
         style={
@@ -128,7 +165,11 @@ export default function OriginalGame({ game }: { game: Original }) {
         }
       >
         <div className="game-top">
-          <span className="pill">DEMO CREDITS · NO CASH VALUE</span>
+          <span className="pill">
+            {gameMode === "real"
+              ? "REAL BALANCE · " + wallet.currency
+              : "PRACTICE CREDITS"}
+          </span>
           <span>{rtpLabel(game)}</span>
         </div>
         {game.kind === "slots" ? (
@@ -144,11 +185,9 @@ export default function OriginalGame({ game }: { game: Original }) {
           <div className="panel rules embedded-rules">
             <h2>Know your game</h2>
             <p>
-              All wagers and payouts shown here use demo credits. Returns
-              include the original stake. Original game engines run in your
-              browser and are disabled for cash wagering. Leaving an unfinished
-              round forfeits committed demo chips; uncommitted poker chips are
-              returned.
+              {gameMode === "real"
+                ? "You are playing with real funds. Returns include the original stake. Leaving an unfinished round forfeits committed chips; uncommitted poker chips are returned."
+                : "All wagers and payouts use practice credits. Returns include the original stake. Leaving an unfinished round forfeits committed chips; uncommitted poker chips are returned."}
             </p>
             {game.kind === "slots" ? (
               <SlotRules game={game} />
@@ -165,13 +204,13 @@ export default function OriginalGame({ game }: { game: Original }) {
             ) : game.kind === "poker" ? (
               <>
                 <p>
-                  No-limit Texas Hold’em against two computer opponents. Each
+                  No-limit Texas Hold'em against two computer opponents. Each
                   hand starts with equal stacks matching your hand buy-in.
                   Dealer button rotates; small blind is 1/20 of the buy-in and
                   big blind is 1/10. You receive two private cards, then a flop
                   (three cards), turn and river. Make the best five-card hand
                   from any combination of your two cards and five community
-                  cards. Ace can be low only in A–2–3–4–5. Suits never break
+                  cards. Ace can be low only in A-2-3-4-5. Suits never break
                   ties.
                 </p>
                 <p>
@@ -193,9 +232,9 @@ export default function OriginalGame({ game }: { game: Original }) {
               </>
             ) : (
               <p>
-                European single-zero roulette: 37 equally likely pockets (0–36).
-                Straight bets pay 35:1 (36× returned); red, black, odd, even,
-                1–18 and 19–36 pay 1:1 (2× returned). Zero loses every outside
+                European single-zero roulette: 37 equally likely pockets (0-36).
+                Straight bets pay 35:1 (36x returned); red, black, odd, even,
+                1-18 and 19-36 pay 1:1 (2x returned). Zero loses every outside
                 bet. No la partage or en prison. One bet per spin. Wheel colors
                 and final pocket follow the same result.
               </p>
@@ -204,8 +243,7 @@ export default function OriginalGame({ game }: { game: Original }) {
         )}
       </div>
       <div className="notice">
-        Real-money play is unavailable while the platform is being prepared.{" "}
-        <Link to="/responsible-gaming">Set your demo limits</Link> or{" "}
+        <Link to="/responsible-gaming">Set your play limits</Link> or{" "}
         <Link to="/account">view account status</Link>.
       </div>
     </section>
@@ -320,9 +358,9 @@ function Roulette({ controls: c }: { controls: Controls }) {
               onClick={() => setKind(k)}
             >
               {k === "low"
-                ? "1–18"
+                ? "1-18"
                 : k === "high"
-                  ? "19–36"
+                  ? "19-36"
                   : k === "straight"
                     ? "Single number"
                     : k}
@@ -331,7 +369,7 @@ function Roulette({ controls: c }: { controls: Controls }) {
         </div>
         {kind === "straight" && (
           <label>
-            Number (0–36)
+            Number (0-36)
             <input
               type="number"
               min={0}
@@ -349,7 +387,7 @@ function Roulette({ controls: c }: { controls: Controls }) {
         )}
         <GameControls controls={c} />
         <button className="button primary" disabled={spinning} onClick={spin}>
-          {spinning ? "Wheel spinning…" : "Spin wheel"}
+          {spinning ? "Wheel spinning..." : "Spin wheel"}
         </button>
       </div>
     </div>

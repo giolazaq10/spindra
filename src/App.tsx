@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from "@/context/Auth";
 import { DemoProvider } from "@/context/Demo";
+import { WalletProvider } from "@/context/Wallet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HomePage from "@/pages/HomePage";
@@ -36,7 +37,7 @@ function Missing() {
     <section className="page empty-state">
       <span className="eyebrow">404</span>
       <h1>A little off course.</h1>
-      <p>This page or game isn’t in the collection.</p>
+      <p>This page or game isn't in the collection.</p>
       <Link className="button primary" to="/games">
         Back to casino
       </Link>
@@ -48,103 +49,105 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <DemoProvider>
-          <RouteBoundary>
-            <Header />
-            <main id="main">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/games" element={<CasinoPage />} />
-                <Route path="/games/:categorySlug" element={<CasinoPage />} />
-                <Route
-                  path="/game/:slug"
-                  element={
-                    <Styled>
-                      <GameRoute />
-                    </Styled>
-                  }
-                />
-                <Route
-                  path="/sign-in"
-                  element={
-                    <Styled>
-                      <AuthPage key="login" mode="login" />
-                    </Styled>
-                  }
-                />
-                <Route
-                  path="/login"
-                  element={<Navigate to="/sign-in" replace />}
-                />
-                <Route
-                  path="/register"
-                  element={
-                    <Styled>
-                      <AuthPage key="register" mode="register" />
-                    </Styled>
-                  }
-                />
-                <Route
-                  path="/forgot-password"
-                  element={
-                    <Styled>
-                      <AuthPage key="forgot" mode="forgot" />
-                    </Styled>
-                  }
-                />
-                <Route
-                  path="/reset-password"
-                  element={
-                    <Styled>
-                      <AuthPage key="reset" mode="reset" />
-                    </Styled>
-                  }
-                />
-                <Route
-                  path="/auth/callback"
-                  element={<Navigate to="/account" replace />}
-                />
-                <Route
-                  path="/account"
-                  element={
-                    <Styled>
-                      <AccountPage />
-                    </Styled>
-                  }
-                />
-                <Route
-                  path="/responsible-gaming"
-                  element={
-                    <Styled>
-                      <ResponsiblePage />
-                    </Styled>
-                  }
-                />
-                <Route path="/providers" element={<ProvidersPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/promotions" element={<PromotionsPage />} />
-                {(["terms", "privacy", "support"] as const).map((kind) => (
+          <WalletProvider>
+            <RouteBoundary>
+              <Header />
+              <main id="main">
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/games" element={<CasinoPage />} />
+                  <Route path="/games/:categorySlug" element={<CasinoPage />} />
                   <Route
-                    key={kind}
-                    path={"/" + kind}
+                    path="/game/:slug"
                     element={
                       <Styled>
-                        <InfoPage kind={kind} />
+                        <GameRoute />
                       </Styled>
                     }
                   />
-                ))}
-                <Route
-                  path="*"
-                  element={
-                    <Styled>
-                      <Missing />
-                    </Styled>
-                  }
-                />
-              </Routes>
-            </main>
-            <Footer />
-          </RouteBoundary>
+                  <Route
+                    path="/sign-in"
+                    element={
+                      <Styled>
+                        <AuthPage key="login" mode="login" />
+                      </Styled>
+                    }
+                  />
+                  <Route
+                    path="/login"
+                    element={<Navigate to="/sign-in" replace />}
+                  />
+                  <Route
+                    path="/register"
+                    element={
+                      <Styled>
+                        <AuthPage key="register" mode="register" />
+                      </Styled>
+                    }
+                  />
+                  <Route
+                    path="/forgot-password"
+                    element={
+                      <Styled>
+                        <AuthPage key="forgot" mode="forgot" />
+                      </Styled>
+                    }
+                  />
+                  <Route
+                    path="/reset-password"
+                    element={
+                      <Styled>
+                        <AuthPage key="reset" mode="reset" />
+                      </Styled>
+                    }
+                  />
+                  <Route
+                    path="/auth/callback"
+                    element={<Navigate to="/account" replace />}
+                  />
+                  <Route
+                    path="/account"
+                    element={
+                      <Styled>
+                        <AccountPage />
+                      </Styled>
+                    }
+                  />
+                  <Route
+                    path="/responsible-gaming"
+                    element={
+                      <Styled>
+                        <ResponsiblePage />
+                      </Styled>
+                    }
+                  />
+                  <Route path="/providers" element={<ProvidersPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/promotions" element={<PromotionsPage />} />
+                  {(["terms", "privacy", "support"] as const).map((kind) => (
+                    <Route
+                      key={kind}
+                      path={"/" + kind}
+                      element={
+                        <Styled>
+                          <InfoPage kind={kind} />
+                        </Styled>
+                      }
+                    />
+                  ))}
+                  <Route
+                    path="*"
+                    element={
+                      <Styled>
+                        <Missing />
+                      </Styled>
+                    }
+                  />
+                </Routes>
+              </main>
+              <Footer />
+            </RouteBoundary>
+          </WalletProvider>
         </DemoProvider>
       </AuthProvider>
     </BrowserRouter>

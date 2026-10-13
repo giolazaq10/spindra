@@ -1,6 +1,6 @@
 export type Card = { rank: number; suit: number };
 export type RandomInt = (max: number) => number;
-// Rejection sampling avoids modulo bias. Originals are demo-only.
+// Rejection sampling avoids modulo bias.
 export const randomInt: RandomInt = (max) => {
   if (!Number.isSafeInteger(max) || max < 1 || max > 0x100000000)
     throw new Error("Invalid random range");

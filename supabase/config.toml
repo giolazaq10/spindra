@@ -4,4 +4,6 @@ verify_jwt = false
 [functions.game-launch]
 # Handler validates the bearer token through Supabase Auth.
 verify_jwt = false
-
+[functions.crypto-deposit]
+# Validates the bearer token through Supabase Auth before proxying to NowPayments.
+verify_jwt = false

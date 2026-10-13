@@ -30,7 +30,7 @@ export default function AuthPage({ mode }: { mode: Mode }) {
     setMessage("");
     if (!authConfigured) {
       setError(
-        "Account services are not connected yet. You can explore all original games in demo mode.",
+        "Account services are not connected yet. You can explore all original games in practice mode.",
       );
       return;
     }
@@ -287,7 +287,7 @@ export default function AuthPage({ mode }: { mode: Mode }) {
           )}
         </p>
         <Link className="text-link" to="/games">
-          Explore demo games first →
+          Explore games first →
         </Link>
       </div>
     </section>

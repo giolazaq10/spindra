@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 type Frame = { at: number; show: () => void };
 // A single cancellable presentation queue. Actions remain locked until the last
-// card lands; navigation clears every callback before demo-round cleanup.
+// card lands; navigation clears every callback before round cleanup.
 export default function useTableMotion() {
   const [animating, setAnimating] = useState(false);
   const locked = useRef(false),

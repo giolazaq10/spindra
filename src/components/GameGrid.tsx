@@ -120,7 +120,7 @@ export default function GameGrid({ games, categories }: Props) {
                   </div>
                   <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
                     <Users className="w-3 h-3" />
-                    <span>Demo available</span>
+                    <span>Available now</span>
                     {game.players_online > 3000 && (
                       <Flame className="w-3 h-3 text-orange-400 ml-1" />
                     )}

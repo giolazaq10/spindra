@@ -1,4 +1,4 @@
-/** Session-only wallet. Round IDs make cleanup and late timers idempotent. */
+/** Session-only practice wallet. Round IDs make cleanup and late timers idempotent. */
 export class DemoLedger {
   balance = 100000;
   loss = 0;
@@ -26,7 +26,7 @@ export class DemoLedger {
     if (!this.pending || this.pending.id !== id || this.completed.has(id))
       return null;
     if (!Number.isSafeInteger(returned) || returned < 0)
-      throw new Error("Invalid demo settlement");
+      throw new Error("Invalid settlement");
     const stake = this.pending.stake;
     this.pending = null;
     this.completed.add(id);

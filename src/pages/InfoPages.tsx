@@ -4,7 +4,7 @@ import { Shield, Pause, Layers, ArrowRight } from "lucide-react";
 import { credits, useDemo } from "@/context/Demo";
 import { useAuth } from "@/context/Auth";
 import { supabase } from "@/lib/supabase";
-import { DemoHistory } from "./AccountPage";
+import { PracticeHistory } from "./AccountPage";
 export function ResponsiblePage() {
   const demo = useDemo(),
     { user } = useAuth();
@@ -36,7 +36,7 @@ export function ResponsiblePage() {
   function save(event: FormEvent) {
     event.preventDefault();
     demo.setLimit(Math.round(Number(limit) * 100));
-    setMessage("Demo session loss limit updated.");
+    setMessage("Session loss limit updated.");
   }
   return (
     <section className="page reading-page">
@@ -49,7 +49,7 @@ export function ResponsiblePage() {
       <div className="account-grid">
         <article className="panel">
           <Shield />
-          <h2>Demo loss limit</h2>
+          <h2>Practice loss limit</h2>
           <p>
             Stops new stakes when your session’s net loss plus the next stake
             would exceed the limit. Cash limits are separate.
@@ -59,7 +59,7 @@ export function ResponsiblePage() {
           </p>
           <form onSubmit={save}>
             <label>
-              Limit in demo credits
+              Limit in practice credits
               <input
                 required
                 type="number"
@@ -71,7 +71,7 @@ export function ResponsiblePage() {
               />
             </label>
             <button className="button secondary" disabled={demo.blocked}>
-              Save demo limit
+              Save limit
             </button>
           </form>
         </article>
@@ -79,11 +79,11 @@ export function ResponsiblePage() {
           <Pause />
           <h2>Time away</h2>
           <p>
-            Pause demo play for this browser session. Reloading starts a new
-            demo session; this is separate from account self-exclusion.
+            Pause practice play for this browser session. Reloading starts a new
+            session; this is separate from account self-exclusion.
           </p>
           {demo.blocked ? (
-            <p className="success">Demo play is paused.</p>
+            <p className="success">Play is paused.</p>
           ) : (
             <>
               <label className="check">
@@ -92,14 +92,14 @@ export function ResponsiblePage() {
                   checked={confirm}
                   onChange={(e) => setConfirm(e.target.checked)}
                 />
-                <span>Pause all demo games for this session.</span>
+                <span>Pause all practice games for this session.</span>
               </label>
               <button
                 className="button secondary"
                 disabled={!confirm}
                 onClick={demo.exclude}
               >
-                Pause demo play
+                Pause play
               </button>
             </>
           )}
@@ -174,7 +174,7 @@ export function ResponsiblePage() {
           </li>
         </ul>
       </article>
-      <DemoHistory />
+      <PracticeHistory />
     </section>
   );
 }
@@ -208,13 +208,13 @@ export function InfoPage({
 }) {
   const content = {
     terms: {
-      title: "Prelaunch terms",
+      title: "Terms of service",
       intro:
-        "Spindra is currently a demonstration and platform preparation site.",
+        "Spindra provides original games and crypto deposits for real-money play.",
       sections: [
         [
-          "Demo play",
-          "Demo credits have no monetary value. They cannot be bought, sold, redeemed or withdrawn. Leaving an unfinished game forfeits its demo stake.",
+          "Practice play",
+          "Practice credits have no monetary value. They cannot be bought, sold, redeemed or withdrawn. Leaving an unfinished game forfeits its practice stake.",
         ],
         [
           "Accounts",
@@ -222,7 +222,7 @@ export function InfoPage({
         ],
         [
           "Cash operation",
-          "No deposits, withdrawals or cash wagering are available. Operator identity, licensing, eligible countries, dispute procedures, full promotional terms and contractual rules must be published before money play is enabled.",
+          "Crypto deposits are processed through NowPayments. Deposits are credited after network confirmations. Withdrawals follow the published procedure.",
         ],
         [
           "Age and eligibility",
@@ -241,7 +241,7 @@ export function InfoPage({
         ],
         [
           "Browser storage",
-          "Supabase stores session credentials in browser storage for sign-in continuity. Demo credits and demo history exist only in application memory and reset when you reload.",
+          "Supabase stores session credentials in browser storage for sign-in continuity. Practice credits and session history exist only in application memory and reset when you reload.",
         ],
         [
           "Identity documents",
@@ -258,16 +258,16 @@ export function InfoPage({
       intro: "Answers for the current Spindra preview.",
       sections: [
         [
-          "Why can’t I deposit?",
-          "Cash services are disabled until the operator has connected and verified the required services.",
+          "How do I deposit?",
+          "Crypto deposits are available through the Deposit button in the header or account page. Choose from BTC, ETH, USDT, or USDC.",
         ],
         [
           "How do I recover my account?",
           "Use the password recovery page. A configured Supabase project and email delivery service are required.",
         ],
         [
-          "Why did my demo balance reset?",
-          "Demo play is session-only. Reloading the website creates a new demo wallet.",
+          "Why did my practice balance reset?",
+          "Practice play is session-only. Reloading the website creates a new practice wallet.",
         ],
         [
           "How can I contact support?",
@@ -296,7 +296,7 @@ export function InfoPage({
       sections: [
         [
           "Try the originals",
-          "Explore every original game with free demo credits. There are no deposits or wagering requirements in the preview.",
+          "Explore every original game with free practice credits. Crypto deposits enable real-balance play.",
         ],
         [
           "Future offers",

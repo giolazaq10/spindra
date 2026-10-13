@@ -49,7 +49,7 @@ export default function CasinoPage() {
             )}
           </h1>
           <p className="text-gray-400">
-            {games.length} original games available · Demo credits only
+            {games.length} original games available
           </p>
         </div>
         <nav className="flex flex-wrap gap-2 mb-8" aria-label="Game categories">

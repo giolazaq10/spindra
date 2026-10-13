@@ -24,8 +24,8 @@ export default function Promotions({ promotions }: Props) {
             Bonuses & <span className="text-gradient-pink">Promotions</span>
           </h2>
           <p className="text-gray-400 mt-3 max-w-xl mx-auto">
-            Explore demo play while welcome offers and weekly rewards are being
-            prepared
+            Explore original games while welcome offers and weekly rewards are
+            being prepared
           </p>
         </div>
 
