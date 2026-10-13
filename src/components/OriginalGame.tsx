@@ -3,17 +3,13 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { type Original, rtpLabel } from "@/lib/catalog";
 import {
-  blackjackReturn,
-  deck,
-  handValue,
   randomInt,
   rouletteReturn,
   redNumbers,
-  type Card,
   type RouletteBet,
 } from "@/lib/engine";
 import TexasHoldem from "./TexasHoldem";
-import PlayingCard from "./PlayingCard";
+import Blackjack from "./Blackjack";
 import GameControls from "./GameControls";
 import SlotRules from "./SlotRules";
 import { demoRoundId } from "../lib/demoLedger";
@@ -85,10 +81,12 @@ export default function OriginalGame({ game }: { game: Original }) {
     setBusy(false);
     setMessage(
       game.kind === "poker"
-        ? "Hand settled · " + credits(returned) + " chips returned to your demo wallet."
+        ? "Hand settled · " +
+            credits(returned) +
+            " chips returned to your demo wallet."
         : returned > 0
-        ? "Returned " + credits(returned) + " credits (includes stake)."
-        : "No return this round. Take your time.",
+          ? "Returned " + credits(returned) + " credits (includes stake)."
+          : "No return this round. Take your time.",
     );
   }
   const c: Controls = {
@@ -213,231 +211,6 @@ export default function OriginalGame({ game }: { game: Original }) {
     </section>
   );
 }
-type BJHand = {
-  cards: Card[];
-  bet: number;
-  split: boolean;
-  done: boolean;
-  aces: boolean;
-};
-type BJ = {
-  shoe: Card[];
-  dealer: Card[];
-  hands: BJHand[];
-  active: number;
-  done: boolean;
-};
-function Blackjack({ controls: c }: { controls: Controls }) {
-  const [state, setState] = useState<BJ | null>(null);
-  const stateRef = useRef<BJ | null>(null);
-  function save(s: BJ) {
-    stateRef.current = s;
-    setState({ ...s });
-  }
-  function complete(s: BJ) {
-    while (handValue(s.dealer).total < 17) s.dealer.push(s.shoe.pop()!);
-    s.done = true;
-    save(s);
-    c.finish(
-      s.hands.reduce(
-        (sum, h) => sum + blackjackReturn(h.cards, s.dealer, h.bet, !h.split),
-        0,
-      ),
-    );
-  }
-  function advance(s: BJ) {
-    while (s.active < s.hands.length && s.hands[s.active].done) s.active++;
-    if (s.active === s.hands.length) complete(s);
-    else save(s);
-  }
-  function deal() {
-    if ((stateRef.current && !stateRef.current.done) || !c.start()) return;
-    const shoe = deck(),
-      s: BJ = {
-        shoe,
-        dealer: [shoe.pop()!, shoe.pop()!],
-        hands: [
-          {
-            cards: [shoe.pop()!, shoe.pop()!],
-            bet: c.bet,
-            split: false,
-            done: false,
-            aces: false,
-          },
-        ],
-        active: 0,
-        done: false,
-      };
-    if (
-      handValue(s.dealer).total === 21 ||
-      handValue(s.hands[0].cards).total === 21
-    ) {
-      s.done = true;
-      s.hands[0].done = true;
-      save(s);
-      c.finish(blackjackReturn(s.hands[0].cards, s.dealer, c.bet));
-    } else save(s);
-  }
-  function act(action: "hit" | "stand" | "double" | "split") {
-    const current = stateRef.current;
-    if (!current || current.done) return;
-    const s: BJ = {
-      ...current,
-      shoe: [...current.shoe],
-      dealer: [...current.dealer],
-      hands: current.hands.map((h) => ({ ...h, cards: [...h.cards] })),
-    };
-    const h = s.hands[s.active];
-    if (h.done) return;
-    if (action === "stand") h.done = true;
-    if (action === "hit") {
-      h.cards.push(s.shoe.pop()!);
-      if (handValue(h.cards).total >= 21) h.done = true;
-    }
-    if (action === "double") {
-      if (h.cards.length !== 2 || h.aces || !c.start(h.bet)) return;
-      h.bet *= 2;
-      h.cards.push(s.shoe.pop()!);
-      h.done = true;
-    }
-    if (action === "split") {
-      if (
-        h.cards.length !== 2 ||
-        h.cards[0].rank !== h.cards[1].rank ||
-        s.hands.length >= 4 ||
-        h.aces ||
-        !c.start(h.bet)
-      )
-        return;
-      const aces = h.cards[0].rank === 14;
-      const a: BJHand = {
-        cards: [h.cards[0], s.shoe.pop()!],
-        bet: h.bet,
-        split: true,
-        done: aces,
-        aces,
-      };
-      const b: BJHand = {
-        cards: [h.cards[1], s.shoe.pop()!],
-        bet: h.bet,
-        split: true,
-        done: aces,
-        aces,
-      };
-      if (handValue(a.cards).total === 21) a.done = true;
-      if (handValue(b.cards).total === 21) b.done = true;
-      s.hands.splice(s.active, 1, a, b);
-    }
-    advance(s);
-  }
-  const hand = state && !state.done ? state.hands[state.active] : null;
-  return (
-    <div className="table-game premium-felt blackjack">
-      <div className="felt-brand">
-        SPINDRA <span>NOIR CLUB</span>
-      </div>
-      <div className="chip-stack" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-        <i />
-      </div>
-      <p className="table-inscription">
-        BLACKJACK PAYS 3:2 · DEALER STANDS ON SOFT 17
-      </p>
-      <div className="hand-label">
-        Dealer {state?.done ? "· " + handValue(state.dealer).total : ""}
-      </div>
-      <div className="cards-row">
-        {state ? (
-          state.dealer.map((card, i) => (
-            <PlayingCard
-              key={i + ":" + card.rank + ":" + card.suit}
-              card={card}
-              delay={i * 120}
-              hidden={!state.done && i === 1}
-            />
-          ))
-        ) : (
-          <>
-            <PlayingCard hidden />
-            <PlayingCard hidden />
-          </>
-        )}
-      </div>
-      <div className="blackjack-hands">
-        {state?.hands.map((h, i) => (
-          <div
-            className={
-              "blackjack-hand " +
-              (!state.done && i === state.active ? "active-hand" : "")
-            }
-            key={i}
-          >
-            <span className="hand-label">
-              Hand {i + 1} · {handValue(h.cards).total} · {credits(h.bet)}{" "}
-              credits
-            </span>
-            <div className="cards-row">
-              {h.cards.map((card, j) => (
-                <PlayingCard
-                  card={card}
-                  delay={j * 100}
-                  key={card.rank + ":" + card.suit}
-                />
-              ))}
-            </div>
-            {state.done && (
-              <span className="hand-label">
-                Returned{" "}
-                {credits(
-                  blackjackReturn(h.cards, state.dealer, h.bet, !h.split),
-                )}
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
-      <GameControls controls={c} />
-      <div className="game-actions">
-        {!state || state.done ? (
-          <button className="button primary" onClick={deal}>
-            Deal cards
-          </button>
-        ) : (
-          <>
-            <button className="button primary" onClick={() => act("hit")}>
-              Hit
-            </button>
-            <button className="button secondary" onClick={() => act("stand")}>
-              Stand
-            </button>
-            <button
-              className="button secondary"
-              disabled={!hand || hand.cards.length !== 2 || hand.aces}
-              onClick={() => act("double")}
-            >
-              Double
-            </button>
-            <button
-              className="button secondary"
-              disabled={
-                !hand ||
-                hand.cards.length !== 2 ||
-                hand.cards[0].rank !== hand.cards[1].rank ||
-                state.hands.length >= 4 ||
-                hand.aces
-              }
-              onClick={() => act("split")}
-            >
-              Split
-            </button>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
 function Roulette({ controls: c }: { controls: Controls }) {
   const [kind, setKind] = useState<RouletteBet>("red"),
     [straight, setStraight] = useState(0),
@@ -468,7 +241,7 @@ function Roulette({ controls: c }: { controls: Controls }) {
       setSpinning(false);
       c.finish(rouletteReturn(n, kind, stake, straight));
       lock.current = false;
-    }, 1800);
+    }, 4200);
   }
   return (
     <div className="roulette-game">
