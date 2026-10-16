@@ -6,7 +6,9 @@ import { cashApi } from "@/lib/walletApi";
 import type { Original } from "@/lib/catalog";
 import type { Card } from "@/lib/engine";
 import { redNumbers } from "@/lib/engine";
-import { bestHand } from "@/lib/holdem";
+import CashPokerSeat from "./CashPokerSeat";
+import RouletteBets from "./RouletteBets";
+import { pokerMotion } from "./pokerMotion";
 import type { SlotWin } from "@/lib/slotModels";
 import type { Controls } from "./OriginalGame";
 import AdvancedSlots from "./AdvancedSlots";
@@ -21,6 +23,7 @@ import BlackjackBetting from "./BlackjackBetting";
 import type { SeatBet, SideResult } from "@/lib/blackjack";
 import BlackjackRules from "./BlackjackRules";
 import BlackjackResults from "./BlackjackResults";
+import { blackjackMotion } from "./blackjackMotion";
 import SlotRules from "./SlotRules";
 
 type BJHand = {
@@ -104,9 +107,9 @@ export default function CashGame({ game }: { game: Original }) {
       SeatBet[] | null
     >(null),
     [raise, setRaise] = useState(0);
+  const dealTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const alive = useRef(true),
-    lock = useRef(false),
-    timer = useRef<ReturnType<typeof setTimeout>>();
+    lock = useRef(false);
   useEffect(() => {
     alive.current = true;
     let active = true;
@@ -150,7 +153,7 @@ export default function CashGame({ game }: { game: Original }) {
     return () => {
       active = false;
       alive.current = false;
-      clearTimeout(timer.current);
+      dealTimers.current.forEach(clearTimeout);
     };
   }, [storageKey, acceptServerBalance]);
   function store(p: Pending | null) {
@@ -165,11 +168,32 @@ export default function CashGame({ game }: { game: Original }) {
     setBusy(true);
     setUncertain(false);
     store(p);
+    let presenting = false;
     try {
       const response = await cashApi<CashRound>(p.action, p.body);
       store(null);
       if (alive.current) {
-        setRound(response);
+        if (game.kind === "blackjack" || game.kind === "poker") {
+          const frames =
+            game.kind === "blackjack"
+              ? blackjackMotion(round, response)
+              : pokerMotion(round, response);
+          dealTimers.current.forEach(clearTimeout);
+          dealTimers.current = [];
+          if (frames.length > 1) {
+            presenting = true;
+            setRound(frames[0].round);
+            frames.slice(1).forEach((frame, i) =>
+              dealTimers.current.push(
+                setTimeout(() => {
+                  if (!alive.current) return;
+                  setRound(frame.round);
+                  if (i === frames.length - 2) setBusy(false);
+                }, frame.at),
+              ),
+            );
+          } else setRound(response);
+        } else setRound(response);
         acceptServerBalance(response.balance_minor);
         setMessage(
           response.state === "settled"
@@ -198,13 +222,7 @@ export default function CashGame({ game }: { game: Original }) {
     } finally {
       lock.current = false;
       if (alive.current) {
-        const cards =
-          game.kind === "blackjack" ? 8 : game.kind === "poker" ? 6 : 1;
-        if (game.kind === "slots" || game.mini) setBusy(false);
-        else
-          timer.current = setTimeout(() => {
-            if (alive.current) setBusy(false);
-          }, cards * 450);
+        if (!presenting) setBusy(false);
       }
     }
   }
@@ -303,6 +321,46 @@ export default function CashGame({ game }: { game: Original }) {
   const insuranceTotal =
     table?.bets?.reduce((sum, b) => sum + b.main / 2, 0) || 0;
   const actionStake = table?.hands?.[table.active ?? 0]?.bet || 0;
+  const pokerPlayers =
+    table?.players ||
+    ["You", "Computer 1", "Computer 2"].map((name) => ({
+      name,
+      hole: [] as (Card | null)[],
+      stack: 0,
+      streetBet: 0,
+      folded: false,
+      action: "Ready to deal",
+    }));
+  const raiseMax = Number(allowed.maxTo) || 0;
+  const raiseMin = Math.min(Number(allowed.minTo) || 0, raiseMax);
+  const raiseTo = Math.max(raiseMin, Math.min(raise, raiseMax));
+  const potSize =
+    table?.players?.reduce((sum, p) => sum + (p.contributed || 0), 0) || 0;
+  const callSize = Number(allowed.toCall) || 0;
+  const currentStreetBet = table?.players?.[0]?.streetBet || 0;
+  const dealButton = (
+    <button
+      className="button primary"
+      disabled={
+        busy ||
+        !!pending ||
+        !eligible ||
+        wallet.realBalance <
+          (game.kind === "blackjack" ? blackjackStake : bet) ||
+        (game.kind === "blackjack" &&
+          (blackjackStake === 0 || blackjackStake > 20000))
+      }
+      onClick={() => void start().catch(() => {})}
+    >
+      {busy
+        ? game.kind === "roulette"
+          ? "Spinning…"
+          : "Dealing…"
+        : game.kind === "roulette"
+          ? "Spin wheel"
+          : "Deal cards"}
+    </button>
+  );
   const SlotCabinet = game.slot?.premium ? PremiumSlots : AdvancedSlots;
   if (!initialized) return <p role="status">Loading saved cash round…</p>;
   if (!eligible && !active && !pending)
@@ -323,7 +381,17 @@ export default function CashGame({ game }: { game: Original }) {
           <Link to="/account">Deposit or manage your wallet</Link>.
         </p>
       )}
-      <p role="status">{message}</p>
+      <p
+        className={
+          game.kind === "blackjack" &&
+          /^(Server-authorized|Round settled|Round is open)/.test(message)
+            ? "sr-only"
+            : ""
+        }
+        role="status"
+      >
+        {message}
+      </p>
       <p>
         Cash balance <strong>{money(wallet.realBalance)}</strong>
       </p>
@@ -454,253 +522,242 @@ export default function CashGame({ game }: { game: Original }) {
                     <strong>{kind === "straight" ? "35:1" : "1:1"}</strong>
                   </div>
                 </div>
-                <p className="table-help">
-                  Single zero · 37 pockets. Zero loses on red, black, odd and
-                  even. Returns include your stake.
-                </p>
-                <label>
-                  Choose your bet
-                  <select
-                    disabled={busy}
-                    value={kind}
-                    onChange={(e) => setKind(e.target.value)}
-                  >
-                    {["red", "black", "even", "odd", "straight"].map((v) => (
-                      <option key={v} value={v}>
-                        {v === "straight"
-                          ? "Single number (0–36)"
-                          : v[0].toUpperCase() + v.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {kind === "straight" && (
-                  <label>
-                    Pocket
-                    <input
-                      type="number"
-                      min="0"
-                      max="36"
-                      value={straight}
-                      onChange={(e) => setStraight(Number(e.target.value))}
-                    />
-                  </label>
-                )}
+                <RouletteBets
+                  kind={kind}
+                  number={straight}
+                  disabled={busy || !!pending}
+                  onSelect={(next, n) => {
+                    setKind(next);
+                    if (n !== undefined) setStraight(n);
+                  }}
+                />
               </>
             ) : game.kind === "blackjack" ? (
               <>
                 <h2>Multihand blackjack</h2>
-                {!active && (
-                  <BlackjackBetting
-                    bets={blackjackBets}
-                    previous={previousBlackjackBets}
-                    onChange={setBlackjackBets}
-                    balance={wallet.realBalance}
-                    disabled={busy || !!pending}
-                  />
-                )}
                 <p className="blackjack-table-rules">
                   Blackjack 3:2 · Dealer hits soft 17 · Insurance 2:1
                 </p>
-                {table?.dealer && (
-                  <>
-                    <section
-                      className="blackjack-dealer"
-                      aria-label="Dealer hand"
-                    >
-                      <BlackjackScore label="Dealer" cards={table.dealer} />
-                      <div className="cash-cards">
-                        {table.dealer.map((card, i) => (
-                          <PlayingCard
-                            key={i + ":" + (card?.rank ?? "hidden")}
-                            card={card || undefined}
-                            hidden={!card}
-                            delay={i * 550}
-                          />
-                        ))}
-                      </div>
-                    </section>
-                  </>
-                )}
-                {table?.hands?.map((h, i) => (
-                  <article
-                    key={h.id}
-                    className={
-                      "cash-hand " +
-                      (table.active === i && active ? "cash-active" : "")
-                    }
-                  >
-                    <h3>
-                      Your hand {h.seat + 1}
-                      {h.split
-                        ? " · Split " +
-                          (table
-                            .hands!.filter((other) => other.seat === h.seat)
-                            .indexOf(h) +
-                            1)
-                        : ""}{" "}
-                      · Bet {money(h.bet)}
-                    </h3>
-                    <BlackjackScore
-                      label={
-                        "Your hand " +
-                        (h.seat + 1) +
-                        (h.split
-                          ? " · Split " +
-                            (table
-                              .hands!.filter((other) => other.seat === h.seat)
-                              .indexOf(h) +
-                              1)
-                          : "")
-                      }
-                      cards={h.cards}
-                      split={h.split}
-                      surrendered={h.surrendered}
-                      active={
-                        table.active === i &&
-                        active &&
-                        table.phase === "playing"
-                      }
-                    />
-                    <div className="cash-cards">
-                      {h.cards.map((card, j) => (
-                        <PlayingCard key={j} card={card} delay={j * 550} />
-                      ))}
-                    </div>
-                  </article>
-                ))}
-                {table?.sideResults &&
-                  table.bets?.some((b) => b.three || b.pair) && (
-                    <section
-                      className="blackjack-side-results"
-                      aria-label="Side bet results"
-                    >
-                      <h3>Side bet results</h3>
-                      {table.sideResults.map((result, seat) => (
-                        <div key={seat}>
-                          {(["three", "pair"] as const)
-                            .filter(
-                              (kind) => (table.bets?.[seat]?.[kind] || 0) > 0,
-                            )
-                            .map((kind) => (
-                              <p key={kind}>
-                                <b>
-                                  Hand {seat + 1} ·{" "}
-                                  {kind === "three" ? "21+3" : "Perfect Pair"}
-                                </b>
-                                <span>
-                                  {result[kind].name} ·{" "}
-                                  {result[kind].returned
-                                    ? "Return " + money(result[kind].returned)
-                                    : "No win"}
-                                  {active && result[kind].returned > 0
-                                    ? " · paid at round end"
-                                    : ""}
-                                </span>
-                              </p>
-                            ))}
-                        </div>
-                      ))}
-                    </section>
-                  )}
-                {active && table?.phase === "insurance" ? (
-                  <>
-                    <p className="table-help">
-                      Insurance costs half the selected main bet and pays 2:1 if
-                      the dealer has blackjack. Choose a hand, insure all, or
-                      decline.
-                    </p>
-                    {table.bets?.map(
-                      (b, seat) =>
-                        b.main > 0 && (
-                          <button
-                            key={seat}
-                            className="button secondary"
-                            disabled={
-                              busy ||
-                              !!pending ||
-                              wallet.realBalance < b.main / 2 ||
-                              (round?.view.stake_minor || 0) + b.main / 2 >
-                                20000
-                            }
-                            onClick={() =>
-                              void takeAction("insurance", { seats: [seat] })
+                <section className="blackjack-dealer" aria-label="Dealer hand">
+                  <BlackjackScore label="Dealer" cards={table?.dealer || []} />
+                  <div className="cash-cards">
+                    {table?.dealer?.map((card, i) => (
+                      <PlayingCard
+                        key={i + ":" + (card?.rank ?? "hidden")}
+                        card={card || undefined}
+                        hidden={!card}
+                        delay={0}
+                      />
+                    ))}
+                  </div>
+                </section>
+                <BlackjackBetting
+                  bets={active ? table?.bets || blackjackBets : blackjackBets}
+                  previous={previousBlackjackBets}
+                  onChange={setBlackjackBets}
+                  balance={wallet.realBalance}
+                  disabled={busy || !!pending || active}
+                  activeSeat={
+                    active ? table?.hands?.[table.active ?? 0]?.seat : undefined
+                  }
+                  renderHand={(seat) => (
+                    <div className="blackjack-seat-cards">
+                      {table?.hands
+                        ?.filter((h) => h.seat === seat)
+                        .map((h) => (
+                          <article
+                            key={h.id}
+                            className={
+                              "cash-hand " +
+                              (table.hands?.[table.active ?? 0]?.id === h.id &&
+                              active
+                                ? "cash-active"
+                                : "")
                             }
                           >
-                            Insure hand {seat + 1} · {money(b.main / 2)}
-                          </button>
-                        ),
+                            <h3>
+                              Your hand {h.seat + 1}
+                              {h.split
+                                ? " · Split " +
+                                  (table
+                                    .hands!.filter(
+                                      (other) => other.seat === h.seat,
+                                    )
+                                    .indexOf(h) +
+                                    1)
+                                : ""}{" "}
+                              · Bet {money(h.bet)}
+                            </h3>
+                            <BlackjackScore
+                              label={
+                                "Your hand " +
+                                (h.seat + 1) +
+                                (h.split
+                                  ? " · Split " +
+                                    (table
+                                      .hands!.filter(
+                                        (other) => other.seat === h.seat,
+                                      )
+                                      .indexOf(h) +
+                                      1)
+                                  : "")
+                              }
+                              cards={h.cards}
+                              split={h.split}
+                              surrendered={h.surrendered}
+                              active={
+                                table.hands?.[table.active ?? 0]?.id === h.id &&
+                                active &&
+                                table.phase === "playing"
+                              }
+                            />
+                            <div className="cash-cards">
+                              {h.cards.map((card, j) => (
+                                <PlayingCard key={j} card={card} delay={0} />
+                              ))}
+                            </div>
+                          </article>
+                        ))}
+                    </div>
+                  )}
+                />
+                <div className="blackjack-action-bar">
+                  {!active && dealButton}
+                  {table?.sideResults &&
+                    table.bets?.some((b) => b.three || b.pair) && (
+                      <details
+                        className="blackjack-side-results"
+                        aria-label="Side bet results"
+                      >
+                        <summary>Side bet results</summary>
+                        {table.sideResults.map((result, seat) => (
+                          <div key={seat}>
+                            {(["three", "pair"] as const)
+                              .filter(
+                                (kind) => (table.bets?.[seat]?.[kind] || 0) > 0,
+                              )
+                              .map((kind) => (
+                                <p key={kind}>
+                                  <b>
+                                    Hand {seat + 1} ·{" "}
+                                    {kind === "three" ? "21+3" : "Perfect Pair"}
+                                  </b>
+                                  <span>
+                                    {result[kind].name} ·{" "}
+                                    {result[kind].returned
+                                      ? "Return " + money(result[kind].returned)
+                                      : "No win"}
+                                    {active && result[kind].returned > 0
+                                      ? " · paid at round end"
+                                      : ""}
+                                  </span>
+                                </p>
+                              ))}
+                          </div>
+                        ))}
+                      </details>
                     )}
-                    <button
-                      className="button secondary"
-                      disabled={busy || !!pending}
-                      onClick={() =>
-                        void takeAction("insurance", { seats: [] })
-                      }
-                    >
-                      Decline insurance
-                    </button>
-                    <button
-                      className="button secondary"
-                      disabled={
-                        busy ||
-                        !!pending ||
-                        wallet.realBalance < insuranceTotal ||
-                        (round?.view.stake_minor || 0) + insuranceTotal > 20000
-                      }
-                      onClick={() =>
-                        void takeAction("insurance", {
-                          seats: [
-                            ...new Set(table.hands?.map((h) => h.seat) || []),
-                          ],
-                        })
-                      }
-                    >
-                      Insure all · {money(insuranceTotal)}
-                    </button>
-                  </>
-                ) : (
-                  active &&
-                  ["hit", "stand", "double", "split", "surrender"].map((a) => (
-                    <button
-                      key={a}
-                      className="button secondary"
-                      disabled={
-                        busy ||
-                        !!pending ||
-                        !allowed[a] ||
-                        ((a === "double" || a === "split") &&
-                          (wallet.realBalance < actionStake ||
-                            (round?.view.stake_minor || 0) + actionStake >
-                              20000))
-                      }
-                      onClick={() => {
-                        // eslint-disable-next-line react-hooks/refs -- This request ref is accessed only by the click handler, never during render.
-                        void takeAction(a);
-                      }}
-                    >
-                      {a === "double"
-                        ? "Double down · +" +
-                          money(table?.hands?.[table.active ?? 0]?.bet || 0)
-                        : a === "split"
-                          ? "Split · +" +
-                            money(table?.hands?.[table.active ?? 0]?.bet || 0)
-                          : a === "surrender"
-                            ? "Surrender · return half"
-                            : a === "hit"
-                              ? "Hit · take a card"
-                              : "Stand · keep total"}
-                    </button>
-                  ))
-                )}
+                  {active && table?.phase === "insurance" ? (
+                    <>
+                      <p className="table-help">
+                        Insurance costs half the selected main bet and pays 2:1
+                        if the dealer has blackjack. Choose a hand, insure all,
+                        or decline.
+                      </p>
+                      {table.bets?.map(
+                        (b, seat) =>
+                          b.main > 0 && (
+                            <button
+                              key={seat}
+                              className="button secondary"
+                              disabled={
+                                busy ||
+                                !!pending ||
+                                wallet.realBalance < b.main / 2 ||
+                                (round?.view.stake_minor || 0) + b.main / 2 >
+                                  20000
+                              }
+                              onClick={() =>
+                                void takeAction("insurance", { seats: [seat] })
+                              }
+                            >
+                              Insure hand {seat + 1} · {money(b.main / 2)}
+                            </button>
+                          ),
+                      )}
+                      <button
+                        className="button secondary"
+                        disabled={busy || !!pending}
+                        onClick={() =>
+                          void takeAction("insurance", { seats: [] })
+                        }
+                      >
+                        Decline insurance
+                      </button>
+                      <button
+                        className="button secondary"
+                        disabled={
+                          busy ||
+                          !!pending ||
+                          wallet.realBalance < insuranceTotal ||
+                          (round?.view.stake_minor || 0) + insuranceTotal >
+                            20000
+                        }
+                        onClick={() =>
+                          void takeAction("insurance", {
+                            seats: [
+                              ...new Set(table.hands?.map((h) => h.seat) || []),
+                            ],
+                          })
+                        }
+                      >
+                        Insure all · {money(insuranceTotal)}
+                      </button>
+                    </>
+                  ) : (
+                    active &&
+                    ["hit", "stand", "double", "split", "surrender"].map(
+                      (a) => (
+                        <button
+                          key={a}
+                          className="button secondary"
+                          disabled={
+                            busy ||
+                            !!pending ||
+                            !allowed[a] ||
+                            ((a === "double" || a === "split") &&
+                              (wallet.realBalance < actionStake ||
+                                (round?.view.stake_minor || 0) + actionStake >
+                                  20000))
+                          }
+                          onClick={() => {
+                            // eslint-disable-next-line react-hooks/refs -- This request ref is accessed only by the click handler, never during render.
+                            void takeAction(a);
+                          }}
+                        >
+                          {a === "double"
+                            ? "Double +" +
+                              money(table?.hands?.[table.active ?? 0]?.bet || 0)
+                            : a === "split"
+                              ? "Split +" +
+                                money(
+                                  table?.hands?.[table.active ?? 0]?.bet || 0,
+                                )
+                              : a === "surrender"
+                                ? "Surrender"
+                                : a === "hit"
+                                  ? "Hit"
+                                  : "Stand"}
+                        </button>
+                      ),
+                    )
+                  )}
+                </div>
               </>
             ) : (
               <>
                 <h2>Texas Hold’em</h2>
-                <p>
-                  Computer opponents use their own cards and public information.
-                  No rake.
-                </p>
+
                 <div className="table-metrics" aria-label="Poker table totals">
                   <div>
                     <span>Stage</span>
@@ -726,6 +783,15 @@ export default function CashGame({ game }: { game: Original }) {
                     <strong>{money(table?.players?.[0]?.stack ?? bet)}</strong>
                   </div>
                 </div>
+                <div className="poker-opponents">
+                  {pokerPlayers.slice(1).map((p, i) => (
+                    <CashPokerSeat
+                      key={i}
+                      player={p}
+                      board={table?.board || []}
+                    />
+                  ))}
+                </div>
                 <section
                   className="poker-community"
                   aria-label="Community cards"
@@ -734,11 +800,7 @@ export default function CashGame({ game }: { game: Original }) {
                   <div className="cash-cards">
                     {Array.from({ length: 5 }, (_, i) =>
                       table?.board?.[i] ? (
-                        <PlayingCard
-                          key={i}
-                          card={table.board[i]}
-                          delay={i * 550}
-                        />
+                        <PlayingCard key={i} card={table.board[i]} delay={0} />
                       ) : (
                         <div key={i} className="community-placeholder">
                           <span>
@@ -749,57 +811,13 @@ export default function CashGame({ game }: { game: Original }) {
                     )}
                   </div>
                 </section>
-                {table?.players?.map((p, i) => (
-                  <article
-                    className={
-                      "cash-hand poker-seat " +
-                      (i === 0 ? "poker-you " : "") +
-                      (p.folded ? "poker-folded" : "")
-                    }
-                    key={i}
-                  >
-                    <h3>
-                      {i === 0 ? "You · Your cards" : p.name}
-                      {p.folded ? " · Folded" : ""}
-                    </h3>
-                    <div className="cash-cards">
-                      {p.hole.map((card, j) => (
-                        <PlayingCard
-                          key={j + ":" + (card?.rank ?? "hidden")}
-                          card={card || undefined}
-                          hidden={!card}
-                          delay={j * 550}
-                        />
-                      ))}
-                    </div>
-                    <dl className="poker-chip-totals">
-                      <div>
-                        <dt>Chips</dt>
-                        <dd>{money(p.stack)}</dd>
-                      </div>
-                      <div>
-                        <dt>Bet this street</dt>
-                        <dd>{money(p.streetBet || 0)}</dd>
-                      </div>
-                    </dl>
-                    <p className="poker-hand-name">
-                      {p.folded
-                        ? "Folded"
-                        : p.hole.every((card) => card !== null) &&
-                            p.hole.length + (table?.board?.length || 0) >= 5
-                          ? bestHand([
-                              ...(p.hole as Card[]),
-                              ...(table?.board || []),
-                            ]).name
-                          : i === 0
-                            ? "Your private cards"
-                            : "Cards hidden"}
-                    </p>
-                    <small className="poker-player-action">{p.action}</small>
-                  </article>
-                ))}
+                <CashPokerSeat
+                  player={pokerPlayers[0]}
+                  board={table?.board || []}
+                  self
+                />
                 {active && (
-                  <>
+                  <div className="poker-controls">
                     <div className="poker-turn-banner" role="status">
                       <b>{busy ? "Dealing…" : "Your turn"}</b>
                       <span>
@@ -814,7 +832,10 @@ export default function CashGame({ game }: { game: Original }) {
                         </strong>
                       </span>
                     </div>
-                    {["fold", "check", "call"].map((a) => (
+                    {[
+                      "fold",
+                      Number(allowed.toCall) > 0 ? "call" : "check",
+                    ].map((a) => (
                       <button
                         key={a}
                         className="button secondary"
@@ -838,43 +859,104 @@ export default function CashGame({ game }: { game: Original }) {
                           : a[0].toUpperCase() + a.slice(1)}
                       </button>
                     ))}
-                    <label>
-                      Total bet after raise (USD)
-                      <input
-                        type="number"
-                        min={Number(allowed.minTo) / 100}
-                        max={Number(allowed.maxTo) / 100}
-                        step="0.01"
-                        value={raise / 100}
-                        onChange={(e) =>
-                          setRaise(Math.round(Number(e.target.value) * 100))
+                    <div className="poker-raise-controls">
+                      <label>
+                        Raise to {money(raiseTo)}
+                        <input
+                          type="range"
+                          aria-label="Raise amount"
+                          disabled={busy || !!pending || !allowed.canRaise}
+                          min={raiseMin}
+                          max={raiseMax}
+                          step={1}
+                          value={raiseTo}
+                          onChange={(e) => setRaise(Number(e.target.value))}
+                        />
+                      </label>
+                      <div className="poker-raise-presets">
+                        {[
+                          ["Min", raiseMin],
+                          [
+                            "Half pot",
+                            currentStreetBet +
+                              callSize +
+                              Math.floor((potSize + callSize) / 2),
+                          ],
+                          [
+                            "Pot",
+                            currentStreetBet + callSize + potSize + callSize,
+                          ],
+                          ["All-in", raiseMax],
+                        ].map(([label, value]) => (
+                          <button
+                            key={String(label)}
+                            disabled={busy || !!pending || !allowed.canRaise}
+                            onClick={() =>
+                              setRaise(
+                                Math.max(
+                                  raiseMin,
+                                  Math.min(Number(value), raiseMax),
+                                ),
+                              )
+                            }
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        className="button secondary"
+                        disabled={
+                          busy || !!pending || !allowed.canRaise || raiseTo <= 0
                         }
-                      />
-                    </label>
-                    <button
-                      className="button secondary"
-                      disabled={busy || !!pending || !allowed.canRaise}
-                      onClick={() => void takeAction("raise", { to: raise })}
-                    >
-                      Raise to {money(raise)}
-                    </button>
-                  </>
+                        onClick={() =>
+                          void takeAction("raise", { to: raiseTo })
+                        }
+                      >
+                        Raise {money(raiseTo)}
+                      </button>
+                    </div>
+                  </div>
                 )}
                 {table?.log && (
-                  <section
+                  <details
                     className="poker-action-log"
                     aria-label="Recent table actions"
                   >
-                    <h3>Recent actions</h3>
+                    <summary>Recent actions</summary>
                     {table.log.slice(-4).map((l, i) => (
                       <p key={i}>{l}</p>
                     ))}
-                  </section>
+                  </details>
                 )}
               </>
             )}
+            {!active && game.kind !== "blackjack" && (
+              <div className="cash-toolbar">
+                <div
+                  className="table-stake-chips"
+                  aria-label={game.kind === "poker" ? "Hand buy-in" : "Stake"}
+                >
+                  {(game.kind === "poker"
+                    ? [20, 100, 200, 1000, 2000, 5000, 10000, 20000]
+                    : [20, 50, 100, 200, 500, 1000, 2000]
+                  ).map((n) => (
+                    <button
+                      key={n}
+                      disabled={busy || !!pending}
+                      aria-pressed={bet === n}
+                      onClick={() => setBet(n)}
+                    >
+                      {money(n)}
+                    </button>
+                  ))}
+                </div>
+                {dealButton}
+              </div>
+            )}
             {round?.state === "settled" && !busy && (
               <BlackjackResults
+                compact
                 key={round.id + ":" + round.revision}
                 round={{
                   totalStake: round.view.stake_minor,
@@ -883,98 +965,18 @@ export default function CashGame({ game }: { game: Original }) {
               />
             )}
           </div>
-          {round?.state === "settled" && !busy && (
-            <section
-              className="table-settlement"
-              aria-label="Last round result"
-            >
-              <div>
-                <span>Last stake</span>
-                <strong>{money(round.view.stake_minor)}</strong>
-              </div>
-              <div>
-                <span>Returned (includes stake)</span>
-                <strong>{money(round.view.returned_minor)}</strong>
-              </div>
-              <div>
-                <span>Net result</span>
-                <strong>
-                  {round.view.returned_minor >= round.view.stake_minor
-                    ? "+"
-                    : "−"}
-                  {money(
-                    Math.abs(
-                      round.view.returned_minor - round.view.stake_minor,
-                    ),
-                  )}
-                </strong>
-              </div>
-            </section>
-          )}
-          {!active && (
-            <div className="cash-toolbar">
-              {game.kind !== "blackjack" && (
-                <label>
-                  {game.kind === "poker"
-                    ? "Hand buy-in (USD)"
-                    : "Main stake (USD)"}
-                  <select
-                    disabled={busy || !!pending}
-                    value={bet}
-                    onChange={(e) => {
-                      const next = Number(e.target.value);
-                      setBet(next);
-                    }}
-                  >
-                    {(game.kind === "poker"
-                      ? [20, 100, 200, 1000, 2000, 5000, 10000, 20000]
-                      : [20, 50, 100, 200, 500, 1000, 2000]
-                    ).map((n) => (
-                      <option key={n} value={n}>
-                        {money(n)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              )}
-              <button
-                className="button primary"
-                disabled={
-                  busy ||
-                  !!pending ||
-                  !eligible ||
-                  wallet.realBalance <
-                    (game.kind === "blackjack" ? blackjackStake : bet) ||
-                  (game.kind === "blackjack" &&
-                    (blackjackStake === 0 || blackjackStake > 20000))
-                }
-                onClick={() => void start().catch(() => {})}
-              >
-                {busy
-                  ? game.kind === "roulette"
-                    ? "Spinning…"
-                    : "Dealing…"
-                  : game.kind === "roulette"
-                    ? "Spin wheel"
-                    : "Deal cards"}
-              </button>
-              {game.kind === "blackjack" && (
-                <p>
-                  Total opening stake: {money(blackjackStake)}. Maximum $200 per
-                  round, including later doubles, splits and insurance.
-                </p>
-              )}
-            </div>
-          )}
           {active && (
             <button
               className="button secondary"
               disabled={busy || !!pending}
+              aria-label={
+                game.kind === "poker"
+                  ? "Leave hand: fold and return uncommitted chips"
+                  : "End round: stand all hands and complete dealer"
+              }
               onClick={() => void takeAction("abandon")}
             >
-              {game.kind === "poker"
-                ? "Leave hand: fold and return uncommitted chips"
-                : "Finish hand: stand and let dealer complete"}
+              {game.kind === "poker" ? "Fold & leave" : "End round · stand all"}
             </button>
           )}
         </>

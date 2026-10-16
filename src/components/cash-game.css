@@ -604,3 +604,678 @@
     padding: 24px 14px 18px;
   }
 }
+
+/* Compact felt table: cards and betting spots retain their positions. */
+.spindra-extension .cash-blackjack {
+  padding: 16px;
+  background: radial-gradient(
+    ellipse at 50% 35%,
+    #175a50,
+    #0d302f 68%,
+    #112238
+  );
+  border: 6px solid #263443;
+  border-radius: 28px;
+}
+.spindra-extension .cash-blackjack > .eyebrow {
+  display: none;
+}
+.spindra-extension .cash-blackjack > h2 {
+  font-size: 21px;
+  margin: 0 0 6px;
+}
+.spindra-extension .cash-blackjack .blackjack-table-rules {
+  font-size: 11px;
+  margin: 4px 0;
+}
+.spindra-extension .cash-blackjack .blackjack-dealer {
+  max-width: 420px;
+  margin: 8px auto;
+  padding: 0;
+  background: none;
+  border: none;
+}
+.spindra-extension .cash-blackjack .blackjack-dealer .cash-cards {
+  min-height: 90px;
+  margin: 6px 0;
+}
+.spindra-extension .cash-blackjack .blackjack-score {
+  padding: 4px 9px;
+  display: inline-flex;
+  gap: 10px;
+  border-radius: 20px;
+  flex-wrap: nowrap;
+}
+.spindra-extension .cash-blackjack .blackjack-score small {
+  display: none;
+}
+.spindra-extension .cash-blackjack .blackjack-score-label {
+  font-size: 11px;
+}
+.spindra-extension .cash-blackjack .blackjack-score > strong {
+  font-size: 24px;
+}
+.spindra-extension .cash-blackjack .blackjack-turn {
+  display: none;
+}
+.spindra-extension .cash-blackjack .blackjack-betting {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+}
+.spindra-extension .cash-blackjack .blackjack-betting > h3,
+.spindra-extension .cash-blackjack .blackjack-betting > .table-help {
+  display: none;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-spots {
+  order: 0;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  overflow-x: auto;
+  padding: 6px 2px;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-spots > article {
+  padding: 6px;
+  border: 1px solid transparent;
+  background: none;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-spots h4 {
+  font-size: 11px;
+  color: #d2dfed;
+  margin: 0 0 4px;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-spots .bet-spot-active {
+  border-color: #f5c264;
+  background: #f5c2640b;
+}
+.spindra-extension .cash-blackjack .blackjack-seat-cards {
+  min-height: 132px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.spindra-extension .cash-blackjack .cash-hand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  min-width: 0;
+  max-width: 100%;
+  box-shadow: none;
+}
+.spindra-extension .cash-blackjack .cash-hand > h3 {
+  display: none;
+}
+.spindra-extension .cash-blackjack .cash-hand .blackjack-score {
+  order: 1;
+}
+.spindra-extension .cash-blackjack .cash-hand .cash-cards {
+  flex-wrap: nowrap;
+  min-height: 88px;
+  margin: 4px 0;
+  gap: 0;
+}
+.spindra-extension .cash-blackjack .playing-card {
+  width: 62px;
+  min-width: 62px;
+  height: 88px;
+  animation-duration: 350ms;
+  box-shadow: 0 3px 7px #0007;
+}
+.spindra-extension .cash-blackjack .playing-card small {
+  font-size: 18px;
+}
+.spindra-extension .cash-blackjack .playing-card strong {
+  font-size: 26px;
+}
+.spindra-extension .cash-blackjack .cash-hand .playing-card + .playing-card {
+  margin-left: -30px;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-spots .blackjack-main-bet {
+  width: 68px;
+  min-height: 52px;
+  height: 52px;
+  margin: 4px auto;
+  border-radius: 50%;
+  padding: 3px;
+  background: #0a2928;
+}
+.spindra-extension .cash-blackjack .blackjack-main-bet span {
+  font-size: 9px;
+  margin-bottom: 2px;
+}
+.spindra-extension .cash-blackjack .blackjack-main-bet strong {
+  font-size: 13px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-bets {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 6px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-bets button {
+  padding: 4px 2px;
+  min-height: 40px;
+  background: #0a2928;
+  border-radius: 18px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-bets span {
+  font-size: 9px;
+  margin: 0 0 3px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-bets strong {
+  font-size: 11px;
+}
+.spindra-extension .cash-blackjack .blackjack-chip-rack {
+  order: 1;
+  margin: 10px 0 6px;
+  gap: 8px;
+}
+.spindra-extension .cash-blackjack .blackjack-betting .blackjack-chip {
+  width: 46px;
+  height: 46px;
+  border-width: 3px;
+  font-size: 11px;
+}
+.spindra-extension
+  .cash-blackjack
+  .blackjack-chip-rack
+  > button:not(.blackjack-chip) {
+  padding: 5px 8px;
+  font-size: 11px;
+  min-height: 36px;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-tools {
+  order: 2;
+  margin: 6px 0;
+  gap: 5px;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-tools button {
+  padding: 6px 9px;
+  min-height: 32px;
+  font-size: 11px;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-tools > strong {
+  font-size: 14px;
+  padding: 4px 8px;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-notice {
+  order: 3;
+  margin: 4px 0;
+}
+.spindra-extension .cash-blackjack .blackjack-side-guide {
+  order: 4;
+  font-size: 12px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-guide summary {
+  padding: 4px 0;
+  text-align: center;
+  font-size: 11px;
+}
+.spindra-extension .cash-blackjack .blackjack-action-bar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  min-height: 46px;
+}
+.spindra-extension .cash-blackjack .blackjack-action-bar .button {
+  margin: 0;
+  padding: 10px;
+  font-size: 13px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-results {
+  flex-basis: 100%;
+  margin: 0;
+  padding: 6px 10px;
+  border: 0;
+  background: #07162580;
+  font-size: 12px;
+  color: #e6efff;
+}
+.spindra-extension .cash-blackjack .blackjack-side-results summary {
+  cursor: pointer;
+}
+.spindra-extension .cash-blackjack .blackjack-side-results p {
+  font-size: 12px;
+}
+.spindra-extension .cash-blackjack .result-compact {
+  margin: 6px 0;
+}
+.spindra-extension .cash-blackjack .result-compact .bj-result-hero {
+  max-width: 100%;
+  padding: 9px 12px;
+  border-radius: 10px;
+  box-shadow: none;
+}
+.spindra-extension .cash-blackjack .result-compact .result-accounting {
+  font-size: 11px;
+  margin: 5px 0 0;
+}
+@media (max-width: 800px) {
+  .spindra-extension .cash-blackjack .blackjack-bet-spots {
+    grid-template-columns: repeat(5, minmax(132px, 1fr));
+    scroll-snap-type: x proximity;
+  }
+  .spindra-extension .cash-blackjack .blackjack-bet-spots > article {
+    scroll-snap-align: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .cash-blackjack .playing-card {
+    animation: none;
+  }
+}
+
+.spindra-extension .cash-blackjack .blackjack-seat-cards:empty:before {
+  content: "";
+  width: 78px;
+  height: 78px;
+  border: 1px dashed #c9ddd82e;
+  border-radius: 9px;
+  transform: rotate(-7deg);
+}
+.spindra-extension .cash-blackjack .blackjack-main-bet:disabled,
+.spindra-extension .cash-blackjack .blackjack-side-bets button:disabled {
+  opacity: 0.85;
+}
+
+.spindra-extension .cash-blackjack .result-compact .bj-result-hero {
+  animation: compact-result-arrive 250ms ease-out both;
+}
+@keyframes compact-result-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .cash-blackjack .result-compact .bj-result-hero {
+    animation: none;
+  }
+}
+
+/* Poker and roulette share the compact felt-table treatment. */
+.spindra-extension .cash-poker,
+.spindra-extension .cash-roulette {
+  padding: 16px;
+  background: radial-gradient(
+    ellipse at 50% 35%,
+    #175a50,
+    #0d302f 68%,
+    #112238
+  );
+  border: 6px solid #263443;
+  border-radius: 28px;
+}
+.spindra-extension .cash-poker > .eyebrow,
+.spindra-extension .cash-roulette > .eyebrow {
+  display: none;
+}
+.spindra-extension .cash-poker h2,
+.spindra-extension .cash-roulette h2 {
+  font-size: 21px;
+  margin: 0 0 10px;
+}
+.spindra-extension .cash-table .table-metrics {
+  justify-content: center;
+  gap: 14px;
+  margin: 8px 0;
+}
+.spindra-extension .cash-table .table-metrics > div {
+  flex: 0 1 auto;
+  padding: 6px 12px;
+  border: 0;
+  background: none;
+  text-align: center;
+}
+.spindra-extension .cash-table .table-metrics span {
+  font-size: 11px;
+  margin-bottom: 3px;
+}
+.spindra-extension .cash-table .table-metrics strong {
+  font-size: 19px;
+}
+.spindra-extension .cash-poker .poker-opponents {
+  display: flex;
+  justify-content: space-around;
+  align-items: start;
+  gap: 12px;
+  min-height: 140px;
+}
+.spindra-extension .cash-poker .poker-seat {
+  display: block;
+  min-width: 0;
+  padding: 6px 12px;
+  margin: 0;
+  background: none;
+  border: 1px solid #ffffff20;
+  border-radius: 40px 40px 18px 18px;
+  text-align: center;
+}
+.spindra-extension .cash-poker .poker-seat h3 {
+  font-size: 13px;
+  margin: 2px 0 5px;
+}
+.spindra-extension .cash-poker .poker-seat .cash-cards {
+  margin: 4px 0;
+  min-height: 76px;
+  gap: 4px;
+}
+.spindra-extension .cash-poker .playing-card {
+  width: 54px;
+  min-width: 54px;
+  height: 76px;
+  animation-duration: 300ms;
+}
+.spindra-extension .cash-poker .playing-card small {
+  font-size: 16px;
+}
+.spindra-extension .cash-poker .playing-card strong {
+  font-size: 24px;
+}
+.spindra-extension .cash-poker .poker-chip-totals {
+  margin: 4px 0;
+  gap: 14px;
+}
+.spindra-extension .cash-poker .poker-chip-totals dt {
+  font-size: 10px;
+}
+.spindra-extension .cash-poker .poker-chip-totals dd {
+  font-size: 16px;
+  margin-top: 2px;
+}
+.spindra-extension .cash-poker .poker-hand-name {
+  font-size: 12px;
+  margin: 3px 0;
+}
+.spindra-extension .cash-poker .poker-player-action {
+  font-size: 11px;
+}
+.spindra-extension .cash-poker .poker-community {
+  max-width: 430px;
+  margin: 10px auto;
+  padding: 6px;
+  background: none;
+  border: 0;
+}
+.spindra-extension .cash-poker .poker-community h3 {
+  font-size: 11px;
+  margin: 0 0 6px;
+}
+.spindra-extension .cash-poker .poker-community .cash-cards {
+  margin: 0;
+  min-height: 88px;
+  grid-template-columns: repeat(5, minmax(0, 64px));
+}
+.spindra-extension .cash-poker .poker-community .playing-card {
+  width: 100%;
+  min-width: 0;
+  height: 88px;
+}
+.spindra-extension .cash-poker .community-placeholder {
+  height: 88px;
+  border-color: #c9ddd84d;
+  font-size: 11px;
+}
+.spindra-extension .cash-poker .poker-you {
+  max-width: 250px;
+  margin: 8px auto;
+  border: 1px solid #f5c264;
+}
+.spindra-extension .cash-poker .poker-you .playing-card {
+  width: 64px;
+  min-width: 64px;
+  height: 90px;
+}
+.spindra-extension .cash-poker .poker-you .playing-card small {
+  font-size: 18px;
+}
+.spindra-extension .cash-poker .poker-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+.spindra-extension .cash-poker .poker-turn-banner {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  border: 0;
+  background: none;
+  margin: 0;
+  padding: 4px;
+  font-size: 14px;
+}
+.spindra-extension .cash-poker .poker-turn-banner strong {
+  font-size: 18px;
+}
+.spindra-extension .cash-poker .button {
+  margin: 0;
+  padding: 10px 14px;
+  min-height: 40px;
+  font-size: 13px;
+}
+.spindra-extension .poker-raise-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.spindra-extension .poker-raise-controls label {
+  font-size: 12px;
+}
+.spindra-extension .poker-raise-controls input {
+  width: 150px;
+  padding: 0;
+  margin: 6px 0;
+  accent-color: #f5c264;
+}
+.spindra-extension .poker-raise-presets {
+  display: flex;
+  gap: 4px;
+}
+.spindra-extension .poker-raise-presets button {
+  padding: 7px;
+  border: 1px solid #8196b7;
+  border-radius: 8px;
+  background: #102238;
+  color: #fff;
+  font-size: 11px;
+}
+.spindra-extension .cash-poker .poker-action-log {
+  margin: 10px 0 0;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.spindra-extension .cash-poker .poker-action-log summary {
+  cursor: pointer;
+}
+.spindra-extension .cash-table .cash-toolbar {
+  margin: 12px 0 4px;
+  align-items: center;
+  gap: 10px;
+}
+.spindra-extension .table-stake-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+}
+.spindra-extension .table-stake-chips button {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 3px dashed #d2dfed;
+  border-radius: 50%;
+  background: #102238;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+}
+.spindra-extension .table-stake-chips button[aria-pressed="true"] {
+  outline: 2px solid #f5c264;
+  outline-offset: 2px;
+}
+.spindra-extension .cash-table button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.spindra-extension .cash-table button:focus-visible {
+  outline: 3px solid #fff2a4;
+  outline-offset: 2px;
+}
+.spindra-extension .cash-table .result-compact {
+  margin: 8px 0;
+}
+.spindra-extension .cash-table .result-compact .bj-result-hero {
+  padding: 9px 12px;
+  max-width: 100%;
+  box-shadow: none;
+}
+.spindra-extension .cash-table .result-compact .result-accounting {
+  font-size: 11px;
+  margin: 5px 0 0;
+}
+.spindra-extension .cash-roulette .roulette-result {
+  background: none;
+  border: 0;
+  padding: 4px;
+}
+.spindra-extension .cash-roulette .roulette-result .table-caption {
+  font-size: 11px;
+  margin: 0;
+}
+.spindra-extension .cash-roulette .roulette-result .cash-pocket {
+  width: 76px;
+  height: 76px;
+  font-size: 42px;
+  margin: 7px auto;
+  border-width: 2px;
+}
+.spindra-extension .cash-roulette .roulette-result > b {
+  font-size: 13px;
+}
+.spindra-extension .roulette-bets {
+  max-width: 760px;
+  margin: 10px auto 0;
+}
+.spindra-extension .roulette-numbers {
+  display: grid;
+  grid-template-columns: 34px repeat(12, minmax(0, 1fr));
+  gap: 3px;
+}
+.spindra-extension .roulette-bets button {
+  color: #fff;
+  border: 1px solid #ffffff75;
+  min-height: 36px;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 0;
+}
+.spindra-extension .roulette-zero {
+  grid-row: span 3;
+  background: #136c47;
+}
+.spindra-extension .roulette-bets button[aria-pressed="true"] {
+  outline: 3px solid #f5c264;
+  outline-offset: -3px;
+  box-shadow: inset 0 0 0 5px #f5c26435;
+}
+.spindra-extension .roulette-outside {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin-top: 6px;
+}
+.spindra-extension .roulette-outside button {
+  background-color: #102238;
+  padding: 9px 4px;
+  font-size: 13px;
+}
+.spindra-extension .roulette-outside .pocket-red {
+  background: #a32139;
+}
+.spindra-extension .roulette-outside .pocket-black {
+  background: #070c16;
+}
+.spindra-extension .roulette-outside small {
+  font-size: 10px;
+  margin-left: 5px;
+}
+.spindra-extension .roulette-bets .table-help {
+  font-size: 11px;
+  text-align: center;
+  margin: 7px 0;
+}
+@media (max-width: 600px) {
+  .spindra-extension .cash-poker,
+  .spindra-extension .cash-roulette {
+    padding: 10px;
+    border-width: 4px;
+  }
+  .spindra-extension .cash-poker .poker-opponents {
+    gap: 6px;
+  }
+  .spindra-extension .cash-poker .poker-seat {
+    padding: 6px;
+  }
+  .spindra-extension .cash-poker .poker-community .playing-card,
+  .spindra-extension .cash-poker .community-placeholder {
+    height: 80px;
+  }
+  .spindra-extension .roulette-numbers {
+    grid-template-columns: 25px repeat(12, minmax(0, 1fr));
+    gap: 2px;
+  }
+  .spindra-extension .roulette-numbers button {
+    font-size: 11px;
+    min-height: 34px;
+  }
+  .spindra-extension .cash-table .table-metrics > div {
+    padding: 4px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .cash-poker .playing-card {
+    animation: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .spindra-extension .roulette-bets {
+    overflow-x: auto;
+  }
+  .spindra-extension .roulette-numbers {
+    min-width: 480px;
+  }
+  .spindra-extension .roulette-numbers button {
+    font-size: 14px;
+  }
+}
+
+.spindra-extension .cash-poker .poker-controls,
+.spindra-extension .cash-poker .cash-toolbar {
+  min-height: 70px;
+}
+.spindra-extension .cash-poker .poker-you .cash-cards {
+  min-height: 90px;
+}
