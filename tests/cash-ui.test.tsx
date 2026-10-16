@@ -26,6 +26,7 @@ Object.defineProperty(globalThis, "navigator", {
 const { render, screen, fireEvent, act, cleanup } =
   await import("@testing-library/react");
 test("Cash poker requests an authenticated server round and renders player cards while hiding opponents", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
   const calls = [];
   const state = newCashRound("royal-draw", { bet: 1000 }, (n) => n - 1);
   const fixture = {
@@ -91,6 +92,10 @@ test("Cash poker requests an authenticated server round and renders player cards
     assert.equal(start.userId, undefined);
     assert.equal(start.returned_minor, undefined);
     assert.match(start.request_key, /^[0-9a-f-]{36}$/);
+    assert.equal(screen.queryAllByLabelText("Face-down card").length, 0);
+    await act(async () => {
+      t.mock.timers.tick(2000);
+    });
     assert.equal(screen.getAllByLabelText("Face-down card").length, 4);
     assert.ok(screen.getByRole("heading", { name: /You/ }));
     assert.ok(screen.getByLabelText("Community cards"));
@@ -403,6 +408,105 @@ test("Cash blackjack submits independent chip bets for each seat and shows side 
       screen.getByLabelText("Side bet results").textContent!,
       /Perfect Pair/,
     );
+    assert.equal(sessionStorage.length, 0);
+  } finally {
+    cleanup();
+    sessionStorage.clear();
+  }
+});
+
+test("Cash roulette sends the clicked number and chip stake without a post-response pause", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const calls = [];
+  const state = newCashRound(
+    "orbit-roulette",
+    { bet: 20, kind: "straight", straight: 17 },
+    (n) => n - 1,
+  );
+  const fixture = {
+    id: crypto.randomUUID(),
+    revision: 0,
+    game: "orbit-roulette",
+    state: state.phase,
+    balance_minor: 9000,
+    view: publicCash(state),
+  };
+  t.mock.method(supabase.auth, "getSession", async () => ({
+    data: { session: { access_token: "fixture-token" } },
+    error: null,
+  }));
+  t.mock.method(
+    Object.getPrototypeOf(supabase.functions),
+    "invoke",
+    async (name, options) => {
+      assert.equal(name, "cash-games");
+      assert.equal(options.headers.Authorization, "Bearer fixture-token");
+      calls.push(options.body);
+      return {
+        data:
+          options.body.action === "status"
+            ? {
+                enabled: true,
+                reason: null,
+                active: null,
+                balance_minor: 10000,
+              }
+            : fixture,
+        error: null,
+      };
+    },
+  );
+  try {
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <AuthContext.Provider
+            value={{
+              user: {
+                id: "11111111-1111-4111-8111-111111111111",
+              } as import("@supabase/supabase-js").User,
+              loading: false,
+            }}
+          >
+            <WalletProvider>
+              <CashGame
+                game={originals.find((g) => g.slug === "orbit-roulette")!}
+              />
+            </WalletProvider>
+          </AuthContext.Provider>
+        </MemoryRouter>,
+      );
+    });
+    assert.equal(screen.queryAllByRole("combobox").length, 0);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Bet on number 17", exact: true }),
+    );
+    assert.equal(
+      screen
+        .getByRole("button", { name: "Bet on number 17", exact: true })
+        .getAttribute("aria-pressed"),
+      "true",
+    );
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole("button", { name: "Spin wheel", exact: true }),
+      );
+    });
+    const start = calls.find((c) => c.action === "start");
+    assert.ok(start);
+    assert.equal(start.input.bet, 20);
+    assert.equal(start.input.kind, "straight");
+    assert.equal(start.input.straight, 17);
+    assert.equal(
+      (
+        screen.getByRole("button", {
+          name: "Spin wheel",
+          exact: true,
+        }) as HTMLButtonElement
+      ).disabled,
+      false,
+    );
+    assert.match(screen.getByLabelText("Roulette result").textContent!, /36/);
     assert.equal(sessionStorage.length, 0);
   } finally {
     cleanup();
