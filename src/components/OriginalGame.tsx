@@ -19,6 +19,8 @@ import { credits, useDemo } from "@/context/Demo";
 import { useWallet, type GameMode } from "@/context/Wallet";
 import { useAuth } from "@/context/Auth";
 import CashGame from "./CashGame";
+import MiniGames from "./MiniGames";
+import { miniRules } from "@/lib/minigames";
 import { cashApi } from "@/lib/walletApi";
 import GameModeSelect from "./GameModeSelect";
 export type Controls = {
@@ -220,6 +222,8 @@ export default function OriginalGame({ game }: { game: Original }) {
         </div>
         {gameMode === "real" ? (
           <CashGame key={user?.id || "guest"} game={game} />
+        ) : game.mini ? (
+          <MiniGames type={game.mini} controls={c} />
         ) : game.kind === "slots" ? (
           <AdvancedSlots game={game} controls={c} />
         ) : game.kind === "blackjack" ? (
@@ -237,7 +241,9 @@ export default function OriginalGame({ game }: { game: Original }) {
                 ? "You are playing with real funds. Returns include the original stake. Leaving an unfinished round forfeits committed chips; uncommitted poker chips are returned."
                 : "All wagers and payouts use practice credits. Returns include the original stake. Leaving an unfinished round forfeits committed chips; uncommitted poker chips are returned."}
             </p>
-            {game.kind === "slots" ? (
+            {game.mini ? (
+              <p>{miniRules(game.mini)}</p>
+            ) : game.kind === "slots" ? (
               <SlotRules game={game} />
             ) : game.kind === "blackjack" ? (
               <BlackjackRules />

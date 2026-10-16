@@ -125,6 +125,12 @@ const sceneTints: Record<string, number> = {
   canyon: 0,
   arcade: 2,
   map: 0,
+  storm: 4,
+  candy: 1,
+  pirate: 3,
+  honey: 0,
+  aurora: 3,
+  dragon: 6,
 };
 const jewelColors = [
   "#ffbf32",
@@ -193,6 +199,174 @@ export function SlotSymbol({ spec, index }: { spec: SlotSpec; index: number }) {
     </div>
   );
 }
+function ExpansionScenery({ scene }: { scene: string }) {
+  return (
+    <g>
+      {scene === "storm" ? (
+        <>
+          <path
+            d="M0 520L180 210L330 430L510 110L710 390L850 160L1000 450V650H0Z"
+            fill="#193c68"
+          />
+          <path d="M430 180L510 110L560 260L520 225L490 245Z" fill="#b5e9ff" />
+          <path
+            className="storm-bolt"
+            d="M710 0L580 185H650L530 360L750 150H675L810 0Z"
+            fill="#a6ecff"
+          />
+          <ellipse cx="150" cy="100" rx="240" ry="75" fill="#729ccc44" />
+          <ellipse cx="870" cy="65" rx="240" ry="95" fill="#6b8dbb66" />
+        </>
+      ) : scene === "candy" ? (
+        <>
+          <path
+            d="M0 440Q130 270 280 450T580 420T1000 400V650H0Z"
+            fill="#e06f9d66"
+          />
+          {[100, 850].map((x, i) => (
+            <g key={x}>
+              <path d={`M${x} 250V650`} stroke="#ffedd3" strokeWidth="24" />
+              <circle
+                cx={x}
+                cy="210"
+                r="110"
+                fill={i ? "#c6b2ff" : "#ffc6d3"}
+              />
+              <path
+                d={`M${x} 110q120 50 0 100q-100 50 0 100`}
+                fill="none"
+                stroke="#f04b9e"
+                strokeWidth="18"
+              />
+            </g>
+          ))}
+          <path
+            d="M0 90Q500 230 1000 90"
+            fill="none"
+            stroke="#ffedc9"
+            strokeWidth="4"
+          />
+          {Array.from({ length: 12 }, (_, i) => (
+            <path
+              key={i}
+              d={`M${i * 90} ${90 + Math.sin((i / 11) * Math.PI) * 80}l30 60l35-50Z`}
+              fill={i % 2 ? "#ffb7df" : "#9fdff0"}
+            />
+          ))}
+        </>
+      ) : scene === "pirate" ? (
+        <>
+          <circle cx="790" cy="150" r="90" fill="#99f4c555" />
+          <path d="M0 400Q250 330 500 410T1000 390V650H0Z" fill="#066c7d" />
+          <g className="pirate-vessel">
+            <path
+              d="M110 370H410L360 435H170Z"
+              fill="#443127"
+              stroke="#e5b076"
+              strokeWidth="4"
+            />
+            <path d="M255 180V390" stroke="#e4d3a9" strokeWidth="10" />
+            <path d="M270 190Q390 250 370 340H270Z" fill="#e8e3bb" />
+            <path d="M240 215L155 335H240Z" fill="#86cfbb" />
+          </g>
+          <path
+            d="M770 500Q780 280 910 200M870 225Q785 155 730 215M870 225Q940 125 1000 190M870 225Q960 240 1000 310"
+            fill="none"
+            stroke="#234d3c"
+            strokeWidth="18"
+          />
+          <path d="M0 550Q500 470 1000 560V650H0Z" fill="#be976a66" />
+        </>
+      ) : scene === "honey" ? (
+        <>
+          <circle cx="500" cy="80" r="230" fill="#ffde7955" />
+          {Array.from({ length: 24 }, (_, i) => {
+            const x = (i % 6) * 200 + (Math.floor(i / 6) % 2) * 100,
+              y = Math.floor(i / 6) * 170;
+            return (
+              <path
+                key={i}
+                d={`M${x} ${y - 90}l80 45v90l-80 45l-80-45v-90Z`}
+                fill={i % 3 ? "#cf9c2422" : "#ffd76e44"}
+                stroke="#ffe3a666"
+                strokeWidth="5"
+              />
+            );
+          })}
+          <path
+            d="M0 0H1000V100Q950 160 900 100T800 120T700 70T600 130T500 80T400 110T300 90T200 130T100 60T0 90Z"
+            fill="#e3a72a"
+          />
+        </>
+      ) : scene === "aurora" ? (
+        <>
+          <path
+            className="aurora-curtain"
+            d="M0 0Q200 450 400 90T800 210T1100 80"
+            fill="none"
+            stroke="#73f6ce55"
+            strokeWidth="170"
+          />
+          <path
+            d="M0 460L180 330L320 500L500 380L800 480L910 290L1000 470V650H0Z"
+            fill="#25434c"
+          />
+          {[120, 880].map((x) => (
+            <g key={x}>
+              <circle
+                cx={x}
+                cy="300"
+                r="100"
+                fill="#10282e"
+                stroke="#c1caaa"
+                strokeWidth="10"
+              />
+              {Array.from({ length: 12 }, (_, i) => (
+                <path
+                  key={i}
+                  d={`M${x} 215v15`}
+                  stroke="#e5c992"
+                  strokeWidth="5"
+                  transform={`rotate(${i * 30} ${x} 300)`}
+                />
+              ))}
+              <path
+                d={`M${x} 240v60l40 30`}
+                fill="none"
+                stroke="#ecdeb5"
+                strokeWidth="7"
+              />
+            </g>
+          ))}
+        </>
+      ) : (
+        <>
+          <circle cx="500" cy="240" r="190" fill="#fa805055" />
+          <path
+            d="M0 480L120 280L240 470L350 170L480 480L690 270L790 470L890 230L1000 440V650H0Z"
+            fill="#4f2641"
+          />
+          <path
+            d="M680 110q180 0 130 160l-50 80l70 80l-130-40l-40 80l-40-120l-140-20l130-80l20-110l40 65l70-45Z"
+            fill="#d9744c"
+            stroke="#ffc291"
+            strokeWidth="5"
+          />
+          <circle cx="750" cy="180" r="6" fill="#ffe7b5" />
+          {Array.from({ length: 9 }, (_, i) => (
+            <circle
+              key={i}
+              cx={100 + i * 103}
+              cy={510 + (i % 3) * 25}
+              r={5 + (i % 3)}
+              fill="#ffd08a"
+            />
+          ))}
+        </>
+      )}
+    </g>
+  );
+}
 export function SlotScenery({ scene }: { scene: string }) {
   return (
     <svg
@@ -201,7 +375,11 @@ export function SlotScenery({ scene }: { scene: string }) {
       preserveAspectRatio="xMidYMid slice"
       aria-hidden="true"
     >
-      {scene === "solar" ? (
+      {["storm", "candy", "pirate", "honey", "aurora", "dragon"].includes(
+        scene,
+      ) ? (
+        <ExpansionScenery scene={scene} />
+      ) : scene === "solar" ? (
         <>
           <circle cx="500" cy="270" r="190" fill="#ef912433" />
           <circle cx="500" cy="270" r="125" fill="#ffe79044" />

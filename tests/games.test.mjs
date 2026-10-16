@@ -15,10 +15,10 @@ import {
 import { DemoLedger } from "../src/lib/demoLedger.ts";
 const card = (rank, suit = 0) => ({ rank, suit });
 
-test("all sixteen slots have distinct artwork, mechanics, paytables and valid exact RTP", () => {
+test("all twenty-two slots have distinct artwork, mechanics, paytables and valid exact RTP", () => {
   const slots = originals.filter((g) => g.slot);
-  assert.equal(slots.length, 16);
-  assert.equal(new Set(slots.map((g) => g.slot.scene)).size, 16);
+  assert.equal(slots.length, 22);
+  assert.equal(new Set(slots.map((g) => g.slot.scene)).size, 22);
   assert.equal(
     new Set(
       slots.map((g) =>
@@ -33,9 +33,9 @@ test("all sixteen slots have distinct artwork, mechanics, paytables and valid ex
         ]),
       ),
     ).size,
-    16,
+    22,
   );
-  assert.equal(new Set(slots.map((g) => g.slot.icons.join())).size, 16);
+  assert.equal(new Set(slots.map((g) => g.slot.icons.join())).size, 22);
   for (const game of slots) {
     const s = game.slot;
     assert.ok(modelRtp(s) > 0.9 && modelRtp(s) < 1, game.name);

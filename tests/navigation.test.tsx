@@ -374,3 +374,23 @@ test("massive result banners distinguish net losses, profits, and pushes without
     cleanup();
   }
 });
+
+for (const [slug,label] of [['prism-dice','Roll dice'],['meteor-plinko','Drop meteor'],['festival-wheel','Spin wheel']]) {
+  test(slug+' locks the stake during animation and settles once; Back cancels pending visuals', async (t) => {
+    t.mock.timers.enable({apis:['setTimeout']});
+    const {router}=setup(slug);
+    fireEvent.click(screen.getByRole('button',{name:label,exact:true}));
+    assert.equal(screen.getByTestId('balance').textContent,'99900');
+    assert.equal((screen.getByRole('combobox',{name:'Total stake'}) as HTMLSelectElement).disabled,true);
+    await act(async()=>{t.mock.timers.tick(4000);});
+    assert.equal(screen.getByTestId('rounds').textContent,'1');
+    assert.equal((screen.getByRole('button',{name:label,exact:true}) as HTMLButtonElement).disabled,false);
+    fireEvent.click(screen.getByRole('button',{name:label,exact:true}));
+    await act(async()=>{void router.navigate(-1);});
+    const balance=screen.getByTestId('balance').textContent;
+    await act(async()=>{t.mock.timers.tick(10000);});
+    assert.equal(screen.getByTestId('balance').textContent,balance);
+    assert.equal(screen.getByTestId('rounds').textContent,'2');
+    cleanup();
+  });
+}

@@ -1,3 +1,4 @@
+import { originals } from "@/lib/catalog";
 import { Link } from "react-router-dom";
 import {
   Dices,
@@ -151,7 +152,7 @@ export default function AboutPage() {
               Ready to Join the Fun?
             </h2>
             <p className="text-white/80 mb-6 max-w-xl mx-auto">
-              Explore 19 playable Spindra originals with free practice credits.
+              Explore {originals.length} playable Spindra originals with free practice credits.
             </p>
             <Link
               to="/games"

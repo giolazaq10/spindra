@@ -3,6 +3,7 @@ import { modelRtp } from "./slotModels";
 import type { Game, GameCategory, Promotion } from "./types";
 export const categories: GameCategory[] = [
   ["slots", "Slots", "Coins"],
+  ["instant", "Minigames", "Zap"],
   ["live-casino", "Live Casino", "Radio"],
   ["roulette", "Roulette", "Disc3"],
   ["blackjack", "Blackjack", "Spade"],

@@ -1,4 +1,5 @@
 import { originals } from "./catalog";
+import { miniPlay } from "./minigames";
 import { modelSpin } from "./slotModels";
 import {
   randomInt,
@@ -94,7 +95,11 @@ export function newCashRound(
     stake = amount(input.bet),
     returned = 0,
     done = true;
-  if (g.kind === "slots") {
+  if (g.kind === "instant" && g.mini) {
+    const result = miniPlay(g.mini, stake, input, rng);
+    data = result;
+    returned = result.returned_minor;
+  } else if (g.kind === "slots") {
     const result = modelSpin(g.slot!, rng);
     returned = (stake / 100) * result.rate;
     data = result;

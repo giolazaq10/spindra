@@ -17,6 +17,7 @@ for (const g of originals.filter((g) => g.slot)) {
     .slice(art.indexOf("<svg"), art.lastIndexOf("</svg>") + 6)
     .replace("<svg", '<svg x="380" y="130" width="240" height="240"');
   const colors = {
+    storm: "#255b97", candy: "#de72a2", pirate: "#158776", honey: "#c39220", aurora: "#258c78", dragon: "#ac4e59",
     solar: "#ef8e21",
     city: "#5419a0",
     temple: "#267f52",
@@ -43,4 +44,4 @@ for (const g of originals.filter((g) => g.slot)) {
       .replaceAll("var(--theme)", g.color),
   );
 }
-console.log("Generated 16 distinct original slot covers.");
+console.log(`Generated ${originals.filter(g=>g.slot).length} distinct original slot covers.`);

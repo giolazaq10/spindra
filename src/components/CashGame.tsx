@@ -7,6 +7,9 @@ import type { Card } from "@/lib/engine";
 import type { SlotWin } from "@/lib/slotModels";
 import type { Controls } from "./OriginalGame";
 import AdvancedSlots from "./AdvancedSlots";
+import MiniGames from "./MiniGames";
+import type { MiniResult } from "@/lib/minigames";
+import { miniRules } from "@/lib/minigames";
 import PlayingCard from "./PlayingCard";
 import BlackjackRules from "./BlackjackRules";
 import SlotRules from "./SlotRules";
@@ -284,6 +287,25 @@ export default function CashGame({ game }: { game: Original }) {
           Finish your open round in{" "}
           <a href={"/game/" + round.game}>{round.game}</a>.
         </p>
+      ) : game.mini ? (
+        <MiniGames
+          type={game.mini}
+          controls={c}
+          serverPlay={async (input) => {
+            const r = await send({
+              action: "start",
+              body: {
+                request_key: crypto.randomUUID(),
+                game: game.slug,
+                input: { ...input, bet },
+              },
+            });
+            return {
+              ...r.view.result,
+              returned_minor: r.view.returned_minor,
+            } as unknown as MiniResult;
+          }}
+        />
       ) : game.kind === "slots" ? (
         <AdvancedSlots
           game={game}
@@ -603,7 +625,9 @@ export default function CashGame({ game }: { game: Original }) {
             stands and completes, while poker folds and returns uncommitted
             chips. Daily account loss limits apply to all cash games.
           </p>
-          {game.kind === "slots" ? (
+          {game.mini ? (
+            <p>{miniRules(game.mini)}</p>
+          ) : game.kind === "slots" ? (
             <SlotRules game={game} />
           ) : game.kind === "blackjack" ? (
             <BlackjackRules />
