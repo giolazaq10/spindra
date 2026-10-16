@@ -107,7 +107,11 @@ Deno.serve(async (req: Request) => {
       const operator = await admin(req);
       if (body.action === "admin_settings") {
         if (operator.role !== "owner") throw new Error("Owner required");
-        if (body.data?.enabled && !geoReady() && !body.data.profile_geo_fallback)
+        if (
+          body.data?.enabled &&
+          !geoReady() &&
+          !body.data.profile_geo_fallback
+        )
           throw new Error(
             "Configure the signed location gateway or enable profile-based geo verification before enabling cash play",
           );
@@ -147,6 +151,7 @@ Deno.serve(async (req: Request) => {
         throw new Error("Cash game data unavailable");
       return reply({
         enabled: eligibility === null,
+        reason: eligibility,
         balance_minor: w.data.balance_minor,
         active: active.data
           ? { ...active.data, view: active.data.public_state }

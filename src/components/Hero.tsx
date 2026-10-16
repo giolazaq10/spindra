@@ -74,7 +74,7 @@ export default function Hero() {
 
             <p className="text-lg text-gray-400 mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed">
               Explore 16 original slots, blackjack, poker, and roulette on
-              Spindra — all playable with free practice credits.
+              Spindra — playable with your real USD wallet.
             </p>
 
             {/* Jackpot counter */}

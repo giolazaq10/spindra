@@ -1,16 +1,11 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Shield, Pause, Layers, ArrowRight } from "lucide-react";
-import { credits, useDemo } from "@/context/Demo";
+import { Layers, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/Auth";
 import { supabase } from "@/lib/supabase";
-import { PracticeHistory } from "./AccountPage";
 export function ResponsiblePage() {
-  const demo = useDemo(),
-    { user } = useAuth();
-  const [limit, setLimit] = useState(String(demo.limit / 100)),
-    [confirm, setConfirm] = useState(false),
-    [cashLimit, setCashLimit] = useState("100"),
+  const { user } = useAuth();
+  const [cashLimit, setCashLimit] = useState("100"),
     [message, setMessage] = useState(""),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
@@ -33,88 +28,23 @@ export function ResponsiblePage() {
       );
     setBusy(false);
   }
-  function save(event: FormEvent) {
-    event.preventDefault();
-    demo.setLimit(Math.round(Number(limit) * 100));
-    setMessage("Session loss limit updated.");
-  }
   return (
     <section className="page reading-page">
       <span className="eyebrow">YOUR PLAY, YOUR PACE</span>
       <h1>Keep it comfortable.</h1>
       <p className="lead">
-        Games should be entertainment. Set a budget, take breaks, and never play
-        to recover losses.
+        Set a budget, take breaks, and never play to recover losses.
       </p>
-      <div className="account-grid">
-        <article className="panel">
-          <Shield />
-          <h2>Practice loss limit</h2>
-          <p>
-            Stops new stakes when your session’s net loss plus the next stake
-            would exceed the limit. Cash limits are separate.
-          </p>
-          <p className="muted">
-            Net loss: {credits(demo.loss)} / {credits(demo.limit)} credits
-          </p>
-          <form onSubmit={save}>
-            <label>
-              Limit in practice credits
-              <input
-                required
-                type="number"
-                min="1"
-                max="1000000"
-                step="1"
-                value={limit}
-                onChange={(e) => setLimit(e.target.value)}
-              />
-            </label>
-            <button className="button secondary" disabled={demo.blocked}>
-              Save limit
-            </button>
-          </form>
-        </article>
-        <article className="panel">
-          <Pause />
-          <h2>Time away</h2>
-          <p>
-            Pause practice play for this browser session. Reloading starts a new
-            session; this is separate from account self-exclusion.
-          </p>
-          {demo.blocked ? (
-            <p className="success">Play is paused.</p>
-          ) : (
-            <>
-              <label className="check">
-                <input
-                  type="checkbox"
-                  checked={confirm}
-                  onChange={(e) => setConfirm(e.target.checked)}
-                />
-                <span>Pause all practice games for this session.</span>
-              </label>
-              <button
-                className="button secondary"
-                disabled={!confirm}
-                onClick={demo.exclude}
-              >
-                Pause play
-              </button>
-            </>
-          )}
-        </article>
-      </div>
-      {user && (
+      {user ? (
         <article className="panel">
           <h2>Account protection</h2>
           <p>
-            Account loss limits can only be lowered here. Account exclusion
-            lasts at least 30 days, closes provider sessions and blocks further
-            cash wagering.
+            Daily cash loss limits can only be lowered here. Exclusion lasts at
+            least 30 days and blocks new wagers on every game. Existing rounds
+            can still settle.
           </p>
           <label>
-            Cash daily loss limit (account currency)
+            Daily loss limit (USD)
             <input
               type="number"
               min="1"
@@ -130,7 +60,7 @@ export function ResponsiblePage() {
               !Number.isFinite(Number(cashLimit)) ||
               Number(cashLimit) < 1
             }
-            onClick={() => accountAction("limit")}
+            onClick={() => void accountAction("limit")}
           >
             Lower cash limit
           </button>
@@ -140,41 +70,35 @@ export function ResponsiblePage() {
             <button
               className="button danger"
               disabled={busy}
-              onClick={() => accountAction("exclude")}
+              onClick={() => void accountAction("exclude")}
             >
               Confirm 30-day account exclusion
             </button>
           </details>
         </article>
+      ) : (
+        <Link className="button primary" to="/sign-in">
+          Sign in to manage account limits
+        </Link>
       )}
-      {message && (
-        <p className="success" role="status">
-          {message}
-        </p>
-      )}
-      {error && (
-        <p className="error" role="alert">
-          {error}
-        </p>
-      )}
+      {message && <p role="status">{message}</p>}
+      {error && <p role="alert">{error}</p>}
       <article className="panel">
         <h2>A few good habits</h2>
         <ul>
           <li>Decide how much time and money you can afford before playing.</li>
           <li>
-            A game’s theoretical RTP is a long-run average, not a promise of
-            winnings.
+            Theoretical RTP is a long-run average, not a promise of winnings.
           </li>
           <li>
             Keep gambling separate from bills, savings and borrowed money.
           </li>
           <li>
-            If play stops feeling enjoyable, step away and seek support from a
-            local gambling-support service.
+            If play stops feeling enjoyable, step away and seek local
+            gambling-support services.
           </li>
         </ul>
       </article>
-      <PracticeHistory />
     </section>
   );
 }
@@ -213,8 +137,8 @@ export function InfoPage({
         "Spindra provides original games and crypto deposits for real-money play.",
       sections: [
         [
-          "Practice play",
-          "Practice credits have no monetary value. They cannot be bought, sold, redeemed or withdrawn. Leaving an unfinished game forfeits its practice stake.",
+          "Real-balance play",
+          "Games use your real USD wallet. Stakes are reserved and returns are settled by the server. Returns include stake. Unfinished hands follow the published timeout and settlement rules.",
         ],
         [
           "Accounts",
@@ -241,7 +165,7 @@ export function InfoPage({
         ],
         [
           "Browser storage",
-          "Supabase stores session credentials in browser storage for sign-in continuity. Practice credits and session history exist only in application memory and reset when you reload.",
+          "Supabase stores session credentials in browser storage for sign-in continuity. Cash balances and round history are stored on the server and persist when you reload. Pending request IDs are stored in session storage for recovery.",
         ],
         [
           "Identity documents",
@@ -266,8 +190,8 @@ export function InfoPage({
           "Use the password recovery page. A configured Supabase project and email delivery service are required.",
         ],
         [
-          "Why did my practice balance reset?",
-          "Practice play is session-only. Reloading the website creates a new practice wallet.",
+          "Why has my balance changed?",
+          "Your USD wallet reflects deposits, withdrawals, game stakes and settled returns. View cash transactions and game history on your account page.",
         ],
         [
           "How can I contact support?",
@@ -282,7 +206,7 @@ export function InfoPage({
       sections: [
         [
           "The originals",
-          "Sixteen original slot cabinets each publish distinct rules, paytables, reel layouts and artwork. Blackjack, Texas Hold’em and roulette round out the collection.",
+          "Twenty-two original slot cabinets each publish distinct rules, paytables, reel layouts and artwork. Blackjack, Texas Hold’em and roulette round out the collection.",
         ],
         [
           "A platform in preparation",
@@ -296,7 +220,7 @@ export function InfoPage({
       sections: [
         [
           "Try the originals",
-          "Explore every original game with free practice credits. Crypto deposits enable real-balance play.",
+          "Sign in and fund your real USD wallet to play eligible original games. Account verification, location and play limits apply.",
         ],
         [
           "Future offers",

@@ -2,7 +2,7 @@
 
 Backend installation is complete on project kjzwiprswcvyubbctmqb: all four migrations, authenticated wallet API, signed IPN handler, payout worker and one-minute scheduler are installed. The sole existing account has the owner role. Payments are paused and no funds have been moved. Merge the GitHub changes to publish the wallet and admin frontend; then complete the secrets and testing steps below. Do not reapply installed migrations manually.
 
-The implementation uses NOWPayments Custody, reusable deposit addresses and a USD cash ledger. Deposits and withdrawals start paused. Original games remain practice games; enabling payment controls does not enable cash wagering.
+The implementation uses NOWPayments Custody, reusable deposit addresses and a USD cash ledger. Deposits and withdrawals start paused. Original games use the authenticated server cash path; payment controls and wagering controls remain separate.
 
 ## 1. Supabase secrets
 

@@ -1,3 +1,4 @@
+import { originals } from "@/lib/catalog";
 import { Users, Gamepad2, DollarSign, Zap } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -8,9 +9,17 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 const stats = [
-  { label: "Original Slots", value: "16", icon: "Users" },
-  { label: "Games Available", value: "19", icon: "Gamepad2" },
-  { label: "Practice Credits", value: "1,000", icon: "DollarSign" },
+  {
+    label: "Original Slots",
+    value: String(originals.filter((g) => g.slot).length),
+    icon: "Users",
+  },
+  {
+    label: "Games Available",
+    value: String(originals.length),
+    icon: "Gamepad2",
+  },
+  { label: "Wallet Currency", value: "USD", icon: "DollarSign" },
   { label: "Crypto Deposits", value: "Live", icon: "Zap" },
 ];
 

@@ -2,7 +2,7 @@
 
 ## Existing architecture
 
-Browser: React + Vite. Identity and database: Supabase. Real-money storage uses PostgreSQL integer USD minor units (100 = USD 1). Original demos have no access to cash balances and use in-memory credits; refreshing resets them.
+Browser: React + Vite. Identity and database: Supabase. Real-money storage uses PostgreSQL integer USD minor units (100 = USD 1). All playable originals use the authenticated server cash path. Balances and game history persist on the server; no practice wallet is exposed.
 
 The original game catalog is code-owned in `src/lib/catalog.ts`. The existing Supabase catalog tables are secured and retained for future external provider game ingestion. In this version the provider page deliberately shows no connected provider. Adding rows alone does not create a working provider launch path.
 

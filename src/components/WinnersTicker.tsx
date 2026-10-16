@@ -1,4 +1,6 @@
-import { useDemo, credits } from "@/context/Demo";
+import { useCashHistory } from "@/lib/useCashHistory";
+import { credits } from "@/lib/money";
+import { originals } from "@/lib/catalog";
 import { Trophy, TrendingUp } from "lucide-react";
 
 const avatarColors = [
@@ -13,15 +15,15 @@ const avatarColors = [
 ];
 
 export default function WinnersTicker() {
-  const { rounds } = useDemo();
+  const { rounds } = useCashHistory();
   const winners = rounds
-    .filter((r) => r.returned > r.bet)
+    .filter((r) => r.state === "settled" && r.returned_minor > r.stake_minor)
     .map((r) => ({
       id: r.id,
-      player: "Your session",
-      game: r.game,
-      amount: credits(r.returned) + " credits",
-      avatar: "D",
+      player: "Your account",
+      game: originals.find((g) => g.slug === r.game)?.name || r.game,
+      amount: credits(r.returned_minor) + " USD",
+      avatar: "$",
     }));
   const doubled = [...winners, ...winners];
 
@@ -39,7 +41,8 @@ export default function WinnersTicker() {
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold">
-            Your Session, <span className="text-gradient-gold">Recent Wins</span>
+            Your Account,{" "}
+            <span className="text-gradient-gold">Recent Wins</span>
           </h2>
         </div>
       </div>

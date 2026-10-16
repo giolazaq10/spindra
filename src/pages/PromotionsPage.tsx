@@ -24,8 +24,8 @@ export default function PromotionsPage() {
             Bonuses & <span className="text-gradient-pink">Promotions</span>
           </h1>
           <p className="text-gray-400 mt-3 max-w-xl mx-auto">
-            Explore original games while welcome offers and weekly rewards are being
-            prepared
+            Explore original games while welcome offers and weekly rewards are
+            being prepared
           </p>
         </div>
 
@@ -96,8 +96,8 @@ export default function PromotionsPage() {
               are live through NowPayments.
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-amber-400 mt-0.5">•</span> Practice credits
-              have no cash value and reset when you reload.
+              <span className="text-amber-400 mt-0.5">•</span> Games use your
+              real USD wallet. Stakes and returns persist on the server.
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-400 mt-0.5">•</span> Live offers

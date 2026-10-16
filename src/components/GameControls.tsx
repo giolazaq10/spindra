@@ -1,5 +1,5 @@
 import { Minus, Plus, BookOpen } from "lucide-react";
-import { credits } from "../context/Demo";
+import { credits } from "../lib/money";
 import type { Controls } from "./OriginalGame";
 
 export default function GameControls({ controls: c }: { controls: Controls }) {

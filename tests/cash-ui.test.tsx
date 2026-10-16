@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { AuthProvider } from "../src/context/Auth";
+import { AuthContext } from "../src/context/authState";
 import { WalletProvider } from "../src/context/Wallet";
 import { supabase } from "../src/lib/supabase";
 import { originals } from "../src/lib/catalog";
@@ -50,7 +50,12 @@ test("Cash poker requests an authenticated server round and renders player cards
       return {
         data:
           options.body.action === "status"
-            ? { enabled: true, reason: null, active: null }
+            ? {
+                enabled: true,
+                reason: null,
+                active: null,
+                balance_minor: 10000,
+              }
             : fixture,
         error: null,
       };
@@ -60,13 +65,20 @@ test("Cash poker requests an authenticated server round and renders player cards
     await act(async () => {
       render(
         <MemoryRouter>
-          <AuthProvider>
+          <AuthContext.Provider
+            value={{
+              user: {
+                id: "11111111-1111-4111-8111-111111111111",
+              } as import("@supabase/supabase-js").User,
+              loading: false,
+            }}
+          >
             <WalletProvider>
               <CashGame
                 game={originals.find((g) => g.slug === "royal-draw")!}
               />
             </WalletProvider>
-          </AuthProvider>
+          </AuthContext.Provider>
         </MemoryRouter>,
       );
     });
@@ -88,27 +100,101 @@ test("Cash poker requests an authenticated server round and renders player cards
   }
 });
 
-for (const [slug,label] of [['prism-dice','Roll dice'],['meteor-plinko','Drop meteor'],['festival-wheel','Spin wheel']]) {
-  test(slug+' sends only input to the authenticated cash endpoint and uses its saved return',async(t)=>{
-    t.mock.timers.enable({apis:['setTimeout']});
-    const calls=[];
-    const state=newCashRound(slug,{bet:100},()=>0);
-    const fixture={id:crypto.randomUUID(),revision:0,game:slug,state:'settled',balance_minor:10000-100+state.returned_minor,view:publicCash(state)};
-    t.mock.method(supabase.auth,'getSession',async()=>({data:{session:{access_token:'fixture-token'}},error:null}));
-    t.mock.method(Object.getPrototypeOf(supabase.functions),'invoke',async(name,options)=>{
-      assert.equal(name,'cash-games');assert.equal(options.headers.Authorization,'Bearer fixture-token');calls.push(options.body);
-      return {data:options.body.action==='status'?{enabled:true,reason:null,active:null}:fixture,error:null};
-    });
-    try {
-      await act(async()=>{render(<MemoryRouter><AuthProvider><WalletProvider><CashGame game={originals.find(g=>g.slug===slug)!}/></WalletProvider></AuthProvider></MemoryRouter>);});
-      await act(async()=>{fireEvent.click(screen.getByRole('button',{name:label,exact:true}));});
-      const start=calls.find(c=>c.action==='start');
-      assert.equal(start.game,slug);assert.equal(start.input.bet,100);
-      assert.deepEqual(Object.keys(start.input).sort(),['bet','over','threshold']);
-      assert.match(start.request_key,/^[0-9a-f-]{36}$/);
-      await act(async()=>{t.mock.timers.tick(4000);});
-      assert.ok(screen.getByText((state.returned_minor/100).toFixed(2)+' · '+(state.returned_minor/100).toFixed(2)+'×'));
-      assert.equal(sessionStorage.length,0);
-    } finally {cleanup();sessionStorage.clear();}
-  });
+for (const [slug, label] of [
+  ["prism-dice", "Roll dice"],
+  ["meteor-plinko", "Drop meteor"],
+  ["festival-wheel", "Spin wheel"],
+]) {
+  test(
+    slug +
+      " sends only input to the authenticated cash endpoint and uses its saved return",
+    async (t) => {
+      t.mock.timers.enable({ apis: ["setTimeout"] });
+      const calls = [];
+      const state = newCashRound(slug, { bet: 100 }, () => 0);
+      const fixture = {
+        id: crypto.randomUUID(),
+        revision: 0,
+        game: slug,
+        state: "settled",
+        balance_minor: 10000 - 100 + state.returned_minor,
+        view: publicCash(state),
+      };
+      t.mock.method(supabase.auth, "getSession", async () => ({
+        data: { session: { access_token: "fixture-token" } },
+        error: null,
+      }));
+      t.mock.method(
+        Object.getPrototypeOf(supabase.functions),
+        "invoke",
+        async (name, options) => {
+          assert.equal(name, "cash-games");
+          assert.equal(options.headers.Authorization, "Bearer fixture-token");
+          calls.push(options.body);
+          return {
+            data:
+              options.body.action === "status"
+                ? {
+                    enabled: true,
+                    reason: null,
+                    active: null,
+                    balance_minor: 10000,
+                  }
+                : fixture,
+            error: null,
+          };
+        },
+      );
+      try {
+        await act(async () => {
+          render(
+            <MemoryRouter>
+              <AuthContext.Provider
+                value={{
+                  user: {
+                    id: "11111111-1111-4111-8111-111111111111",
+                  } as import("@supabase/supabase-js").User,
+                  loading: false,
+                }}
+              >
+                {" "}
+                <WalletProvider>
+                  <CashGame game={originals.find((g) => g.slug === slug)!} />
+                </WalletProvider>
+              </AuthContext.Provider>
+            </MemoryRouter>,
+          );
+        });
+        await act(async () => {
+          fireEvent.click(
+            screen.getByRole("button", { name: label, exact: true }),
+          );
+        });
+        const start = calls.find((c) => c.action === "start");
+        assert.equal(start.game, slug);
+        assert.equal(start.input.bet, 100);
+        assert.deepEqual(Object.keys(start.input).sort(), [
+          "bet",
+          "over",
+          "threshold",
+        ]);
+        assert.match(start.request_key, /^[0-9a-f-]{36}$/);
+        await act(async () => {
+          t.mock.timers.tick(4000);
+        });
+        assert.ok(
+          screen.getByText(
+            (state.returned_minor / 100).toFixed(2) +
+              " · " +
+              (state.returned_minor / 100).toFixed(2) +
+              "×",
+          ),
+        );
+        assert.equal(sessionStorage.length, 0);
+      } finally {
+        cleanup();
+        sessionStorage.clear();
+      }
+    },
+  );
 }

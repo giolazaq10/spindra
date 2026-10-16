@@ -37,8 +37,8 @@ export default function Footer() {
               Ready to Win Big?
             </h2>
             <p className="text-white/80 mb-6 max-w-xl mx-auto">
-              Create your account and explore Spindra originals with free
-              practice credits.
+              Create your account and explore Spindra originals with your real
+              USD wallet.
             </p>
             <Link
               to="/register"

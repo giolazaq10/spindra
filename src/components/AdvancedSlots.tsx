@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { RotateCw, Trophy } from "lucide-react";
 import type { Original } from "../lib/catalog";
-import { modelSpin, type SlotWin } from "../lib/slotModels";
+import { type SlotWin } from "../lib/slotModels";
 import AnimatedCredits from "./AnimatedCredits";
-import { credits } from "../context/Demo";
+import { credits } from "../lib/money";
 import type { Controls } from "./OriginalGame";
 import GameControls from "./GameControls";
 import { SlotScenery, SlotSymbol } from "./SlotArt";
@@ -15,7 +15,7 @@ export default function AdvancedSlots({
 }: {
   game: Original;
   controls: Controls;
-  serverSpin?: (stake: number) => Promise<{
+  serverSpin: (stake: number) => Promise<{
     grid: number[][];
     wins: SlotWin[];
     rate: number;
@@ -49,10 +49,10 @@ export default function AdvancedSlots({
     setMoving(Array(s.reels).fill(true));
     setRound((n) => n + 1);
     setLastStake(c.bet);
-    let result: ReturnType<typeof modelSpin> & { returned_minor?: number };
+    let result: Awaited<ReturnType<typeof serverSpin>>;
     const stake = c.bet;
     try {
-      result = serverSpin ? await serverSpin(stake) : modelSpin(s);
+      result = await serverSpin(stake);
     } catch (e) {
       lock.current = false;
       setMoving(Array(s.reels).fill(false));
@@ -71,9 +71,7 @@ export default function AdvancedSlots({
             setGrid((g) => g.map((old, i) => (i === col ? column : old)));
             setMoving((m) => m.map((old, i) => (i === col ? false : old)));
             if (col === s.reels - 1) {
-              const payout = serverSpin
-                ? result.returned_minor!
-                : (stake / 100) * result.rate;
+              const payout = result.returned_minor;
               setWins(result.wins);
               setReturned(payout);
               lock.current = false;
@@ -245,7 +243,7 @@ export default function AdvancedSlots({
         <button
           className="spin-control"
           onClick={spin}
-          disabled={spinning}
+          disabled={spinning || c.busy || c.canStart === false}
           aria-label={spinning ? "Spinning reels" : "Spin reels"}
         >
           <RotateCw size={30} />

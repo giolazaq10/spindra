@@ -90,29 +90,19 @@ export default function BlackjackRules() {
           ))}
         </tbody>
       </table>
-      <h4>Betting & table controls</h4>
+      <h4>Cash stakes and settlement</h4>
       <p>
-        Select a chip and click a main or side-bet spot to add it. Main stakes
-        are 1–200 whole demo credits. Each side stake must be no greater than
-        its own main stake. Remove mode clears a selected spot; removing a main
-        bet also clears its side bets. Undo reverses the last betting edit,
-        Rebet restores the last starting bets, and Increase bets doubles all
-        starting bets within limits. Clear bets empties the table.
+        Main and side stakes use whole USD amounts. Each side stake must not
+        exceed its own main stake. Total stakes across the round, including
+        insurance, doubles and splits, are limited to $200. Extra stakes require
+        sufficient wallet funds and available daily loss budget.
       </p>
       <p>
-        Normal dealing is the default. Turbo is optional and can be changed only
-        between rounds. Sound, two-card play hints, fullscreen, and recent round
-        history are available in the toolbar. Hints use only your current hand
-        and the dealer’s visible card; they are a guide and never guarantee a
-        win.
-      </p>
-      <p>
-        All amounts use demo credits with no cash value. Profit odds exclude the
-        original stake; displayed returns include it. Side results are
-        calculated from initial cards and credited with main and insurance
-        returns when the round ends. Leaving an unfinished round forfeits
-        committed main bets; already resolved side-bet and surrender returns are
-        retained. Cash wagering is disabled.
+        Side results use the initial cards and are credited with main and
+        insurance returns when the round settles. Returns include stake. Your
+        dealer and hidden cards remain on the server. Leaving the page does not
+        cancel or refund a wager; the saved round can be resumed. After 15
+        minutes the server stands remaining hands and completes the dealer.
       </p>
     </div>
   );

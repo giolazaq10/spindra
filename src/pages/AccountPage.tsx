@@ -1,16 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import {
-  LogOut,
-  Wallet,
-  ShieldCheck,
-  Clock,
-  ArrowRight,
-  RefreshCw,
-  Plus,
-} from "lucide-react";
+import { LogOut, Wallet, ShieldCheck, ArrowRight, Plus } from "lucide-react";
 import { useAuth } from "@/context/Auth";
-import { credits, useDemo } from "@/context/Demo";
+import { credits } from "@/lib/money";
+import CashHistory from "@/components/CashHistory";
 import { useWallet } from "@/context/Wallet";
 import { supabase } from "@/lib/supabase";
 import AccountSecurity from "@/components/AccountSecurity";
@@ -31,7 +24,6 @@ type Entry = {
 };
 export default function AccountPage() {
   const { user, loading } = useAuth(),
-    demo = useDemo(),
     wallet = useWallet(),
     location = useLocation(),
     navigate = useNavigate();
@@ -209,22 +201,6 @@ export default function AccountPage() {
             Account help <ArrowRight size={15} />
           </Link>
         </article>
-        <article className="panel account-tile">
-          <Clock />
-          <span className="eyebrow">PRACTICE WALLET</span>
-          <h2>{credits(demo.balance)} credits</h2>
-          <p>
-            Session-only practice credits. They cannot be deposited, transferred
-            or withdrawn.
-          </p>
-          <button
-            className="button secondary"
-            disabled={demo.blocked}
-            onClick={demo.reset}
-          >
-            <RefreshCw size={15} /> Reset balance
-          </button>
-        </article>
       </div>
       <div className="panel account-details">
         <AccountSecurity />
@@ -295,48 +271,7 @@ export default function AccountPage() {
           <p className="muted">No cash transactions to display.</p>
         )}
       </div>
-      <PracticeHistory />
+      <CashHistory />
     </section>
-  );
-}
-export function PracticeHistory() {
-  const { rounds } = useDemo();
-  return (
-    <div className="panel history">
-      <h2>Practice session history</h2>
-      <p className="muted">
-        This browser session only. Returned amounts include the stake.
-      </p>
-      {rounds.length ? (
-        <div className="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Game</th>
-                <th>Stake</th>
-                <th>Returned</th>
-                <th>Net</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rounds.map((r) => (
-                <tr key={r.id}>
-                  <td>{new Date(r.time).toLocaleTimeString()}</td>
-                  <td>{r.game}</td>
-                  <td>{credits(r.bet)}</td>
-                  <td>{credits(r.returned)}</td>
-                  <td className={r.returned >= r.bet ? "success" : "muted"}>
-                    {credits(r.returned - r.bet)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="muted">Play an original game to see your rounds here.</p>
-      )}
-    </div>
   );
 }

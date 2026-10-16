@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
-  miniPlay,
   miniRules,
   plinkoPays,
   wheelPays,
@@ -16,7 +15,7 @@ export default function MiniGames({
 }: {
   type: MiniKind;
   controls: Controls;
-  serverPlay?: (input: Record<string, unknown>) => Promise<MiniResult>;
+  serverPlay: (input: Record<string, unknown>) => Promise<MiniResult>;
 }) {
   const [chance, setChance] = useState(50),
     [over, setOver] = useState(false),
@@ -43,12 +42,9 @@ export default function MiniGames({
     setBusy(true);
     setStep(-1);
     setResult(null);
-    const stake = c.bet;
     try {
       const input = { threshold: Math.round(chance * 100), over };
-      const next = serverPlay
-        ? await serverPlay(input)
-        : miniPlay(type, stake, input);
+      const next = await serverPlay(input);
       if (!mounted.current) return;
       if (type === "wheel")
         setTurn(
@@ -209,7 +205,7 @@ export default function MiniGames({
         </div>
         <button
           className="button primary mini-play"
-          disabled={busy || c.busy}
+          disabled={busy || c.busy || c.canStart === false}
           onClick={() => void play()}
         >
           {busy

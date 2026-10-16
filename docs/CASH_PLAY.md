@@ -1,6 +1,6 @@
 # Spindra original cash games
 
-The original slots, blackjack, Hold’em and roulette now have a server-side cash path. Browser practice games remain separate. Cash outcomes use the published game math and cryptographic rejection-sampled RNG on the server. This implementation is not a third-party game/RNG certification.
+The original slots, blackjack, Hold’em and roulette now have a server-side cash path. The website is cash-only: every playable game uses the authenticated USD wallet. There is no practice balance, reset control or mode selector. Cash outcomes use the published game math and cryptographic rejection-sampled RNG on the server. This implementation is not a third-party game/RNG certification.
 
 ## Installed pieces
 
