@@ -37,13 +37,23 @@ export default function AdvancedSlots({
     [round, setRound] = useState(0),
     [lastStake, setLastStake] = useState(c.bet);
   const lock = useRef(false),
+    mounted = useRef(true),
     timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  useEffect(() => {
+    mounted.current = true;
+    const scheduled = timers.current;
+    return () => {
+      mounted.current = false;
+      scheduled.forEach(clearTimeout);
+    };
+  }, []);
   const spinning = moving.some(Boolean);
   async function spin() {
     if (lock.current || !c.start()) return;
     lock.current = true;
+    const startedAt = performance.now();
     timers.current.forEach(clearTimeout);
+    timers.current.length = 0;
     setWins([]);
     setReturned(0);
     setMoving(Array(s.reels).fill(true));
@@ -54,6 +64,7 @@ export default function AdvancedSlots({
     try {
       result = await serverSpin(stake);
     } catch (e) {
+      if (!mounted.current) return;
       lock.current = false;
       setMoving(Array(s.reels).fill(false));
       c.finish(0);
@@ -64,6 +75,9 @@ export default function AdvancedSlots({
       );
       return;
     }
+    if (!mounted.current) return;
+    // Network settlement and reel motion run together, not one after another.
+    const elapsed = performance.now() - startedAt;
     result.grid.forEach((column, col) =>
       timers.current.push(
         setTimeout(
@@ -78,9 +92,7 @@ export default function AdvancedSlots({
               c.finish(payout);
             }
           },
-          1100 +
-            col *
-              (s.scene === "train" ? 420 : s.scene === "arcade" ? 280 : 340),
+          Math.max(0, 550 + col * 90 - elapsed),
         ),
       ),
     );

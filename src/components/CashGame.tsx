@@ -135,7 +135,6 @@ export default function CashGame({ game }: { game: Original }) {
       if (alive.current) {
         setRound(response);
         acceptServerBalance(response.balance_minor);
-        wallet.refresh();
         setMessage(
           response.state === "settled"
             ? `Round settled. Stake ${money(response.view.stake_minor)}; returned ${money(response.view.returned_minor)} (includes stake).`
@@ -164,12 +163,11 @@ export default function CashGame({ game }: { game: Original }) {
       if (alive.current) {
         const cards =
           game.kind === "blackjack" ? 8 : game.kind === "poker" ? 6 : 1;
-        timer.current = setTimeout(
-          () => {
+        if (game.kind === "slots") setBusy(false);
+        else
+          timer.current = setTimeout(() => {
             if (alive.current) setBusy(false);
-          },
-          game.kind === "slots" ? 0 : cards * 450,
-        );
+          }, cards * 450);
       }
     }
   }
@@ -246,7 +244,6 @@ export default function CashGame({ game }: { game: Original }) {
     },
     finish: () => {
       setBusy(false);
-      wallet.refresh();
     },
     setMessage,
     balance: wallet.realBalance,
