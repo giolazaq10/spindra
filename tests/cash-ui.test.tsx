@@ -93,6 +93,11 @@ test("Cash poker requests an authenticated server round and renders player cards
     assert.match(start.request_key, /^[0-9a-f-]{36}$/);
     assert.equal(screen.getAllByLabelText("Face-down card").length, 4);
     assert.ok(screen.getByRole("heading", { name: /You/ }));
+    assert.ok(screen.getByLabelText("Community cards"));
+    assert.ok(screen.getByLabelText("Poker table totals"));
+    assert.ok(screen.getByText("Your chips"));
+    assert.ok(screen.getByText("Your private cards"));
+    assert.equal(screen.getAllByText("Cards hidden").length, 2);
     assert.equal(sessionStorage.length, 0);
   } finally {
     cleanup();
