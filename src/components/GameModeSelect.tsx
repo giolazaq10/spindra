@@ -11,6 +11,7 @@ type Props = {
   currency: string;
   gameName: string;
   realEnabled: boolean;
+  realReason?: string;
 };
 
 export default function GameModeSelect({
@@ -22,6 +23,7 @@ export default function GameModeSelect({
   currency,
   gameName,
   realEnabled,
+  realReason,
 }: Props) {
   if (!open) return null;
 
@@ -103,7 +105,7 @@ export default function GameModeSelect({
                 </p>
                 {!realEnabled && (
                   <p className="text-xs text-gray-500 mt-1">
-                    Deposit funds to enable real play
+                    {realReason || "Cash play is currently unavailable"}
                   </p>
                 )}
               </div>

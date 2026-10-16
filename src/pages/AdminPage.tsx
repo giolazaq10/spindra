@@ -8,6 +8,7 @@ import {
   type Withdrawal,
   type CashEvent,
 } from "@/lib/walletApi";
+import CashOperations from "@/components/CashOperations";
 import AccountSecurity from "@/components/AccountSecurity";
 import "../bank.css";
 type Player = {
@@ -169,6 +170,7 @@ export default function AdminPage() {
               "assets",
               "settings",
               "integrations",
+              "cash games",
               "ledger",
               "audit",
             ].map((t) => (
@@ -181,6 +183,7 @@ export default function AdminPage() {
               </button>
             ))}
           </nav>
+          {tab === "cash games" && <CashOperations />}
           {tab === "overview" && (
             <article className="panel">
               <h2>Payments overview</h2>

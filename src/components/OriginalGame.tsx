@@ -18,6 +18,8 @@ import AdvancedSlots from "./AdvancedSlots";
 import { credits, useDemo } from "@/context/Demo";
 import { useWallet, type GameMode } from "@/context/Wallet";
 import { useAuth } from "@/context/Auth";
+import CashGame from "./CashGame";
+import { cashApi } from "@/lib/walletApi";
 import GameModeSelect from "./GameModeSelect";
 export type Controls = {
   bet: number;
@@ -64,10 +66,11 @@ export default function OriginalGame({ game }: { game: Original }) {
     },
     [game.name],
   );
-  const activeBalance = gameMode === "practice" ? demo.balance : wallet.realBalance;
+  const activeBalance =
+    gameMode === "practice" ? demo.balance : wallet.realBalance;
   function start(extra = bet) {
     if (gameMode === "real") {
-      setMessage("Real balance play requires a funded wallet. Deposit to enable.");
+      setMessage("Cash play is processed by the server game component.");
       return false;
     }
     const id = wager.current?.id || demoRoundId();
@@ -127,7 +130,44 @@ export default function OriginalGame({ game }: { game: Original }) {
     modeLabel: gameMode === "real" ? "REAL" : "PRACTICE",
   };
 
-  const realEnabled = user !== null && wallet.realBalance > 0;
+  const [cashStatus, setCashStatus] = useState<{
+    owner: string;
+    enabled: boolean;
+    resume?: boolean;
+    reason: string;
+  }>({
+    owner: "",
+    enabled: false,
+    reason: "Sign in to check cash eligibility.",
+  });
+  useEffect(() => {
+    if (!user) return;
+    let alive = true;
+    cashApi<{ enabled: boolean; reason: string | null; active?: unknown }>(
+      "status",
+    )
+      .then((r) => {
+        if (alive)
+          setCashStatus({
+            owner: user.id,
+            enabled: r.enabled,
+            resume: !!r.active,
+            reason: r.reason || "Fund your cash wallet to play.",
+          });
+      })
+      .catch((e) => {
+        if (alive)
+          setCashStatus({ owner: user.id, enabled: false, reason: e.message });
+      });
+    return () => {
+      alive = false;
+    };
+  }, [user]);
+  const realEnabled =
+    !!user &&
+    cashStatus.owner === user.id &&
+    ((cashStatus.enabled && wallet.realBalance > 0) ||
+      cashStatus.resume === true);
 
   return (
     <section className="page game-page">
@@ -157,6 +197,11 @@ export default function OriginalGame({ game }: { game: Original }) {
         currency={wallet.currency}
         gameName={game.name}
         realEnabled={realEnabled}
+        realReason={
+          cashStatus.owner === user?.id
+            ? cashStatus.reason
+            : "Sign in to check cash eligibility."
+        }
       />
 
       <div
@@ -173,7 +218,9 @@ export default function OriginalGame({ game }: { game: Original }) {
           </span>
           <span>{rtpLabel(game)}</span>
         </div>
-        {game.kind === "slots" ? (
+        {gameMode === "real" ? (
+          <CashGame key={user?.id || "guest"} game={game} />
+        ) : game.kind === "slots" ? (
           <AdvancedSlots game={game} controls={c} />
         ) : game.kind === "blackjack" ? (
           <Blackjack controls={c} />

@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "vite",
     "test": "node --import ./scripts/register-typescript.mjs --test tests/*.test.mjs tests/*.test.tsx",
-    "build": "npm run artwork && vite build",
+    "build": "npm run artwork && npm run cash:bundle && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "artwork": "node --import ./scripts/register-typescript.mjs scripts/generate-covers.mjs"
+    "artwork": "node --import ./scripts/register-typescript.mjs scripts/generate-covers.mjs",
+    "cash:bundle": "node scripts/bundle-cash.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
@@ -27,6 +28,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "autoprefixer": "^10.6.1",
+    "esbuild": "0.28.2",
     "eslint": "^9.39.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
