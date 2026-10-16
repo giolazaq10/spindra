@@ -52,25 +52,15 @@ Database functions lock the player and wallet, write balances and events in one 
 
 This callback contract is a reference scaffold; it is not a turnkey adapter for any named provider. It needs rate limiting, protocol-specific error mapping, key rotation, network controls, delivery monitoring, reconciliation and multi-session/concurrency/load testing in a real Supabase staging environment.
 
-## Crypto payments (future)
+## Crypto payments
 
-There is no deposit address generator, payment checkout, withdrawal execution or payment webhook in this version. Buttons do not suggest funds can be accepted.
-
-A reviewed payment integration needs:
-
-- Explicit asset/network pairs, address ownership, precision and integer/decimal handling per asset.
-- Server-issued quotes and exchange-rate expiry when crediting the USD wallet.
-- Authenticated payment notifications, unique chain/transaction/log identifiers and account mapping.
-- Network confirmation thresholds, chain reorganization handling, sanctions/AML checks and suspicious-transaction review.
-- Append-only deposit/withdrawal ledger and exact idempotency keys. Never credit based on a browser success message.
-- Withdrawal reservation, limits, compliance checks, approvals, provider execution, failure release and reconciliation.
-  The provider wallet function supports casino rounds only and must not be repurposed as an unauthenticated deposit endpoint.
+NOWPayments custody routes, signed payment notifications, wallet crediting, withdrawal reservations and automated payout workers are implemented. See `PAYMENTS.md` for setup and operational requirements. Payment settings remain separate from cash wagering.
 
 ## Original games
 
 Each of the 16 slots now has an independent published specification: grid size, fixed lines or adjacent-reel ways, paying direction, minimum match, symbol weights, paytable and optional scatter awards. Theoretical RTP includes line/ways and scatter awards, and payouts use integer minor demo credits. Scenery and vector symbol artwork differ between cabinets. Eight-deck, five-spot blackjack with H17, initial-card 21+3/Perfect Pair side bets, per-hand insurance and late surrender, no-limit Texas Hold’em against two local computer opponents and European roulette run locally. Demo round identifiers make settlement idempotent; leaving a poker hand refunds uncommitted chips and folds committed chips.
 
-Moving originals to cash play requires an authoritative game server with persistent round state and idempotent commands, audited RNG and game math, wallet reservations/settlement, reconnection recovery, exclusion/limit enforcement and certification appropriate to the selected market. Never trust client-generated outcomes, stake values or winnings for cash settlement.
+A separate authoritative server path now supports these originals with persistent private state, idempotent commands, wallet reservations/settlement, recovery, shared daily loss limits and signed location assertions. See `CASH_PLAY.md` for Bolt Hosting setup and activation. Cash remains paused until configured; independent certification and operator acceptance are separate release requirements. Client outcomes are never accepted for cash settlement.
 
 ## Verification limits
 

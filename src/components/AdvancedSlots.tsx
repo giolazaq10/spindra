@@ -10,26 +10,39 @@ import { SlotScenery, SlotSymbol } from "./SlotArt";
 export default function AdvancedSlots({
   game,
   controls: c,
+  serverSpin,
+  initialResult,
 }: {
   game: Original;
   controls: Controls;
+  serverSpin?: (
+    stake: number,
+  ) => Promise<{
+    grid: number[][];
+    wins: SlotWin[];
+    rate: number;
+    returned_minor: number;
+  }>;
+  initialResult?: { grid: number[][]; wins: SlotWin[]; returned_minor: number };
 }) {
   const s = game.slot!;
-  const [grid, setGrid] = useState(() =>
-    Array.from({ length: s.reels }, (_, col) =>
-      Array.from({ length: s.rows }, (_, row) => (col + row) % 7),
-    ),
+  const [grid, setGrid] = useState(
+    () =>
+      initialResult?.grid ||
+      Array.from({ length: s.reels }, (_, col) =>
+        Array.from({ length: s.rows }, (_, row) => (col + row) % 7),
+      ),
   );
   const [moving, setMoving] = useState<boolean[]>(Array(s.reels).fill(false)),
-    [wins, setWins] = useState<SlotWin[]>([]),
-    [returned, setReturned] = useState(0),
+    [wins, setWins] = useState<SlotWin[]>(initialResult?.wins || []),
+    [returned, setReturned] = useState(initialResult?.returned_minor || 0),
     [round, setRound] = useState(0),
     [lastStake, setLastStake] = useState(c.bet);
   const lock = useRef(false),
     timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
   const spinning = moving.some(Boolean);
-  function spin() {
+  async function spin() {
     if (lock.current || !c.start()) return;
     lock.current = true;
     timers.current.forEach(clearTimeout);
@@ -38,8 +51,21 @@ export default function AdvancedSlots({
     setMoving(Array(s.reels).fill(true));
     setRound((n) => n + 1);
     setLastStake(c.bet);
-    const result = modelSpin(s),
-      stake = c.bet;
+    let result: ReturnType<typeof modelSpin> & { returned_minor?: number };
+    const stake = c.bet;
+    try {
+      result = serverSpin ? await serverSpin(stake) : modelSpin(s);
+    } catch (e) {
+      lock.current = false;
+      setMoving(Array(s.reels).fill(false));
+      c.finish(0);
+      c.setMessage(
+        e instanceof Error
+          ? e.message
+          : "Unable to confirm spin. Recover the pending request before playing again.",
+      );
+      return;
+    }
     result.grid.forEach((column, col) =>
       timers.current.push(
         setTimeout(
@@ -47,7 +73,9 @@ export default function AdvancedSlots({
             setGrid((g) => g.map((old, i) => (i === col ? column : old)));
             setMoving((m) => m.map((old, i) => (i === col ? false : old)));
             if (col === s.reels - 1) {
-              const payout = (stake / 100) * result.rate;
+              const payout = serverSpin
+                ? result.returned_minor!
+                : (stake / 100) * result.rate;
               setWins(result.wins);
               setReturned(payout);
               lock.current = false;

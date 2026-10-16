@@ -13,3 +13,7 @@ verify_jwt = false
 verify_jwt = false
 [functions.wallet-worker]
 verify_jwt = false
+
+[functions.cash-games]
+# User JWT or private worker key is verified inside the handler.
+verify_jwt = false
