@@ -288,6 +288,7 @@ for (const slug of ["astra-cascade", "copper-lock", "nitro-sevens"])
   );
 
 test("Cash blackjack submits independent chip bets for each seat and shows side results", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
   const calls = [];
   const state = newCashRound(
     "noir-blackjack",
@@ -389,6 +390,10 @@ test("Cash blackjack submits independent chip bets for each seat and shows side 
       { main: 20, three: 0, pair: 0 },
       ...Array.from({ length: 3 }, () => ({ main: 0, three: 0, pair: 0 })),
     ]);
+    assert.equal(screen.queryByLabelText("Side bet results"), null);
+    await act(async () => {
+      t.mock.timers.tick(2300);
+    });
     assert.ok(screen.getByLabelText("Side bet results"));
     assert.match(
       screen.getByLabelText("Side bet results").textContent!,

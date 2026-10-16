@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { validateBets, type SeatBet } from "../lib/blackjack";
 const money = (n: number) => "$" + (n / 100).toFixed(2);
 export default function BlackjackBetting({
@@ -7,17 +7,30 @@ export default function BlackjackBetting({
   onChange,
   balance,
   disabled,
+  activeSeat,
+  renderHand,
 }: {
   bets: SeatBet[];
   previous: SeatBet[] | null;
   onChange: (bets: SeatBet[]) => void;
   balance: number;
   disabled: boolean;
+  activeSeat?: number;
+  renderHand?: (seat: number) => ReactNode;
 }) {
   const [chip, setChip] = useState(20),
     [remove, setRemove] = useState(false),
     [history, setHistory] = useState<SeatBet[][]>([]),
     [notice, setNotice] = useState("");
+  const spotRefs = useRef<(HTMLElement | null)[]>([]);
+  useEffect(() => {
+    if (activeSeat !== undefined)
+      spotRefs.current[activeSeat]?.scrollIntoView?.({
+        block: "nearest",
+        inline: "center",
+        behavior: "smooth",
+      });
+  }, [activeSeat]);
   const total = bets.reduce((n, b) => n + b.main + b.three + b.pair, 0);
   function change(next: SeatBet[]) {
     if (disabled) return;
@@ -81,8 +94,18 @@ export default function BlackjackBetting({
       </div>
       <div className="blackjack-bet-spots">
         {bets.map((b, i) => (
-          <article key={i} className={b.main ? "bet-spot-funded" : ""}>
+          <article
+            ref={(node) => {
+              spotRefs.current[i] = node;
+            }}
+            key={i}
+            className={
+              (b.main ? "bet-spot-funded " : "") +
+              (activeSeat === i ? "bet-spot-active" : "")
+            }
+          >
             <h4>Hand {i + 1}</h4>
+            {renderHand?.(i)}
             <button
               className="blackjack-main-bet"
               disabled={disabled}
