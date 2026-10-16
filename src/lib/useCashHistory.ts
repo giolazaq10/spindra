@@ -1,38 +1,36 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { useAuth } from "@/context/Auth";
 import { cashApi } from "./walletApi";
-export type CashHistoryRound = {
-  id: string;
-  game: string;
-  state: string;
-  stake_minor: number;
-  returned_minor: number;
-  created_at: string;
-};
+import {
+  cashFeedSnapshot,
+  subscribeCashFeed,
+  loadCashFeed,
+  type CashHistoryRound,
+} from "./cashSessionFeed";
+export type { CashHistoryRound } from "./cashSessionFeed";
 export function useCashHistory() {
-  const { user } = useAuth();
-  const [data, setData] = useState<{
-    owner: string;
-    rounds: CashHistoryRound[];
-    error: string;
-  }>({ owner: "", rounds: [], error: "" });
+  const { user } = useAuth(),
+    owner = user?.id;
+  const subscribe = useCallback(
+    (listener: () => void) => subscribeCashFeed(owner, listener),
+    [owner],
+  );
+  const snapshot = useCallback(() => cashFeedSnapshot(owner), [owner]);
+  const data = useSyncExternalStore(subscribe, snapshot, snapshot);
   useEffect(() => {
-    if (!user) return;
-    let active = true;
-    cashApi<{ rounds: CashHistoryRound[] }>("history")
-      .then((r) => {
-        if (active) setData({ owner: user.id, rounds: r.rounds, error: "" });
-      })
-      .catch((e) => {
-        if (active) setData({ owner: user.id, rounds: [], error: e.message });
-      });
-    return () => {
-      active = false;
+    if (!owner) return;
+    const load = (force = false) =>
+      loadCashFeed(
+        owner,
+        () => cashApi<{ rounds: CashHistoryRound[] }>("history"),
+        force,
+      );
+    void load(true);
+    const focus = () => {
+      void load(true);
     };
-  }, [user]);
-  return {
-    rounds: data.owner === user?.id ? data.rounds : [],
-    error: data.owner === user?.id ? data.error : "",
-    loading: !!user && data.owner !== user.id,
-  };
+    window.addEventListener("focus", focus);
+    return () => window.removeEventListener("focus", focus);
+  }, [owner]);
+  return data;
 }
