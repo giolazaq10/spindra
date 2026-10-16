@@ -191,12 +191,34 @@ Deno.serve(async (req: Request) => {
             revision: body.revision,
             command: body.command,
           };
-    const prior = await db()
-      .from("cash_game_commands")
-      .select("request,response")
-      .eq("user_id", user.id)
-      .eq("request_key", body.request_key)
-      .maybeSingle();
+    // These reads do not depend on one another. Replay still wins over a
+    // location failure, and the atomic commit rechecks wallet and eligibility.
+    const needsCountry =
+      body.action === "start" ||
+      (body.action === "act" &&
+        ["double", "split", "insurance"].includes(body.command?.action));
+    const [prior, location, roundRead] = await Promise.all([
+      db()
+        .from("cash_game_commands")
+        .select("request,response")
+        .eq("user_id", user.id)
+        .eq("request_key", body.request_key)
+        .maybeSingle(),
+      needsCountry
+        ? resolveCountry(req, text, user.id).then(
+            (country) => ({ country, error: null as unknown }),
+            (error) => ({ country: null, error }),
+          )
+        : Promise.resolve({ country: null, error: null as unknown }),
+      body.action === "act" && uuid(body.round_id)
+        ? db()
+            .from("cash_game_rounds")
+            .select("id,revision,expires_at,private_state,stake_minor")
+            .eq("id", body.round_id)
+            .eq("user_id", user.id)
+            .single()
+        : Promise.resolve(null),
+    ]);
     if (prior.error) throw new Error("Command lookup failed");
     if (prior.data) {
       if (
@@ -207,7 +229,8 @@ Deno.serve(async (req: Request) => {
       return reply({ ...prior.data.response, replayed: true });
     }
     if (body.action === "start") {
-      const geoCountry = await resolveCountry(req, text, user.id);
+      if (location.error) throw location.error;
+      const geoCountry = location.country;
       const state = newCashRound(String(body.game), body.input || {});
       return reply(
         await commit(
@@ -230,22 +253,17 @@ Deno.serve(async (req: Request) => {
         typeof body.command.action !== "string"
       )
         throw new Error("Invalid round command");
-      const r = await db()
-        .from("cash_game_rounds")
-        .select("*")
-        .eq("id", body.round_id)
-        .eq("user_id", user.id)
-        .single();
-      if (r.error || !r.data) throw new Error("Round not found");
+      const r = roundRead;
+      if (!r || r.error || !r.data) throw new Error("Round not found");
       if (r.data.revision !== body.revision)
         throw new Error("Round changed; refresh before acting");
       const expired = Date.parse(r.data.expires_at) <= Date.now();
       const command = expired ? { action: "abandon" } : body.command;
       const state = nextCashRound(r.data.private_state, command);
+      if (state.stake_minor > r.data.stake_minor && location.error)
+        throw location.error;
       const geoCountry =
-        state.stake_minor > r.data.stake_minor
-          ? await resolveCountry(req, text, user.id)
-          : null;
+        state.stake_minor > r.data.stake_minor ? location.country : null;
       return reply(
         await commit(
           user.id,

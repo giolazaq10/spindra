@@ -88,7 +88,7 @@ export default function CashGame({ game }: { game: Original }) {
   const [round, setRound] = useState<CashRound | null>(null),
     [pending, setPending] = useState<Pending | null>(null),
     [uncertain, setUncertain] = useState(false),
-    [busy, setBusy] = useState(false),
+    [busy, setBusy] = useState(true),
     [initialized, setInitialized] = useState(false),
     [eligible, setEligible] = useState(false),
     [message, setMessage] = useState("Server-authorized cash play. USD."),
@@ -147,7 +147,10 @@ export default function CashGame({ game }: { game: Original }) {
         if (active)
           setMessage(e instanceof Error ? e.message : "Cash game unavailable");
       } finally {
-        if (active) setInitialized(true);
+        if (active) {
+          setInitialized(true);
+          setBusy(false);
+        }
       }
     })();
     return () => {
@@ -362,8 +365,8 @@ export default function CashGame({ game }: { game: Original }) {
     </button>
   );
   const SlotCabinet = game.slot?.premium ? PremiumSlots : AdvancedSlots;
-  if (!initialized) return <p role="status">Loading saved cash round…</p>;
-  if (!eligible && !active && !pending)
+
+  if (initialized && !eligible && !active && !pending)
     return (
       <div className="panel">
         <h2>Cash play unavailable</h2>
@@ -375,7 +378,7 @@ export default function CashGame({ game }: { game: Original }) {
     );
   return (
     <div className="cash-game">
-      {wallet.realBalance < bet && !active && !pending && (
+      {initialized && wallet.realBalance < bet && !active && !pending && (
         <p className="notice">
           Your balance is below this stake.{" "}
           <Link to="/account">Deposit or manage your wallet</Link>.
@@ -383,14 +386,15 @@ export default function CashGame({ game }: { game: Original }) {
       )}
       <p
         className={
-          game.kind === "blackjack" &&
+          initialized &&
+          ["blackjack", "poker", "roulette"].includes(game.kind) &&
           /^(Server-authorized|Round settled|Round is open)/.test(message)
             ? "sr-only"
             : ""
         }
         role="status"
       >
-        {message}
+        {initialized ? message : "Checking cash session…"}
       </p>
       <p>
         Cash balance <strong>{money(wallet.realBalance)}</strong>

@@ -21,6 +21,7 @@ type WalletState = {
 const Context = createContext<WalletState>(null!);
 export function WalletProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const owner = user?.id;
   const [cash, setCash] = useState({ owner: "", balance: 0, currency: "USD" }),
     [pending, setPending] = useState(false),
     [error, setError] = useState("");
@@ -73,13 +74,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   }, [refresh]);
   const acceptServerBalance = useCallback(
     (minor: number) => {
-      if (!user || !Number.isSafeInteger(minor) || minor < 0) return;
+      if (!owner || !Number.isSafeInteger(minor) || minor < 0) return;
       version.current++;
-      setCash({ owner: user.id, balance: minor, currency: "USD" });
+      setCash({ owner, balance: minor, currency: "USD" });
       setError("");
       setPending(false);
     },
-    [user],
+    [owner],
   );
   const realBalance = cash.owner === user?.id ? cash.balance : 0;
   return (
