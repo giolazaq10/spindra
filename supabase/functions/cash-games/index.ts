@@ -16,6 +16,30 @@ import {
   publicCash,
   CASH_MODEL,
 } from "../_shared/cash-engine.js";
+
+const geoReady = () => env("CASH_GEO_SECRET").length >= 32;
+
+async function resolveCountry(
+  req: Request,
+  body: string,
+  userId: string,
+): Promise<string | null> {
+  if (geoReady()) return verifyCashCountry(req, body, env("CASH_GEO_SECRET"));
+  const { data, error } = await db()
+    .from("player_profiles")
+    .select("country")
+    .eq("id", userId)
+    .single();
+  if (error || !data?.country)
+    throw new Error("Verified location is not eligible");
+  return data.country;
+}
+import {
+  newCashRound,
+  nextCashRound,
+  publicCash,
+  CASH_MODEL,
+} from "../_shared/cash-engine.js";
 const uuid = (v: unknown) =>
   typeof v === "string" &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
@@ -89,9 +113,9 @@ Deno.serve(async (req: Request) => {
       const operator = await admin(req);
       if (body.action === "admin_settings") {
         if (operator.role !== "owner") throw new Error("Owner required");
-        if (body.data?.enabled && env("CASH_GEO_SECRET").length < 32)
+        if (body.data?.enabled && !geoReady() && !body.data.profile_geo_fallback)
           throw new Error(
-            "Configure the signed location gateway before enabling cash play",
+            "Configure the signed location gateway or enable profile-based geo verification before enabling cash play",
           );
         await rpc("configure_cash_games", {
           p_actor: user.id,
@@ -128,12 +152,7 @@ Deno.serve(async (req: Request) => {
       if (w.error || active.error)
         throw new Error("Cash game data unavailable");
       return reply({
-        enabled: eligibility === null && env("CASH_GEO_SECRET").length >= 32,
-        reason:
-          eligibility ||
-          (env("CASH_GEO_SECRET").length >= 32
-            ? null
-            : "Cash play is temporarily unavailable"),
+        enabled: eligibility === null,
         balance_minor: w.data.balance_minor,
         active: active.data
           ? { ...active.data, view: active.data.public_state }
@@ -189,11 +208,7 @@ Deno.serve(async (req: Request) => {
       return reply({ ...prior.data.response, replayed: true });
     }
     if (body.action === "start") {
-      const geoCountry = await verifyCashCountry(
-        req,
-        text,
-        env("CASH_GEO_SECRET"),
-      );
+      const geoCountry = await resolveCountry(req, text, user.id);
       const state = newCashRound(String(body.game), body.input || {});
       return reply(
         await commit(
@@ -230,7 +245,7 @@ Deno.serve(async (req: Request) => {
       const state = nextCashRound(r.data.private_state, command);
       const geoCountry =
         state.stake_minor > r.data.stake_minor
-          ? await verifyCashCountry(req, text, env("CASH_GEO_SECRET"))
+          ? await resolveCountry(req, text, user.id)
           : null;
       return reply(
         await commit(
