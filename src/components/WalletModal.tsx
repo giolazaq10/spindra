@@ -62,6 +62,16 @@ function WalletDialog({ onClose, onDeposited, initialTab = "deposit" }: Props) {
     return () => clearTimeout(timer);
   }, [quote]);
   const asset = assets.find((a) => a.code === coin);
+  const unavailable = asset
+    ? tab === "deposit"
+      ? asset.deposit_available === false
+      : asset.withdrawal_available === false
+    : false;
+  const availability = asset
+    ? tab === "deposit"
+      ? asset.deposit_status
+      : asset.withdrawal_status
+    : "";
   useEffect(() => {
     alive.current = true;
     const previous = document.activeElement as HTMLElement | null;
@@ -96,7 +106,20 @@ function WalletDialog({ onClose, onDeposited, initialTab = "deposit" }: Props) {
     let active = true;
     walletApi<{ assets: Asset[] }>("assets")
       .then((r) => {
-        if (active) setAssets(r.assets);
+        if (active) {
+          setAssets(r.assets);
+          setCoin(
+            (current) =>
+              current ||
+              r.assets.find((a) => a.code === "btc")?.code ||
+              r.assets[0]?.code ||
+              "",
+          );
+          if (!r.assets.length)
+            setError(
+              "No crypto networks are configured. Please contact support.",
+            );
+        }
       })
       .catch((e) => {
         if (active) setError(e.message);
@@ -262,19 +285,24 @@ function WalletDialog({ onClose, onDeposited, initialTab = "deposit" }: Props) {
                   onChange={(e) => changeCoin(e.target.value)}
                 >
                   <option value="">Select a network</option>
-                  {assets
-                    .filter((a) =>
-                      tab === "deposit"
-                        ? a.deposits_enabled
-                        : a.withdrawals_enabled,
-                    )
-                    .map((a) => (
-                      <option key={a.code} value={a.code}>
-                        {a.symbol} · {a.network}
-                      </option>
-                    ))}
+                  {assets.map((a) => (
+                    <option key={a.code} value={a.code}>
+                      {a.symbol} · {a.network}
+                    </option>
+                  ))}
                 </select>
               </label>
+            )}
+            {tab !== "history" && availability && (
+              <p role="status" className="bank-note">
+                {availability}
+                {availability.includes("paused")
+                  ? " - this payment action is temporarily unavailable."
+                  : ""}
+              </p>
+            )}
+            {tab !== "history" && assets.length === 0 && !error && (
+              <p role="status">Loading crypto networks...</p>
             )}
             {tab === "deposit" && (
               <>
@@ -342,7 +370,7 @@ function WalletDialog({ onClose, onDeposited, initialTab = "deposit" }: Props) {
                     </p>
                     <button
                       className="button primary"
-                      disabled={!coin || busy}
+                      disabled={!coin || busy || unavailable}
                       onClick={() => void run(deposit)}
                     >
                       {busy ? "Getting address…" : "Get deposit address"}
@@ -438,7 +466,10 @@ function WalletDialog({ onClose, onDeposited, initialTab = "deposit" }: Props) {
                         autoComplete="off"
                       />
                     </label>
-                    <button className="button primary" disabled={!coin || busy}>
+                    <button
+                      className="button primary"
+                      disabled={!coin || busy || unavailable}
+                    >
                       {busy ? "Checking fees…" : "Review fees & withdrawal"}
                     </button>
                     <p className="bank-note">
