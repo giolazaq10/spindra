@@ -99,25 +99,29 @@
   overflow: visible;
   filter: drop-shadow(0 5px 4px #0006);
 }
-.spindra-extension .signature-motion {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(120deg, #0e1526bb, #20163755, #0e1526bb);
-  border-radius: inherit;
+.spindra-extension .premium-spinning .signature-grid {
+  overflow: hidden;
 }
-.spindra-extension .signature-motion span {
-  border: 1px solid #b6fcff;
-  border-radius: 40px;
-  padding: 14px 22px;
-  background: #112639e0;
-  color: #e3ffff;
-  font-size: 11px;
-  letter-spacing: 3px;
-  animation: signature-pulse 0.7s ease-in-out infinite alternate;
+.spindra-extension .premium-spinning .signature-cell {
+  animation: signature-reel-motion 180ms linear infinite;
+  animation-delay: calc(var(--cell-order) * -22ms);
+  will-change: transform;
+}
+.spindra-extension .premium-spinning .signature-cell .premium-symbol {
+  filter: blur(1px);
+}
+@keyframes signature-reel-motion {
+  from {
+    transform: translateY(-60%);
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(60%);
+    opacity: 0.45;
+  }
 }
 .spindra-extension .signature-status {
   height: 48px;

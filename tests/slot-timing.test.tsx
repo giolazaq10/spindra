@@ -71,13 +71,29 @@ for (const delay of [0, 1500])
         <AdvancedSlots
           game={game}
           controls={controls}
-          serverSpin={() => response}
+          serverSpin={() => {
+            assert.ok(
+              document.querySelector(".reel-moving"),
+              "motion is committed before the request starts",
+            );
+            return response;
+          }}
         />,
       );
+      const firstSymbol = app.container.querySelector(".symbol-cell svg");
+      const symbolCount = app.container.querySelectorAll(".symbol-cell").length;
       fireEvent.click(
         screen.getByRole("button", { name: "Spin reels", exact: true }),
       );
       assert.equal(app.container.querySelectorAll(".reel-moving").length, 6);
+      assert.equal(
+        app.container.querySelector(".symbol-cell svg"),
+        firstSymbol,
+      );
+      assert.equal(
+        app.container.querySelectorAll(".symbol-cell").length,
+        symbolCount,
+      );
       fireEvent.click(
         screen.getByRole("button", { name: "Spinning reels", exact: true }),
       );
@@ -91,8 +107,8 @@ for (const delay of [0, 1500])
         resolve({ ...result, returned_minor: state.returned_minor });
       });
       await act(async () => {
-        now = Math.max(delay, 1000);
-        t.mock.timers.tick(delay ? 0 : 1000);
+        now = Math.max(delay, 550);
+        t.mock.timers.tick(delay ? 0 : 550);
       });
       assert.equal(finished, 1);
       assert.equal(app.container.querySelectorAll(".reel-moving").length, 0);
