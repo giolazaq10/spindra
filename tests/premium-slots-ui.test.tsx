@@ -67,7 +67,17 @@ for (const [slug, cells, label] of [
         canStart: true,
       };
       const app = render(
-        <PremiumSlots game={game} controls={c} serverSpin={() => response} />,
+        <PremiumSlots
+          game={game}
+          controls={c}
+          serverSpin={() => {
+            assert.ok(
+              document.querySelector(".premium-spinning"),
+              "motion is committed before the request starts",
+            );
+            return response;
+          }}
+        />,
       );
       assert.equal(screen.getByLabelText(label).children.length, cells);
       const spin = screen.getByRole("button", {
@@ -77,6 +87,8 @@ for (const [slug, cells, label] of [
         consoleNode = spin.parentElement;
       fireEvent.click(spin);
       assert.equal(starts, 1);
+      assert.ok(app.container.querySelector(".premium-spinning"));
+      assert.equal(app.container.querySelector(".signature-motion"), null);
       assert.equal(
         (
           screen.getByRole("button", {
@@ -93,7 +105,7 @@ for (const [slug, cells, label] of [
         resolve({ ...data, returned_minor: state.returned_minor });
       });
       await act(async () => {
-        t.mock.timers.tick(410);
+        t.mock.timers.tick(210);
       });
       const skip = screen.getByRole("button", {
         name: "Skip confirmed animation",

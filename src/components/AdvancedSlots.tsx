@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
+import { flushSync } from "react-dom";
 import { RotateCw, Trophy } from "lucide-react";
 import type { Original } from "../lib/catalog";
 import { type SlotWin } from "../lib/slotModels";
@@ -7,6 +8,7 @@ import { credits } from "../lib/money";
 import type { Controls } from "./OriginalGame";
 import GameControls from "./GameControls";
 import { SlotScenery, SlotSymbol } from "./SlotArt";
+const ReelSymbol = memo(SlotSymbol);
 export default function AdvancedSlots({
   game,
   controls: c,
@@ -54,11 +56,13 @@ export default function AdvancedSlots({
     const startedAt = performance.now();
     timers.current.forEach(clearTimeout);
     timers.current.length = 0;
-    setWins([]);
-    setReturned(0);
-    setMoving(Array(s.reels).fill(true));
-    setRound((n) => n + 1);
-    setLastStake(c.bet);
+    flushSync(() => {
+      setWins([]);
+      setReturned(0);
+      setMoving(Array(s.reels).fill(true));
+      setRound((n) => n + 1);
+      setLastStake(c.bet);
+    });
     let result: Awaited<ReturnType<typeof serverSpin>>;
     const stake = c.bet;
     try {
@@ -92,7 +96,7 @@ export default function AdvancedSlots({
               c.finish(payout);
             }
           },
-          Math.max(0, 550 + col * 90 - elapsed),
+          Math.max(0, 300 + col * 45 - elapsed),
         ),
       ),
     );
@@ -159,24 +163,25 @@ export default function AdvancedSlots({
                   moving[col] ? "reel-strip strip-running" : "reel-strip"
                 }
               >
-                {(moving[col]
-                  ? Array.from(
-                      { length: s.rows * 3 },
-                      (_, i) => (i + col * 2 + round) % (s.scatter ? 8 : 7),
-                    )
-                  : column
+                {Array.from(
+                  { length: s.rows * 2 },
+                  (_, row) => column[row % s.rows],
                 ).map((symbol, row) => {
-                  const winning = wins.some((w) =>
-                    w.cells.some(([x, y]) => col === x && row === y),
-                  );
+                  const winning =
+                    !moving[col] &&
+                    row < s.rows &&
+                    wins.some((w) =>
+                      w.cells.some(([x, y]) => col === x && row === y),
+                    );
                   return (
                     <div
-                      key={row + ":" + (moving[col] ? "motion" : round)}
+                      key={row}
+                      aria-hidden={row >= s.rows || undefined}
                       className={
                         "symbol-cell " + (winning ? "symbol-winning" : "")
                       }
                     >
-                      <SlotSymbol spec={s} index={symbol} />
+                      <ReelSymbol spec={s} index={symbol} />
                       {winning && (
                         <span className="symbol-spark" aria-hidden="true">
                           ✦

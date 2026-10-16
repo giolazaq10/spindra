@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { flushSync } from "react-dom";
 import { RotateCw, FastForward, LockKeyhole } from "lucide-react";
 import type { Original } from "@/lib/catalog";
 import type { SlotWin } from "@/lib/slotModels";
@@ -101,12 +102,21 @@ export default function PremiumSlots({
     locked.current = true;
     confirmed.current = null;
     clear();
-    setPlaying(true);
-    setPaid(false);
-    setStage(0);
-    setSpinCount((n) => n + 1);
-    setReturned(0);
-    setFrame((f) => ({ ...f, wins: [], label: "Requesting spin…" }));
+    flushSync(() => {
+      setPlaying(true);
+      setPaid(false);
+      setStage(0);
+      setSpinCount((n) => n + 1);
+      setReturned(0);
+      setFrame({
+        grid: empty(),
+        wins: [],
+        rate: 0,
+        multiplier: 1,
+        remaining: 3,
+        label: "Reels in motion…",
+      });
+    });
     const began = performance.now();
     try {
       const result = await serverSpin(c.bet);
@@ -118,8 +128,8 @@ export default function PremiumSlots({
         after(
           Math.max(
             0,
-            400 +
-              i * (kind === "cascade" ? 620 : kind === "vault" ? 350 : 400) -
+            200 +
+              i * (kind === "cascade" ? 240 : kind === "vault" ? 160 : 200) -
               elapsed,
           ),
           () => {
@@ -131,9 +141,9 @@ export default function PremiumSlots({
       after(
         Math.max(
           0,
-          600 +
+          350 +
             Math.max(0, frames.length - 1) *
-              (kind === "cascade" ? 620 : kind === "vault" ? 350 : 400) -
+              (kind === "cascade" ? 240 : kind === "vault" ? 160 : 200) -
             elapsed,
         ),
         () => finish(result),
@@ -153,7 +163,10 @@ export default function PremiumSlots({
   return (
     <div
       className={
-        "premium-slot premium-" + kind + (playing ? " premium-playing" : "")
+        "premium-slot premium-" +
+        kind +
+        (playing ? " premium-playing" : "") +
+        (playing && stage === 0 ? " premium-spinning" : "")
       }
     >
       <PremiumBackdrop kind={kind} />
@@ -275,17 +288,6 @@ export default function PremiumSlots({
               );
             })}
           </div>
-          {playing && stage === 0 && (
-            <div className="signature-motion" aria-hidden="true">
-              <span>
-                {kind === "cascade"
-                  ? "OPENING PORTAL"
-                  : kind === "vault"
-                    ? "TURNING THE LOCK"
-                    : "ENGAGING DRUMS"}
-              </span>
-            </div>
-          )}
           {paid && returned > 0 && (
             <div className="signature-award" key={spinCount}>
               <small>

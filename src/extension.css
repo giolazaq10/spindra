@@ -4063,10 +4063,10 @@
 }
 @keyframes reel-strip-roll {
   from {
-    transform: translateY(calc(-2 * var(--cell-height) * var(--slot-rows)));
+    transform: translateY(calc(-1 * var(--cell-height) * var(--slot-rows)));
   }
   to {
-    transform: translateY(calc(-1 * var(--cell-height) * var(--slot-rows)));
+    transform: translateY(0);
   }
 }
 .spindra-extension .distinct-slot .reel-moving .themed-symbol {
