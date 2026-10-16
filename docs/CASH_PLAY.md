@@ -7,7 +7,7 @@ The original slots, blackjack, Hold’em and roulette now have a server-side cas
 - `cash-games` Edge Function validates the user's actual Supabase session.
 - `commit_cash_game` atomically persists private round state, command responses and cash-ledger entries. Browser roles cannot call it or read decks/opponents' cards.
 - One open table hand per account; monotonically increasing revisions prevent concurrent actions from changing the same state twice. Retrying the same request key returns its saved response.
-- All 22 slots and European roulette settle immediately on the server; blackjack and poker persist across refreshes and page navigation.
+- All 25 slots and European roulette settle immediately on the server; blackjack and poker persist across refreshes and page navigation.
 - At 15 minutes, cleanup finishes blackjack by standing and completing the dealer. Poker folds and returns only uncommitted chips. Existing rounds can settle after a pause or self-exclusion; extra stakes and new rounds cannot.
 - Cash and external-provider rounds share one UTC daily loss budget. Cash bets use USD minor units and the existing cash wallet. Maximum total stake per round defaults to $200.
 - The existing NOWPayments deposit/withdrawal settings and balances are not changed by installing cash games.
@@ -50,3 +50,7 @@ Tests cover published slot payouts, hidden cards/decks, poker chip conservation,
 ## Minimum stakes
 
 Original cash games accept a $0.20 minimum. Normal stakes use $0.10 increments; poker hand buy-ins use $0.20 increments so both blinds stay in whole cents. Blackjack insurance can be half a main stake. Slot returns add the awards and round down once to a USD cent, so the displayed base RTP is an upper bound before cash rounding at small stakes. Dice also rounds winning returns down to cents.
+
+## Signature slots
+
+Astra Cascade uses a 6×5 pay-anywhere crystal board and up to three full-board replacements, with 1×/2×/3× multipliers. Copper Lock uses nine persistent coin sockets, reset-on-hit chances and an eight-draw cap. Nitro Sevens uses one three-drum payline, substituting wild gears and an independently sampled 1×/2×/5× boost. All stages belong to one authoritative round and one initial stake; presentation skips never change the server return. Full rules and paytables are included in each cabinet. These are original games, not provider integrations.

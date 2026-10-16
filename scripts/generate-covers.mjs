@@ -3,10 +3,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { mkdir, writeFile } from "node:fs/promises";
 import { originals } from "../src/lib/catalog.ts";
 import { SlotScenery, SlotSymbol } from "../src/components/SlotArt.tsx";
+import {PremiumCover} from "../src/components/PremiumSlotArt.tsx";
 await mkdir("public/originals", { recursive: true });
 const escape = (s) =>
   s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 for (const g of originals.filter((g) => g.slot)) {
+  if(g.slot.premium){await writeFile(`public/originals/${g.slug}.svg`,renderToStaticMarkup(createElement(PremiumCover,{kind:g.slot.premium,name:g.name,feature:g.slot.feature})));continue;}
   const scene = renderToStaticMarkup(
     createElement(SlotScenery, { scene: g.slot.scene }),
   ).replace("<svg", '<svg x="0" y="0" width="1000" height="650"');

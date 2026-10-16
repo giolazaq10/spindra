@@ -8,6 +8,8 @@ import type { Card } from "@/lib/engine";
 import type { SlotWin } from "@/lib/slotModels";
 import type { Controls } from "./OriginalGame";
 import AdvancedSlots from "./AdvancedSlots";
+import PremiumSlots from "./PremiumSlots";
+import type { PremiumFrame } from "@/lib/premiumSlots";
 import MiniGames from "./MiniGames";
 import type { MiniResult } from "@/lib/minigames";
 import { miniRules } from "@/lib/minigames";
@@ -33,6 +35,7 @@ type Table = {
   log?: string[];
 };
 type Result = {
+  frames?: PremiumFrame[];
   grid: number[][];
   wins: SlotWin[];
   rate: number;
@@ -269,6 +272,7 @@ export default function CashGame({ game }: { game: Original }) {
     same = round?.game === game.slug,
     table = round?.view.table,
     allowed = round?.view.allowed || {};
+  const SlotCabinet = game.slot?.premium ? PremiumSlots : AdvancedSlots;
   if (!initialized) return <p role="status">Loading saved cash round…</p>;
   if (!eligible && !active && !pending)
     return (
@@ -340,7 +344,7 @@ export default function CashGame({ game }: { game: Original }) {
           }}
         />
       ) : game.kind === "slots" ? (
-        <AdvancedSlots
+        <SlotCabinet
           game={game}
           controls={c}
           initialResult={

@@ -4,7 +4,7 @@ import { originals } from "../src/lib/catalog.ts";
 import { newCashRound, nextCashRound } from "../src/lib/cashEngine.ts";
 import { miniPlay } from "../src/lib/minigames.ts";
 import { validateBets } from "../src/lib/blackjack.ts";
-test("All 28 games accept twenty-cent stakes and settle in integer USD cents", () => {
+test("All 31 games accept twenty-cent stakes and settle in integer USD cents", () => {
   let seed = 91;
   const rng = (n) => {
     seed = (seed * 1664525 + 1013904223) >>> 0;

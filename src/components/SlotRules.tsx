@@ -1,6 +1,8 @@
 import type { Original } from "../lib/catalog";
+import PremiumSlotRules from "./PremiumSlotRules";
 export default function SlotRules({ game }: { game: Original }) {
   const s = game.slot!;
+  if (s.premium) return <PremiumSlotRules game={game} />;
   return (
     <div className="slot-rulebook">
       <h3>{s.feature}</h3>

@@ -206,7 +206,7 @@ export function InfoPage({
       sections: [
         [
           "The originals",
-          "Twenty-two original slot cabinets each publish distinct rules, paytables, reel layouts and artwork. Blackjack, Texas Hold’em and roulette round out the collection.",
+          "Twenty-five original slot cabinets each publish distinct rules, paytables, reel layouts and artwork. Blackjack, Texas Hold’em and roulette round out the collection.",
         ],
         [
           "A platform in preparation",

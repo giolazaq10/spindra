@@ -15,10 +15,10 @@ import {
 import { DemoLedger } from "./fixtures/demoLedger.ts";
 const card = (rank, suit = 0) => ({ rank, suit });
 
-test("all twenty-two slots have distinct artwork, mechanics, paytables and valid exact RTP", () => {
+test("all twenty-five slots have distinct artwork, mechanics, paytables and valid exact RTP", () => {
   const slots = originals.filter((g) => g.slot);
-  assert.equal(slots.length, 22);
-  assert.equal(new Set(slots.map((g) => g.slot.scene)).size, 22);
+  assert.equal(slots.length, 25);
+  assert.equal(new Set(slots.map((g) => g.slot.scene)).size, 25);
   assert.equal(
     new Set(
       slots.map((g) =>
@@ -33,9 +33,9 @@ test("all twenty-two slots have distinct artwork, mechanics, paytables and valid
         ]),
       ),
     ).size,
-    22,
+    25,
   );
-  assert.equal(new Set(slots.map((g) => g.slot.icons.join())).size, 22);
+  assert.equal(new Set(slots.map((g) => g.slot.icons.join())).size, 25);
   for (const game of slots) {
     const s = game.slot;
     assert.ok(modelRtp(s) > 0.9 && modelRtp(s) < 1, game.name);
@@ -43,6 +43,7 @@ test("all twenty-two slots have distinct artwork, mechanics, paytables and valid
       rtpLabel(game),
       "Up to " + (modelRtp(s) * 100).toFixed(2) + "% theoretical RTP",
     );
+    if(s.premium)continue;
     assert.equal(new Set(s.lines.map((p) => p.join())).size, s.lines.length);
     assert.ok(
       s.lines.every(
@@ -100,7 +101,7 @@ test("scatter awards count anywhere and never substitute in regular wins", () =>
   assert.ok(wins.filter((w) => !w.scatter).every((w) => w.symbol !== 7));
 });
 test("each slot's regular-symbol RTP matches complete single-pattern enumeration", () => {
-  for (const game of originals.filter((g) => g.slot)) {
+  for (const game of originals.filter((g) => g.slot && !g.slot.premium)) {
     const s = game.slot,
       total = s.weights.reduce((a, b) => a + b, 0);
     // Enumerate every symbol sequence for one line, then multiply by line count.
