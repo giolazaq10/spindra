@@ -5,6 +5,8 @@ import { useWallet } from "@/context/Wallet";
 import { cashApi } from "@/lib/walletApi";
 import type { Original } from "@/lib/catalog";
 import type { Card } from "@/lib/engine";
+import { redNumbers } from "@/lib/engine";
+import { bestHand } from "@/lib/holdem";
 import type { SlotWin } from "@/lib/slotModels";
 import type { Controls } from "./OriginalGame";
 import AdvancedSlots from "./AdvancedSlots";
@@ -14,10 +16,18 @@ import MiniGames from "./MiniGames";
 import type { MiniResult } from "@/lib/minigames";
 import { miniRules } from "@/lib/minigames";
 import PlayingCard from "./PlayingCard";
+import BlackjackScore from "./BlackjackScore";
 import BlackjackRules from "./BlackjackRules";
 import SlotRules from "./SlotRules";
 
-type BJHand = { id: string; seat: number; cards: Card[]; bet: number };
+type BJHand = {
+  id: string;
+  seat: number;
+  cards: Card[];
+  bet: number;
+  split?: boolean;
+  surrendered?: boolean;
+};
 type Table = {
   phase?: string;
   dealer?: (Card | null)[];
@@ -29,6 +39,8 @@ type Table = {
     stack: number;
     action: string;
     folded: boolean;
+    contributed?: number;
+    streetBet?: number;
   }[];
   board?: Card[];
   street?: string;
@@ -362,27 +374,84 @@ export default function CashGame({ game }: { game: Original }) {
         />
       ) : (
         <>
-          <div className="cash-table">
+          <div className={"cash-table cash-" + game.kind}>
             <span className="eyebrow">SERVER DEALT · USD</span>
             {game.kind === "roulette" ? (
               <>
                 <h2>European roulette</h2>
-                <div
-                  className={
-                    "cash-pocket " + (busy ? "cash-pocket-moving" : "")
-                  }
+                <section
+                  className="roulette-result"
+                  aria-label="Roulette result"
                 >
-                  {round?.view.result?.pocket ?? "—"}
+                  <span className="table-caption">
+                    {busy ? "Wheel spinning…" : "Winning number"}
+                  </span>
+                  <div
+                    className={
+                      "cash-pocket pocket-" +
+                      (round?.view.result?.pocket === undefined
+                        ? "empty"
+                        : round.view.result.pocket === 0
+                          ? "green"
+                          : redNumbers.includes(round.view.result.pocket)
+                            ? "red"
+                            : "black")
+                    }
+                  >
+                    {busy ? "…" : (round?.view.result?.pocket ?? "—")}
+                  </div>
+                  <b>
+                    {busy
+                      ? "Waiting for result"
+                      : round?.view.result?.pocket === undefined
+                        ? "Place your first bet"
+                        : round.view.result.pocket === 0
+                          ? "Green · Zero"
+                          : (redNumbers.includes(round.view.result.pocket)
+                              ? "Red"
+                              : "Black") +
+                            " · " +
+                            (round.view.result.pocket % 2 ? "Odd" : "Even")}
+                  </b>
+                </section>
+                <div
+                  className="table-metrics"
+                  aria-label="Selected roulette bet"
+                >
+                  <div>
+                    <span>Your selection</span>
+                    <strong>
+                      {kind === "straight"
+                        ? "Number " + straight
+                        : kind[0].toUpperCase() + kind.slice(1)}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>Stake</span>
+                    <strong>{money(bet)}</strong>
+                  </div>
+                  <div>
+                    <span>Win pays</span>
+                    <strong>{kind === "straight" ? "35:1" : "1:1"}</strong>
+                  </div>
                 </div>
+                <p className="table-help">
+                  Single zero · 37 pockets. Zero loses on red, black, odd and
+                  even. Returns include your stake.
+                </p>
                 <label>
-                  Bet type
+                  Choose your bet
                   <select
                     disabled={busy}
                     value={kind}
                     onChange={(e) => setKind(e.target.value)}
                   >
                     {["red", "black", "even", "odd", "straight"].map((v) => (
-                      <option key={v}>{v}</option>
+                      <option key={v} value={v}>
+                        {v === "straight"
+                          ? "Single number (0–36)"
+                          : v[0].toUpperCase() + v.slice(1)}
+                      </option>
                     ))}
                   </select>
                 </label>
@@ -434,17 +503,22 @@ export default function CashGame({ game }: { game: Original }) {
                 )}
                 {table?.dealer && (
                   <>
-                    <h3>Dealer</h3>
-                    <div className="cash-cards">
-                      {table.dealer.map((card, i) => (
-                        <PlayingCard
-                          key={i + ":" + (card?.rank ?? "hidden")}
-                          card={card || undefined}
-                          hidden={!card}
-                          delay={i * 550}
-                        />
-                      ))}
-                    </div>
+                    <section
+                      className="blackjack-dealer"
+                      aria-label="Dealer hand"
+                    >
+                      <BlackjackScore label="Dealer" cards={table.dealer} />
+                      <div className="cash-cards">
+                        {table.dealer.map((card, i) => (
+                          <PlayingCard
+                            key={i + ":" + (card?.rank ?? "hidden")}
+                            card={card || undefined}
+                            hidden={!card}
+                            delay={i * 550}
+                          />
+                        ))}
+                      </div>
+                    </section>
                   </>
                 )}
                 {table?.hands?.map((h, i) => (
@@ -456,8 +530,37 @@ export default function CashGame({ game }: { game: Original }) {
                     }
                   >
                     <h3>
-                      Hand {h.seat + 1} · {money(h.bet)}
+                      Your hand {h.seat + 1}
+                      {h.split
+                        ? " · Split " +
+                          (table
+                            .hands!.filter((other) => other.seat === h.seat)
+                            .indexOf(h) +
+                            1)
+                        : ""}{" "}
+                      · Bet {money(h.bet)}
                     </h3>
+                    <BlackjackScore
+                      label={
+                        "Your hand " +
+                        (h.seat + 1) +
+                        (h.split
+                          ? " · Split " +
+                            (table
+                              .hands!.filter((other) => other.seat === h.seat)
+                              .indexOf(h) +
+                              1)
+                          : "")
+                      }
+                      cards={h.cards}
+                      split={h.split}
+                      surrendered={h.surrendered}
+                      active={
+                        table.active === i &&
+                        active &&
+                        table.phase === "playing"
+                      }
+                    />
                     <div className="cash-cards">
                       {h.cards.map((card, j) => (
                         <PlayingCard key={j} card={card} delay={j * 550} />
@@ -514,15 +617,66 @@ export default function CashGame({ game }: { game: Original }) {
                   Computer opponents use their own cards and public information.
                   No rake.
                 </p>
-                <div className="cash-cards">
-                  {table?.board?.map((card, i) => (
-                    <PlayingCard key={i} card={card} delay={i * 550} />
-                  ))}
+                <div className="table-metrics" aria-label="Poker table totals">
+                  <div>
+                    <span>Stage</span>
+                    <strong>
+                      {table?.street === "done"
+                        ? "Hand complete"
+                        : table?.street || "Ready to deal"}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>{active ? "Pot" : "Final pot"}</span>
+                    <strong>
+                      {money(
+                        table?.players?.reduce(
+                          (sum, p) => sum + (p.contributed || 0),
+                          0,
+                        ) || 0,
+                      )}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>Your chips</span>
+                    <strong>{money(table?.players?.[0]?.stack ?? bet)}</strong>
+                  </div>
                 </div>
+                <section
+                  className="poker-community"
+                  aria-label="Community cards"
+                >
+                  <h3>Community cards · Shared by all players</h3>
+                  <div className="cash-cards">
+                    {Array.from({ length: 5 }, (_, i) =>
+                      table?.board?.[i] ? (
+                        <PlayingCard
+                          key={i}
+                          card={table.board[i]}
+                          delay={i * 550}
+                        />
+                      ) : (
+                        <div key={i} className="community-placeholder">
+                          <span>
+                            {i < 3 ? "Flop" : i === 3 ? "Turn" : "River"}
+                          </span>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                </section>
                 {table?.players?.map((p, i) => (
-                  <article className="cash-hand" key={i}>
+                  <article
+                    className={
+                      "cash-hand poker-seat " +
+                      (i === 0 ? "poker-you " : "") +
+                      (p.folded ? "poker-folded" : "")
+                    }
+                    key={i}
+                  >
                     <h3>
-                      {p.name} · {money(p.stack)} {p.folded ? "· Folded" : ""}
+                      {i === 0 ? "You · Your cards" : p.name}
+                      {p.folded ? " · Folded" : ""}
                     </h3>
                     <div className="cash-cards">
                       {p.hole.map((card, j) => (
@@ -534,15 +688,48 @@ export default function CashGame({ game }: { game: Original }) {
                         />
                       ))}
                     </div>
-                    <small>{p.action}</small>
+                    <dl className="poker-chip-totals">
+                      <div>
+                        <dt>Chips</dt>
+                        <dd>{money(p.stack)}</dd>
+                      </div>
+                      <div>
+                        <dt>Bet this street</dt>
+                        <dd>{money(p.streetBet || 0)}</dd>
+                      </div>
+                    </dl>
+                    <p className="poker-hand-name">
+                      {p.folded
+                        ? "Folded"
+                        : p.hole.every((card) => card !== null) &&
+                            p.hole.length + (table?.board?.length || 0) >= 5
+                          ? bestHand([
+                              ...(p.hole as Card[]),
+                              ...(table?.board || []),
+                            ]).name
+                          : i === 0
+                            ? "Your private cards"
+                            : "Cards hidden"}
+                    </p>
+                    <small className="poker-player-action">{p.action}</small>
                   </article>
                 ))}
                 {active && (
                   <>
-                    <p>
-                      {table?.street} · To call{" "}
-                      {money(Number(allowed.toCall || 0))}
-                    </p>
+                    <div className="poker-turn-banner" role="status">
+                      <b>{busy ? "Dealing…" : "Your turn"}</b>
+                      <span>
+                        To call{" "}
+                        <strong>
+                          {money(
+                            Math.min(
+                              Number(allowed.toCall || 0),
+                              table?.players?.[0]?.stack || 0,
+                            ),
+                          )}
+                        </strong>
+                      </span>
+                    </div>
                     {["fold", "check", "call"].map((a) => (
                       <button
                         key={a}
@@ -556,11 +743,19 @@ export default function CashGame({ game }: { game: Original }) {
                           void takeAction(a);
                         }}
                       >
-                        {a}
+                        {a === "call"
+                          ? "Call " +
+                            money(
+                              Math.min(
+                                Number(allowed.toCall || 0),
+                                table?.players?.[0]?.stack || 0,
+                              ),
+                            )
+                          : a[0].toUpperCase() + a.slice(1)}
                       </button>
                     ))}
                     <label>
-                      Raise to (USD)
+                      Total bet after raise (USD)
                       <input
                         type="number"
                         min={Number(allowed.minTo) / 100}
@@ -577,16 +772,52 @@ export default function CashGame({ game }: { game: Original }) {
                       disabled={busy || !!pending || !allowed.canRaise}
                       onClick={() => void takeAction("raise", { to: raise })}
                     >
-                      Raise
+                      Raise to {money(raise)}
                     </button>
                   </>
                 )}
-                {table?.log?.slice(-4).map((l, i) => (
-                  <p key={i}>{l}</p>
-                ))}
+                {table?.log && (
+                  <section
+                    className="poker-action-log"
+                    aria-label="Recent table actions"
+                  >
+                    <h3>Recent actions</h3>
+                    {table.log.slice(-4).map((l, i) => (
+                      <p key={i}>{l}</p>
+                    ))}
+                  </section>
+                )}
               </>
             )}
           </div>
+          {round?.state === "settled" && !busy && (
+            <section
+              className="table-settlement"
+              aria-label="Last round result"
+            >
+              <div>
+                <span>Last stake</span>
+                <strong>{money(round.view.stake_minor)}</strong>
+              </div>
+              <div>
+                <span>Returned (includes stake)</span>
+                <strong>{money(round.view.returned_minor)}</strong>
+              </div>
+              <div>
+                <span>Net result</span>
+                <strong>
+                  {round.view.returned_minor >= round.view.stake_minor
+                    ? "+"
+                    : "−"}
+                  {money(
+                    Math.abs(
+                      round.view.returned_minor - round.view.stake_minor,
+                    ),
+                  )}
+                </strong>
+              </div>
+            </section>
+          )}
           {!active && (
             <div className="cash-toolbar">
               <label>
@@ -628,7 +859,9 @@ export default function CashGame({ game }: { game: Original }) {
                 onClick={() => void start().catch(() => {})}
               >
                 {busy
-                  ? "Dealing…"
+                  ? game.kind === "roulette"
+                    ? "Spinning…"
+                    : "Dealing…"
                   : game.kind === "roulette"
                     ? "Spin wheel"
                     : "Deal cards"}
