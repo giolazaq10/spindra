@@ -8,6 +8,7 @@ import {
   reply,
   rpc,
   assets,
+  assetCatalog,
   minimum,
   ipnUrl,
   reconcilePayout,
@@ -207,7 +208,7 @@ Deno.serve(async (req: Request) => {
       }
       throw new Error("Unsupported admin action");
     }
-    if (action === "assets") return reply({ assets: await assets() });
+    if (action === "assets") return reply(await assetCatalog());
     if (action === "history") {
       const { data, error } = await db()
         .from("cash_events")

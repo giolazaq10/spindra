@@ -24,7 +24,7 @@ Supabase supplies SUPABASE_URL, SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY 
 
 ## 2. NOWPayments configuration
 
-Enable intended coins and networks in merchant currency settings. Spindra offers only the intersection of its 21 configured networks and the currencies enabled and available in your merchant account. USDT and USDC networks have separate addresses. XRP, Stellar and other memo-based networks require the exact memo/tag displayed with the address.
+Enable intended coins and networks in merchant currency settings. Spindra displays its 21 configured networks even while payments are paused or provider availability cannot be checked. Only networks confirmed enabled and available in your merchant account can create payment routes. The catalog shows a clear availability status. USDT and USDC networks have separate addresses. XRP, Stellar and other memo-based networks require the exact memo/tag displayed with the address.
 
 Set the IPN callback to:
 

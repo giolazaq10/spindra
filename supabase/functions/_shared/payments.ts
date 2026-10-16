@@ -1,3 +1,4 @@
+import { merchantCurrencyCodes, catalogRows } from "./asset-catalog.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.4";
 import {
   NowPaymentsSDK,
@@ -111,8 +112,9 @@ export async function assets() {
     .order("symbol");
   if (error) throw new Error("Wallet migration is required");
   const live = await provider().getAvailableCurrencies();
-  const merchant = await provider().getMerchantCurrencies();
-  const allowed = new Set(merchant.map((c: { code: string }) => c.code));
+  const allowed = merchantCurrencyCodes(
+    await provider().raw.getMerchantCoins(),
+  );
   const available = new Map(live.map((c) => [c.code, c]));
   return (data || [])
     .filter((a) => available.has(a.code) && allowed.has(a.code))
@@ -121,6 +123,42 @@ export async function assets() {
       memo_required:
         a.memo_required || available.get(a.code)?.requiresExtraId === true,
     }));
+}
+export async function assetCatalog() {
+  const [configured, settings] = await Promise.all([
+    db().from("crypto_assets").select("*").order("symbol"),
+    db()
+      .from("payment_settings")
+      .select("deposits_enabled,withdrawals_enabled")
+      .single(),
+  ]);
+  if (configured.error || settings.error || !settings.data)
+    throw new Error("Wallet configuration unavailable");
+  let live: Awaited<ReturnType<typeof assets>> | null = null;
+  try {
+    live = await assets();
+  } catch {
+    /* Keep the configured catalog visible; payment actions remain blocked. */
+  }
+  const depositReady =
+    !!env("NOWPAYMENTS_API_KEY") &&
+    !!env("NOWPAYMENTS_IPN_SECRET") &&
+    !!env("NOWPAYMENTS_OUTCOME_CURRENCY") &&
+    env("NOWPAYMENTS_CUSTODY_CONFIRMED") === "true" &&
+    env("NOWPAYMENTS_REUSABLE_ADDRESSES_CONFIRMED") === "true";
+  return {
+    assets: catalogRows(configured.data, live, settings.data, {
+      deposit: depositReady,
+      withdrawal:
+        depositReady &&
+        !!env("NOWPAYMENTS_EMAIL") &&
+        !!env("NOWPAYMENTS_PASSWORD") &&
+        !!env("NOWPAYMENTS_2FA_SECRET"),
+    }),
+    deposits_enabled: settings.data.deposits_enabled,
+    withdrawals_enabled: settings.data.withdrawals_enabled,
+    provider_checked: live !== null,
+  };
 }
 export async function creditPayment(id: string) {
   const sdk = provider(),

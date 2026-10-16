@@ -5,6 +5,10 @@ export type Asset = {
   name: string;
   network: string;
   memo_required: boolean;
+  deposit_available?: boolean;
+  withdrawal_available?: boolean;
+  deposit_status?: string;
+  withdrawal_status?: string;
   deposits_enabled: boolean;
   withdrawals_enabled: boolean;
 };

@@ -7,6 +7,7 @@ import {
   processOneWithdrawal,
   reconcilePayout,
   payoutAllowed,
+  assetCatalog,
 } from "../_shared/payments.ts";
 import { generateTotpCode } from "npm:@nowpaymentsio/nowpayments-sdk-nodejs@0.3.0";
 Deno.serve(async (req: Request) => {
@@ -14,6 +15,8 @@ Deno.serve(async (req: Request) => {
   try {
     if (!(await workerAuthorized(req)))
       return reply({ error: "Worker authentication required" }, 401);
+    const input = await req.json().catch(() => ({}));
+    if (input.action === "catalog_status") return reply(await assetCatalog());
     const sdk = provider();
     // Interrupted submission is uncertain, never automatically sent a second time.
     await db()
