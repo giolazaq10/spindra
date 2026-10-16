@@ -421,3 +421,160 @@
     padding: 12px;
   }
 }
+
+.spindra-extension .blackjack-betting {
+  margin: 18px 0;
+  padding: 18px;
+  background: #102238;
+  border: 1px solid #8196b7;
+  border-radius: 16px;
+}
+.spindra-extension .blackjack-betting h3 {
+  color: #fff;
+  font-size: 21px;
+  margin: 0;
+}
+.spindra-extension .blackjack-chip-rack,
+.spindra-extension .blackjack-bet-tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  margin: 18px 0;
+}
+.spindra-extension .blackjack-betting button {
+  padding: 12px;
+  background: #0b1c30;
+  border: 1px solid #8196b7;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  min-height: 46px;
+}
+.spindra-extension .blackjack-betting .blackjack-chip {
+  border: 5px dashed #d4dfed;
+  border-radius: 50%;
+  width: 68px;
+  height: 68px;
+  padding: 0;
+  font-weight: 800;
+}
+.spindra-extension .blackjack-betting button[aria-pressed="true"] {
+  outline: 3px solid #f5c264;
+  outline-offset: 3px;
+  background: #314456;
+}
+.spindra-extension .blackjack-betting button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.spindra-extension .blackjack-betting button:focus-visible {
+  outline: 3px solid #fff2a4;
+  outline-offset: 3px;
+}
+.spindra-extension .blackjack-bet-spots {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.spindra-extension .blackjack-bet-spots article {
+  padding: 12px 8px;
+  border: 1px solid #607490;
+  border-radius: 14px;
+  text-align: center;
+  min-width: 0;
+}
+.spindra-extension .blackjack-bet-spots h4 {
+  color: #fff;
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+.spindra-extension .blackjack-bet-spots .bet-spot-funded {
+  border-color: #f5c264;
+  background: #163444;
+}
+.spindra-extension .blackjack-bet-spots button {
+  width: 100%;
+  padding: 12px 4px;
+}
+.spindra-extension .blackjack-bet-spots span {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.spindra-extension .blackjack-bet-spots strong {
+  display: block;
+  font-size: 16px;
+}
+.spindra-extension .blackjack-bet-spots .blackjack-main-bet {
+  border: 2px solid #41d8f1;
+  min-height: 80px;
+}
+.spindra-extension .blackjack-side-bets {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+.spindra-extension .blackjack-side-bets button {
+  border-color: #d3b76a;
+}
+.spindra-extension .blackjack-bet-tools > strong {
+  color: #fff;
+  font-size: 21px;
+  font-variant-numeric: tabular-nums;
+  padding: 10px;
+}
+.spindra-extension .blackjack-bet-notice {
+  color: #ffdf95;
+  font-size: 15px;
+}
+.spindra-extension .blackjack-side-guide {
+  color: #d2dfed;
+  line-height: 1.6;
+  font-size: 14px;
+}
+.spindra-extension .blackjack-side-guide summary {
+  cursor: pointer;
+  color: #fff;
+  padding: 12px 0;
+  font-weight: 700;
+}
+.spindra-extension .blackjack-table-rules {
+  text-align: center;
+  color: #ffdf95;
+  font-size: 14px;
+}
+.spindra-extension .blackjack-side-results {
+  margin: 18px 0;
+  padding: 14px;
+  background: #071625;
+  border: 1px solid #8196b7;
+  border-radius: 12px;
+}
+.spindra-extension .blackjack-side-results p {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  color: #fff;
+  font-size: 15px;
+}
+.spindra-extension .blackjack-side-results span {
+  color: #ffdf95;
+}
+@media (max-width: 800px) {
+  .spindra-extension .blackjack-bet-spots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 420px) {
+  .spindra-extension .blackjack-betting {
+    padding: 12px;
+  }
+  .spindra-extension .blackjack-betting .blackjack-chip {
+    width: 60px;
+    height: 60px;
+    font-size: 12px;
+  }
+}

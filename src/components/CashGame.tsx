@@ -17,6 +17,8 @@ import type { MiniResult } from "@/lib/minigames";
 import { miniRules } from "@/lib/minigames";
 import PlayingCard from "./PlayingCard";
 import BlackjackScore from "./BlackjackScore";
+import BlackjackBetting from "./BlackjackBetting";
+import type { SeatBet, SideResult } from "@/lib/blackjack";
 import BlackjackRules from "./BlackjackRules";
 import SlotRules from "./SlotRules";
 
@@ -29,6 +31,9 @@ type BJHand = {
   surrendered?: boolean;
 };
 type Table = {
+  bets?: SeatBet[];
+  sideResults?: { three: SideResult; pair: SideResult }[];
+  insurance?: number[];
   phase?: string;
   dealer?: (Card | null)[];
   hands?: BJHand[];
@@ -87,8 +92,16 @@ export default function CashGame({ game }: { game: Original }) {
     [rules, setRules] = useState(false),
     [kind, setKind] = useState("red"),
     [straight, setStraight] = useState(0),
-    [spots, setSpots] = useState(1),
-    [side, setSide] = useState(0),
+    [blackjackBets, setBlackjackBets] = useState<SeatBet[]>(() =>
+      Array.from({ length: 5 }, (_, i) => ({
+        main: i === 0 ? 20 : 0,
+        three: 0,
+        pair: 0,
+      })),
+    ),
+    [previousBlackjackBets, setPreviousBlackjackBets] = useState<
+      SeatBet[] | null
+    >(null),
     [raise, setRaise] = useState(0);
   const alive = useRef(true),
     lock = useRef(false),
@@ -196,6 +209,8 @@ export default function CashGame({ game }: { game: Original }) {
   }
   async function start() {
     if (pending) throw new Error("Recover the pending request first");
+    if (game.kind === "blackjack")
+      setPreviousBlackjackBets(blackjackBets.map((b) => ({ ...b })));
     return send({
       action: "start",
       body: {
@@ -205,11 +220,7 @@ export default function CashGame({ game }: { game: Original }) {
           bet,
           kind,
           straight,
-          bets: Array.from({ length: 5 }, (_, i) => ({
-            main: i < spots ? bet : 0,
-            three: i < spots ? side : 0,
-            pair: i < spots ? side : 0,
-          })),
+          bets: blackjackBets.map((b) => ({ ...b })),
         },
       },
     });
@@ -284,6 +295,13 @@ export default function CashGame({ game }: { game: Original }) {
     same = round?.game === game.slug,
     table = round?.view.table,
     allowed = round?.view.allowed || {};
+  const blackjackStake = blackjackBets.reduce(
+    (sum, b) => sum + b.main + b.three + b.pair,
+    0,
+  );
+  const insuranceTotal =
+    table?.bets?.reduce((sum, b) => sum + b.main / 2, 0) || 0;
+  const actionStake = table?.hands?.[table.active ?? 0]?.bet || 0;
   const SlotCabinet = game.slot?.premium ? PremiumSlots : AdvancedSlots;
   if (!initialized) return <p role="status">Loading saved cash round…</p>;
   if (!eligible && !active && !pending)
@@ -472,35 +490,17 @@ export default function CashGame({ game }: { game: Original }) {
               <>
                 <h2>Multihand blackjack</h2>
                 {!active && (
-                  <div className="cash-fields">
-                    <label>
-                      Hands
-                      <select
-                        value={spots}
-                        onChange={(e) => setSpots(Number(e.target.value))}
-                      >
-                        {[1, 2, 3, 4, 5].map((n) => (
-                          <option key={n}>{n}</option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      Each side bet (21+3 and Perfect Pair)
-                      <select
-                        value={side}
-                        onChange={(e) => setSide(Number(e.target.value))}
-                      >
-                        {[0, 20, 50, 100, 200, 500]
-                          .filter((n) => n <= bet)
-                          .map((n) => (
-                            <option value={n} key={n}>
-                              {money(n)}
-                            </option>
-                          ))}
-                      </select>
-                    </label>
-                  </div>
+                  <BlackjackBetting
+                    bets={blackjackBets}
+                    previous={previousBlackjackBets}
+                    onChange={setBlackjackBets}
+                    balance={wallet.realBalance}
+                    disabled={busy || !!pending}
+                  />
                 )}
+                <p className="blackjack-table-rules">
+                  Blackjack 3:2 · Dealer hits soft 17 · Insurance 2:1
+                </p>
                 {table?.dealer && (
                   <>
                     <section
@@ -568,8 +568,68 @@ export default function CashGame({ game }: { game: Original }) {
                     </div>
                   </article>
                 ))}
+                {table?.sideResults &&
+                  table.bets?.some((b) => b.three || b.pair) && (
+                    <section
+                      className="blackjack-side-results"
+                      aria-label="Side bet results"
+                    >
+                      <h3>Side bet results</h3>
+                      {table.sideResults.map((result, seat) => (
+                        <div key={seat}>
+                          {(["three", "pair"] as const)
+                            .filter(
+                              (kind) => (table.bets?.[seat]?.[kind] || 0) > 0,
+                            )
+                            .map((kind) => (
+                              <p key={kind}>
+                                <b>
+                                  Hand {seat + 1} ·{" "}
+                                  {kind === "three" ? "21+3" : "Perfect Pair"}
+                                </b>
+                                <span>
+                                  {result[kind].name} ·{" "}
+                                  {result[kind].returned
+                                    ? "Return " + money(result[kind].returned)
+                                    : "No win"}
+                                  {active && result[kind].returned > 0
+                                    ? " · paid at round end"
+                                    : ""}
+                                </span>
+                              </p>
+                            ))}
+                        </div>
+                      ))}
+                    </section>
+                  )}
                 {active && table?.phase === "insurance" ? (
                   <>
+                    <p className="table-help">
+                      Insurance costs half the selected main bet and pays 2:1 if
+                      the dealer has blackjack. Choose a hand, insure all, or
+                      decline.
+                    </p>
+                    {table.bets?.map(
+                      (b, seat) =>
+                        b.main > 0 && (
+                          <button
+                            key={seat}
+                            className="button secondary"
+                            disabled={
+                              busy ||
+                              !!pending ||
+                              wallet.realBalance < b.main / 2 ||
+                              (round?.view.stake_minor || 0) + b.main / 2 >
+                                20000
+                            }
+                            onClick={() =>
+                              void takeAction("insurance", { seats: [seat] })
+                            }
+                          >
+                            Insure hand {seat + 1} · {money(b.main / 2)}
+                          </button>
+                        ),
+                    )}
                     <button
                       className="button secondary"
                       disabled={busy || !!pending}
@@ -581,7 +641,12 @@ export default function CashGame({ game }: { game: Original }) {
                     </button>
                     <button
                       className="button secondary"
-                      disabled={busy || !!pending}
+                      disabled={
+                        busy ||
+                        !!pending ||
+                        wallet.realBalance < insuranceTotal ||
+                        (round?.view.stake_minor || 0) + insuranceTotal > 20000
+                      }
                       onClick={() =>
                         void takeAction("insurance", {
                           seats: [
@@ -590,7 +655,7 @@ export default function CashGame({ game }: { game: Original }) {
                         })
                       }
                     >
-                      Insure all occupied hands
+                      Insure all · {money(insuranceTotal)}
                     </button>
                   </>
                 ) : (
@@ -599,13 +664,31 @@ export default function CashGame({ game }: { game: Original }) {
                     <button
                       key={a}
                       className="button secondary"
-                      disabled={busy || !!pending || !allowed[a]}
+                      disabled={
+                        busy ||
+                        !!pending ||
+                        !allowed[a] ||
+                        ((a === "double" || a === "split") &&
+                          (wallet.realBalance < actionStake ||
+                            (round?.view.stake_minor || 0) + actionStake >
+                              20000))
+                      }
                       onClick={() => {
                         // eslint-disable-next-line react-hooks/refs -- This request ref is accessed only by the click handler, never during render.
                         void takeAction(a);
                       }}
                     >
-                      {a}
+                      {a === "double"
+                        ? "Double down · +" +
+                          money(table?.hands?.[table.active ?? 0]?.bet || 0)
+                        : a === "split"
+                          ? "Split · +" +
+                            money(table?.hands?.[table.active ?? 0]?.bet || 0)
+                          : a === "surrender"
+                            ? "Surrender · return half"
+                            : a === "hit"
+                              ? "Hit · take a card"
+                              : "Stand · keep total"}
                     </button>
                   ))
                 )}
@@ -820,29 +903,30 @@ export default function CashGame({ game }: { game: Original }) {
           )}
           {!active && (
             <div className="cash-toolbar">
-              <label>
-                {game.kind === "poker"
-                  ? "Hand buy-in (USD)"
-                  : "Main stake (USD)"}
-                <select
-                  disabled={busy || !!pending}
-                  value={bet}
-                  onChange={(e) => {
-                    const next = Number(e.target.value);
-                    setBet(next);
-                    setSide((current) => Math.min(current, next));
-                  }}
-                >
-                  {(game.kind === "poker"
-                    ? [20, 100, 200, 1000, 2000, 5000, 10000, 20000]
-                    : [20, 50, 100, 200, 500, 1000, 2000]
-                  ).map((n) => (
-                    <option key={n} value={n}>
-                      {money(n)}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              {game.kind !== "blackjack" && (
+                <label>
+                  {game.kind === "poker"
+                    ? "Hand buy-in (USD)"
+                    : "Main stake (USD)"}
+                  <select
+                    disabled={busy || !!pending}
+                    value={bet}
+                    onChange={(e) => {
+                      const next = Number(e.target.value);
+                      setBet(next);
+                    }}
+                  >
+                    {(game.kind === "poker"
+                      ? [20, 100, 200, 1000, 2000, 5000, 10000, 20000]
+                      : [20, 50, 100, 200, 500, 1000, 2000]
+                    ).map((n) => (
+                      <option key={n} value={n}>
+                        {money(n)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
               <button
                 className="button primary"
                 disabled={
@@ -850,11 +934,9 @@ export default function CashGame({ game }: { game: Original }) {
                   !!pending ||
                   !eligible ||
                   wallet.realBalance <
-                    (game.kind === "blackjack"
-                      ? spots * (bet + 2 * side)
-                      : bet) ||
+                    (game.kind === "blackjack" ? blackjackStake : bet) ||
                   (game.kind === "blackjack" &&
-                    spots * (bet + 2 * side) > 20000)
+                    (blackjackStake === 0 || blackjackStake > 20000))
                 }
                 onClick={() => void start().catch(() => {})}
               >
@@ -868,9 +950,8 @@ export default function CashGame({ game }: { game: Original }) {
               </button>
               {game.kind === "blackjack" && (
                 <p>
-                  Total opening stake: {money(spots * (bet + 2 * side))}.
-                  Maximum $200 per round, including later doubles, splits and
-                  insurance.
+                  Total opening stake: {money(blackjackStake)}. Maximum $200 per
+                  round, including later doubles, splits and insurance.
                 </p>
               )}
             </div>

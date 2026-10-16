@@ -286,3 +286,121 @@ for (const slug of ["astra-cascade", "copper-lock", "nitro-sevens"])
       }
     },
   );
+
+test("Cash blackjack submits independent chip bets for each seat and shows side results", async (t) => {
+  const calls = [];
+  const state = newCashRound(
+    "noir-blackjack",
+    {
+      bet: 20,
+      bets: [
+        { main: 120, three: 100, pair: 20 },
+        { main: 20, three: 0, pair: 0 },
+        ...Array.from({ length: 3 }, () => ({ main: 0, three: 0, pair: 0 })),
+      ],
+    },
+    (n) => n - 1,
+  );
+  const fixture = {
+    id: crypto.randomUUID(),
+    revision: 0,
+    game: "noir-blackjack",
+    state: state.phase,
+    balance_minor: 9000,
+    view: publicCash(state),
+  };
+  t.mock.method(supabase.auth, "getSession", async () => ({
+    data: { session: { access_token: "fixture-token" } },
+    error: null,
+  }));
+  t.mock.method(
+    Object.getPrototypeOf(supabase.functions),
+    "invoke",
+    async (name, options) => {
+      assert.equal(name, "cash-games");
+      assert.equal(options.headers.Authorization, "Bearer fixture-token");
+      calls.push(options.body);
+      return {
+        data:
+          options.body.action === "status"
+            ? {
+                enabled: true,
+                reason: null,
+                active: null,
+                balance_minor: 10000,
+              }
+            : fixture,
+        error: null,
+      };
+    },
+  );
+  try {
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <AuthContext.Provider
+            value={{
+              user: {
+                id: "11111111-1111-4111-8111-111111111111",
+              } as import("@supabase/supabase-js").User,
+              loading: false,
+            }}
+          >
+            <WalletProvider>
+              <CashGame
+                game={originals.find((g) => g.slug === "noir-blackjack")!}
+              />
+            </WalletProvider>
+          </AuthContext.Provider>
+        </MemoryRouter>,
+      );
+    });
+    assert.equal(screen.queryAllByRole("combobox").length, 0);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Perfect Pair bet for hand 2" }),
+    );
+    assert.ok(screen.getByText("Place a main bet on this hand first."));
+    fireEvent.click(screen.getByRole("button", { name: "$1.00", exact: true }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Main bet for hand 1" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "21+3 bet for hand 1" }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "$0.20", exact: true }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Perfect Pair bet for hand 1" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Main bet for hand 2" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Double bets", exact: true }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Undo", exact: true }));
+    assert.ok(screen.getByText("Total stake $2.60"));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Deal cards" }));
+    });
+    const start = calls.find((c) => c.action === "start");
+    assert.ok(start);
+    assert.deepEqual(start.input.bets, [
+      { main: 120, three: 100, pair: 20 },
+      { main: 20, three: 0, pair: 0 },
+      ...Array.from({ length: 3 }, () => ({ main: 0, three: 0, pair: 0 })),
+    ]);
+    assert.ok(screen.getByLabelText("Side bet results"));
+    assert.match(
+      screen.getByLabelText("Side bet results").textContent!,
+      /21[+]3/,
+    );
+    assert.match(
+      screen.getByLabelText("Side bet results").textContent!,
+      /Perfect Pair/,
+    );
+    assert.equal(sessionStorage.length, 0);
+  } finally {
+    cleanup();
+    sessionStorage.clear();
+  }
+});
