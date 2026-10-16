@@ -12,6 +12,7 @@ import {
   positive,
   providerId,
   terminalPayout,
+  settlementCurrency,
 } from "./payment-rules.ts";
 export const env = (name: string) => Deno.env.get(name) || "";
 export const db = () =>
@@ -147,6 +148,19 @@ export async function assetCatalog() {
     env("NOWPAYMENTS_CUSTODY_CONFIRMED") === "true" &&
     env("NOWPAYMENTS_REUSABLE_ADDRESSES_CONFIRMED") === "true";
   return {
+    deposit_ready: depositReady,
+    missing_deposit_settings: [
+      "NOWPAYMENTS_API_KEY",
+      "NOWPAYMENTS_IPN_SECRET",
+      "NOWPAYMENTS_OUTCOME_CURRENCY",
+    ]
+      .filter((name) => !env(name))
+      .concat(
+        [
+          "NOWPAYMENTS_CUSTODY_CONFIRMED",
+          "NOWPAYMENTS_REUSABLE_ADDRESSES_CONFIRMED",
+        ].filter((name) => env(name) !== "true"),
+      ),
     assets: catalogRows(configured.data, live, settings.data, {
       deposit: depositReady,
       withdrawal:
@@ -184,12 +198,15 @@ export async function creditPayment(id: string) {
   const raw = payment as unknown as Record<string, unknown>;
   if (!matchesRoute(raw, route.data))
     throw new Error("Deposit currency, address or memo mismatch");
-  if (payment.outcome_currency !== env("NOWPAYMENTS_OUTCOME_CURRENCY"))
-    throw new Error("Unexpected deposit settlement currency");
+  const settlement = settlementCurrency(
+    payment.outcome_currency,
+    env("NOWPAYMENTS_OUTCOME_CURRENCY"),
+    merchantCurrencyCodes(await sdk.raw.getMerchantCoins()),
+  );
   const outcome = positive(payment.outcome_amount, "Settled deposit");
   const amount = await sdk.estimatePrice({
     amount: outcome,
-    fromCurrency: payment.outcome_currency,
+    fromCurrency: settlement,
     toCurrency: "usd",
   });
   await rpc("credit_crypto_deposit", {
@@ -197,7 +214,7 @@ export async function creditPayment(id: string) {
     p_address: route.data.id,
     p_asset: route.data.asset,
     p_crypto: outcome,
-    p_outcome: payment.outcome_currency,
+    p_outcome: settlement,
     p_minor: minorFloor(amount.estimated_amount),
   });
   return { status: "finished", credited: true };

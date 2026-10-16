@@ -95,3 +95,17 @@ export function matchesRoute(
     String(payment.payin_extra_id ?? "") === String(route.memo ?? "")
   );
 }
+
+export function settlementCurrency(
+  value: unknown,
+  primary: string,
+  merchant: Set<string>,
+) {
+  const code = typeof value === "string" ? value.trim().toLowerCase() : "";
+  if (
+    !/^[a-z0-9]{2,30}$/.test(code) ||
+    !(code === primary.toLowerCase() || merchant.has(code))
+  )
+    throw new Error("Unexpected deposit settlement currency");
+  return code;
+}
