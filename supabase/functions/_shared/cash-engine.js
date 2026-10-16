@@ -268,6 +268,84 @@ var setups = [
     4
   ]
 ];
+setups.push(
+  [
+    5,
+    3,
+    25,
+    "left",
+    3,
+    "Lightning trails",
+    "Twenty-five storm paths with three storm crystals anywhere paying an extra award.",
+    "storm",
+    "zap,bird,mountain,shield,gem,star,crown",
+    "Storm crystal",
+    3
+  ],
+  [
+    5,
+    4,
+    0,
+    "left",
+    3,
+    "Sugar rushways",
+    "Four rows open 1,024 adjacent ways. Four parade tickets anywhere add a scatter award.",
+    "candy",
+    "heart,flower,disc,gem,star,trophy,crown",
+    "Parade ticket",
+    4
+  ],
+  [
+    5,
+    3,
+    20,
+    "right",
+    3,
+    "Corsair crossings",
+    "Twenty right-to-left sea routes. Four black pearls anywhere earn an extra return.",
+    "pirate",
+    "ship,anchor,shell,compass,key,gem,crown",
+    "Black pearl",
+    4
+  ],
+  [
+    5,
+    3,
+    30,
+    "left",
+    3,
+    "Golden hive",
+    "Thirty honeycomb routes and three hive tokens anywhere.",
+    "honey",
+    "hexagon,flower,leaf,sun,gem,star,crown",
+    "Hive token",
+    3
+  ],
+  [
+    4,
+    4,
+    16,
+    "right",
+    2,
+    "Aurora clockwork",
+    "Sixteen reverse clockwork paths with wins from two matches. No scatter awards.",
+    "aurora",
+    "clock,wind,snowflake,moon,key,gem,crown"
+  ],
+  [
+    6,
+    3,
+    0,
+    "left",
+    3,
+    "729 dragon ways",
+    "Six reels open 729 adjacent ways. Five dragon seals anywhere add an extra award.",
+    "dragon",
+    "flame,shield,sword,tower,key,gem,crown",
+    "Dragon seal",
+    5
+  ]
+);
 function paths(reels, rows, count, seed) {
   if (!count) return [];
   const result2 = [];
@@ -639,6 +717,68 @@ var themes = [
     "A world waiting to unfold."
   ]
 ];
+themes.push(
+  [
+    "thunder-aerie",
+    "Thunder Aerie",
+    "#112b52",
+    "#89d7ff",
+    "\u03DF",
+    "\u03DF \u2601 \u25C6 \u2726 \u265B \u2604 \u2605",
+    "flare",
+    "Storm-lit peaks. Twenty-five lightning paths."
+  ],
+  [
+    "sugar-parade",
+    "Sugar Parade",
+    "#6b2454",
+    "#ffbadb",
+    "\u273F",
+    "\u273F \u2665 \u25C6 \u2726 \u2605 \u2600 \u265B",
+    "bloom",
+    "A candy-colored carnival of 1,024 ways."
+  ],
+  [
+    "corsair-pearls",
+    "Corsair Pearls",
+    "#093d46",
+    "#76efca",
+    "\u2693",
+    "\u2653 \u25C6 \u2726 \u2600 \u2605 \u265B \u25C8",
+    "wave",
+    "Sail right to left into a hidden pirate lagoon."
+  ],
+  [
+    "amber-apiary",
+    "Amber Apiary",
+    "#593e0c",
+    "#ffe385",
+    "\u2B21",
+    "\u2B21 \u273F \u2600 \u25C6 \u2726 \u2605 \u265B",
+    "bloom",
+    "Sweet honey routes and golden hive treasures."
+  ],
+  [
+    "clockwork-aurora",
+    "Clockwork Aurora",
+    "#203b3a",
+    "#99ffd4",
+    "\u25F7",
+    "\u25F7 \u25C8 \u2726 \u25C6 \u2605 \u2600 \u265B",
+    "orbit",
+    "Four clockwork reels beneath dancing polar lights."
+  ],
+  [
+    "dragon-atelier",
+    "Dragon Atelier",
+    "#4b1832",
+    "#ff9c79",
+    "\u265C",
+    "\u265C \u2666 \u265B \u2726 \u25C6 \u2604 \u2605",
+    "flare",
+    "A six-reel dragon workshop with 729 ways."
+  ]
+);
 var originals = themes.map((t, i) => ({
   slug: t[0],
   name: t[1],
@@ -690,6 +830,115 @@ originals.push(
     math: profiles[0]
   }
 );
+originals.push(
+  ...[
+    [
+      "prism-dice",
+      "Prism Dice",
+      "dice",
+      "#12304f",
+      "#68dfff",
+      "\u2684",
+      "Pick your chance. Watch the prism roll."
+    ],
+    [
+      "meteor-plinko",
+      "Meteor Plinko",
+      "plinko",
+      "#29164e",
+      "#ddaeff",
+      "\u2726",
+      "Eight cosmic bounces. Nine landing zones."
+    ],
+    [
+      "festival-wheel",
+      "Festival Wheel",
+      "wheel",
+      "#4c2037",
+      "#ffd184",
+      "\u25C9",
+      "Twenty lights. One festival prize."
+    ]
+  ].map(([slug, name, mini, color, accent, emblem, tagline]) => ({
+    slug,
+    name,
+    mini,
+    color,
+    accent,
+    emblem,
+    tagline,
+    kind: "instant",
+    symbols: [],
+    animation: "orbit",
+    math: profiles[0]
+  }))
+);
+
+// src/lib/minigames.ts
+var wheelPays = [
+  0,
+  100,
+  0,
+  150,
+  0,
+  100,
+  0,
+  200,
+  0,
+  340,
+  0,
+  100,
+  0,
+  150,
+  0,
+  200,
+  0,
+  100,
+  0,
+  500
+];
+var plinkoPays = [1e3, 350, 140, 60, 40, 60, 140, 350, 1e3];
+function miniPlay(type, stake, input = {}, rng = randomInt) {
+  if (!Number.isSafeInteger(stake) || stake < 100 || stake > 2e4 || stake % 100)
+    throw new Error("Invalid minigame stake");
+  if (type === "dice") {
+    const threshold = input.threshold ?? 5e3;
+    if (!Number.isInteger(threshold) || Number(threshold) < 500 || Number(threshold) > 9500 || input.over !== void 0 && typeof input.over !== "boolean")
+      throw new Error("Invalid dice chance");
+    const target = Number(threshold), over = input.over === true, roll = rng(1e4);
+    const win = over ? roll >= 1e4 - target : roll < target;
+    const returned_minor = win ? Math.floor(stake * 9700 / target) : 0;
+    return {
+      type,
+      roll,
+      threshold: target,
+      over,
+      multiplier: returned_minor / stake,
+      returned_minor
+    };
+  }
+  if (type === "plinko") {
+    const path = Array.from({ length: 8 }, () => rng(2));
+    const bin = path.reduce((a, b) => a + b, 0), rate = plinkoPays[bin];
+    return {
+      type,
+      path,
+      bin,
+      multiplier: rate / 100,
+      returned_minor: stake / 100 * rate
+    };
+  }
+  if (type === "wheel") {
+    const sector = rng(20), rate = wheelPays[sector];
+    return {
+      type,
+      sector,
+      multiplier: rate / 100,
+      returned_minor: stake / 100 * rate
+    };
+  }
+  throw new Error("Unknown minigame");
+}
 
 // src/lib/blackjack.ts
 var MAIN_MAX = 2e4;
@@ -1219,7 +1468,11 @@ function newCashRound(game, input, rng = randomInt) {
   const g = originals.find((g2) => g2.slug === game);
   if (!g) throw new Error("Unknown game");
   let data, stake = amount(input.bet), returned = 0, done = true;
-  if (g.kind === "slots") {
+  if (g.kind === "instant" && g.mini) {
+    const result2 = miniPlay(g.mini, stake, input, rng);
+    data = result2;
+    returned = result2.returned_minor;
+  } else if (g.kind === "slots") {
     const result2 = modelSpin(g.slot, rng);
     returned = stake / 100 * result2.rate;
     data = result2;

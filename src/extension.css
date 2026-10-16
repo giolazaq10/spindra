@@ -4139,6 +4139,24 @@
   padding: 15px 4px;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
 }
+.spindra-extension .scene-storm { background: linear-gradient(#13264c,#31618b); }
+.spindra-extension .scene-candy { background: linear-gradient(#52245f,#bb588c); }
+.spindra-extension .scene-pirate { background: linear-gradient(#0c3041,#176b68); }
+.spindra-extension .scene-honey { background: linear-gradient(#654318,#ba8329); }
+.spindra-extension .scene-aurora { background: linear-gradient(#10232f,#235952); }
+.spindra-extension .scene-dragon { background: linear-gradient(#35172e,#82394a); }
+.spindra-extension .scene-storm .reel-cabinet { background: linear-gradient(125deg,#ddf9ff,#528ab2,#c1f0ff); border-radius: 10px; }
+.spindra-extension .scene-candy .reel-cabinet { background: repeating-linear-gradient(45deg,#ffd9ed 0 18px,#be7cd8 18px 36px); border-radius: 25px; }
+.spindra-extension .scene-pirate .reel-cabinet { background: linear-gradient(125deg,#dcb271,#795133,#efd29d); border-radius: 12px 12px 38px 38px; }
+.spindra-extension .scene-honey .reel-cabinet { background: linear-gradient(125deg,#fff0b0,#d89820,#ffe786); border-radius: 28px 8px; }
+.spindra-extension .scene-aurora .reel-cabinet { background: linear-gradient(125deg,#b6f3e6,#3a8b86,#e2ecce); border-radius: 36px 36px 12px 12px; }
+.spindra-extension .scene-dragon .reel-cabinet { background: linear-gradient(125deg,#ffd0a4,#b04a4e,#f7af73); border-radius: 8px; }
+.spindra-extension .storm-bolt { animation: storm-flash 5s ease-in-out infinite; }
+.spindra-extension .pirate-vessel { transform-origin: 260px 400px; animation: vessel-rock 5s ease-in-out infinite; }
+.spindra-extension .aurora-curtain { animation: aurora-glow 7s ease-in-out infinite; }
+@keyframes storm-flash { 0%,85%,94%,100% {opacity:.12} 88%,97% {opacity:1} }
+@keyframes vessel-rock { 0%,100% {transform:rotate(-3deg)} 50% {transform:rotate(3deg)} }
+@keyframes aurora-glow { 0%,100% {opacity:.4;transform:translateX(-30px)} 50% {opacity:1;transform:translateX(30px)} }
 .spindra-extension .distinct-slot .slot-console > div {
   min-width: 0;
   overflow: hidden;

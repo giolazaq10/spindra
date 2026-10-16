@@ -7,7 +7,7 @@ The original slots, blackjack, Hold’em and roulette now have a server-side cas
 - `cash-games` Edge Function validates the user's actual Supabase session.
 - `commit_cash_game` atomically persists private round state, command responses and cash-ledger entries. Browser roles cannot call it or read decks/opponents' cards.
 - One open table hand per account; monotonically increasing revisions prevent concurrent actions from changing the same state twice. Retrying the same request key returns its saved response.
-- All 16 slots and European roulette settle immediately on the server; blackjack and poker persist across refreshes and page navigation.
+- All 22 slots and European roulette settle immediately on the server; blackjack and poker persist across refreshes and page navigation.
 - At 15 minutes, cleanup finishes blackjack by standing and completing the dealer. Poker folds and returns only uncommitted chips. Existing rounds can settle after a pause or self-exclusion; extra stakes and new rounds cannot.
 - Cash and external-provider rounds share one UTC daily loss budget. Cash bets use USD minor units and the existing cash wallet. Maximum total stake per round defaults to $200.
 - The existing NOWPayments deposit/withdrawal settings and balances are not changed by installing cash games.

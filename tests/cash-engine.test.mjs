@@ -14,7 +14,7 @@ const rng = (n) => {
   seed = (seed * 1664525 + 1013904223) >>> 0;
   return seed % n;
 };
-test("All 16 cash slots use the published math and ignore client payout/result claims", () => {
+test("All catalog cash slots use the published math and ignore client payout/result claims", () => {
   for (const g of originals.filter((g) => g.kind === "slots")) {
     const s = newCashRound(
       g.slug,

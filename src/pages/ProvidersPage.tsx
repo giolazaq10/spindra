@@ -1,3 +1,4 @@
+import { originals } from "@/lib/catalog";
 import { Link } from "react-router-dom";
 import {
   Building2,
@@ -48,7 +49,7 @@ export default function ProvidersPage() {
       created_at: "",
     },
   ];
-  const gameCounts: Record<string, number> = { spindra: 19 };
+  const gameCounts: Record<string, number> = { spindra: originals.length };
   const loading = false;
 
   return (

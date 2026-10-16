@@ -34,12 +34,6 @@ async function resolveCountry(
     throw new Error("Verified location is not eligible");
   return data.country;
 }
-import {
-  newCashRound,
-  nextCashRound,
-  publicCash,
-  CASH_MODEL,
-} from "../_shared/cash-engine.js";
 const uuid = (v: unknown) =>
   typeof v === "string" &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
