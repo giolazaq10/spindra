@@ -4,7 +4,11 @@ import type { BlackjackRound } from "../lib/blackjack";
 import { credits } from "../lib/money";
 import AnimatedCredits from "./AnimatedCredits";
 
-export default function BlackjackResults({ round }: { round: BlackjackRound }) {
+export default function BlackjackResults({
+  round,
+}: {
+  round: Pick<BlackjackRound, "totalStake" | "returned">;
+}) {
   const [expanded, setExpanded] = useState(true);
   const net = round.returned - round.totalStake;
   const kind = net > 0 ? "win" : net < 0 ? "loss" : "push";
