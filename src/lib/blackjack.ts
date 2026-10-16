@@ -39,7 +39,7 @@ export function validateBets(bets: SeatBet[]) {
         (n) => Number.isSafeInteger(n) && n >= 0 && n % 100 === 0,
       )
     )
-      throw new Error("Bets must use whole demo credits");
+      throw new Error("Bets must use whole USD amounts");
     if (b.main && (b.main < 100 || b.main > MAIN_MAX))
       throw new Error("Main bet range is 1–200 credits");
     if (b.three > b.main || b.pair > b.main)

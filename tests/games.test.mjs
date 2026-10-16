@@ -12,7 +12,7 @@ import {
   distributePots,
   botAction,
 } from "../src/lib/holdem.ts";
-import { DemoLedger } from "../src/lib/demoLedger.ts";
+import { DemoLedger } from "./fixtures/demoLedger.ts";
 const card = (rank, suit = 0) => ({ rank, suit });
 
 test("all twenty-two slots have distinct artwork, mechanics, paytables and valid exact RTP", () => {

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/context/Auth";
 import { useWallet } from "@/context/Wallet";
 import { cashApi } from "@/lib/walletApi";
@@ -59,10 +60,12 @@ export default function CashGame({ game }: { game: Original }) {
   const { user } = useAuth(),
     wallet = useWallet();
   const storageKey = "spindra-cash-pending:" + user?.id;
+  const { acceptServerBalance } = wallet;
   const [round, setRound] = useState<CashRound | null>(null),
     [pending, setPending] = useState<Pending | null>(null),
     [busy, setBusy] = useState(false),
     [initialized, setInitialized] = useState(false),
+    [eligible, setEligible] = useState(false),
     [message, setMessage] = useState("Server-authorized cash play. USD."),
     [bet, setBet] = useState(game.kind === "poker" ? 1000 : 100),
     [rules, setRules] = useState(false),
@@ -82,8 +85,12 @@ export default function CashGame({ game }: { game: Original }) {
         const status = await cashApi<{
           active: CashRound | null;
           reason: string | null;
+          enabled: boolean;
+          balance_minor: number;
         }>("status");
         if (!active) return;
+        setEligible(status.enabled === true);
+        acceptServerBalance(status.balance_minor);
         if (status.active) setRound(status.active);
         if (status.reason) setMessage(status.reason);
         const saved = sessionStorage.getItem(storageKey);
@@ -111,7 +118,7 @@ export default function CashGame({ game }: { game: Original }) {
       alive.current = false;
       clearTimeout(timer.current);
     };
-  }, [storageKey]);
+  }, [storageKey, acceptServerBalance]);
   function store(p: Pending | null) {
     if (p) sessionStorage.setItem(storageKey, JSON.stringify(p));
     else sessionStorage.removeItem(storageKey);
@@ -127,6 +134,7 @@ export default function CashGame({ game }: { game: Original }) {
       store(null);
       if (alive.current) {
         setRound(response);
+        acceptServerBalance(response.balance_minor);
         wallet.refresh();
         setMessage(
           response.state === "settled"
@@ -214,6 +222,7 @@ export default function CashGame({ game }: { game: Original }) {
       if (r.round) {
         setRound(r.round);
         store(null);
+        acceptServerBalance(r.round.balance_minor);
         wallet.refresh();
         setMessage("Confirmed saved round recovered.");
       } else
@@ -230,7 +239,8 @@ export default function CashGame({ game }: { game: Original }) {
     bet,
     setBet,
     start: () => {
-      if (busy || pending) return false;
+      if (busy || pending || !eligible || wallet.realBalance < bet)
+        return false;
       setBusy(true);
       return true;
     },
@@ -240,7 +250,8 @@ export default function CashGame({ game }: { game: Original }) {
     },
     setMessage,
     balance: wallet.realBalance,
-    busy,
+    busy: busy || !!pending,
+    canStart: eligible && wallet.realBalance >= bet,
     setLeaveReturn: () => {},
     stakes: [100, 200, 500, 1000, 2000],
     message,
@@ -254,8 +265,24 @@ export default function CashGame({ game }: { game: Original }) {
     table = round?.view.table,
     allowed = round?.view.allowed || {};
   if (!initialized) return <p role="status">Loading saved cash round…</p>;
+  if (!eligible && !active && !pending)
+    return (
+      <div className="panel">
+        <h2>Cash play unavailable</h2>
+        <p role="status">{message}</p>
+        <Link className="button secondary" to="/account">
+          View account status
+        </Link>
+      </div>
+    );
   return (
     <div className="cash-game">
+      {wallet.realBalance < bet && !active && !pending && (
+        <p className="notice">
+          Your balance is below this stake.{" "}
+          <Link to="/account">Deposit or manage your wallet</Link>.
+        </p>
+      )}
       <p role="status">{message}</p>
       <p>
         Cash balance <strong>{money(wallet.realBalance)}</strong>
@@ -580,6 +607,11 @@ export default function CashGame({ game }: { game: Original }) {
                 disabled={
                   busy ||
                   !!pending ||
+                  !eligible ||
+                  wallet.realBalance <
+                    (game.kind === "blackjack"
+                      ? spots * (bet + 2 * side)
+                      : bet) ||
                   (game.kind === "blackjack" &&
                     spots * (bet + 2 * side) > 20000)
                 }

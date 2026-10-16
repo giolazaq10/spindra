@@ -8,7 +8,7 @@ import {
   type HoldemState,
   type PokerAction,
 } from "../lib/holdem";
-import { credits } from "../context/Demo";
+import { credits } from "../lib/money";
 import useTableMotion from "./useTableMotion";
 import PlayingCard from "./PlayingCard";
 import GameControls from "./GameControls";

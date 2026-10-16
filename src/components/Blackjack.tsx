@@ -36,7 +36,7 @@ import {
   type BJAction,
   type SeatBet,
 } from "../lib/blackjack";
-import { credits } from "../context/Demo";
+import { credits } from "../lib/money";
 import type { Controls } from "./OriginalGame";
 import PlayingCard from "./PlayingCard";
 import useTableMotion from "./useTableMotion";
@@ -231,9 +231,7 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
       return;
     }
     if (!c.start(total)) {
-      setCaption(
-        "Cannot place this round. Check your demo balance and limits.",
-      );
+      setCaption("Cannot place this round. Check your USD balance and limits.");
       return;
     }
     setPreviousBets(copyBets(bets));
@@ -291,7 +289,7 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
     const cost = insuranceCost(s, seats);
     if (cost && !c.start(cost)) {
       setCaption(
-        "Not enough demo balance or session limit for that insurance selection.",
+        "Not enough USD balance or session limit for that insurance selection.",
       );
       return;
     }
@@ -309,7 +307,7 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
     if (!s || motion.locked.current || !allowedActions(s)[action]) return;
     const cost = blackjackActionCost(s, action);
     if (cost && !c.start(cost)) {
-      setCaption("Not enough demo balance or session limit for that action.");
+      setCaption("Not enough USD balance or session limit for that action.");
       return;
     }
     const next = actBlackjack(s, action);
@@ -887,7 +885,7 @@ export default function Blackjack({ controls: c }: { controls: Controls }) {
         </button>
       </div>
       <small className="bj-limit-note">
-        Main bets 1–200 · each side bet 1–main bet · demo credits, no cash value{" "}
+        Main bets 1–200 · each side bet 1–main bet · USD{" "}
         {turbo ? "· TURBO ON" : ""}
       </small>
       {menu && (

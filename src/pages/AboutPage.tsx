@@ -21,7 +21,7 @@ const features = [
   {
     icon: Zap,
     title: "Playable Originals",
-    desc: "Explore original slots, blackjack, Texas Hold’em and roulette with free practice credits.",
+    desc: "Explore original slots, blackjack, Texas Hold’em and roulette using your real USD wallet.",
   },
   {
     icon: Trophy,
@@ -152,7 +152,8 @@ export default function AboutPage() {
               Ready to Join the Fun?
             </h2>
             <p className="text-white/80 mb-6 max-w-xl mx-auto">
-              Explore {originals.length} playable Spindra originals with free practice credits.
+              Explore {originals.length} playable Spindra originals using your
+              real USD wallet.
             </p>
             <Link
               to="/games"

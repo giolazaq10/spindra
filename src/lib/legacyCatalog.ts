@@ -87,7 +87,7 @@ export const promotions: Promotion[] = [
     title: "Free Spins Friday",
     subtitle: "Original games to explore",
     description:
-      "Try every Spindra slot with free practice credits while live promotions are being prepared.",
+      "Explore Spindra originals with your real USD wallet. Published offer terms will appear here when available.",
     badge: "PLAY",
     icon: "Sparkles",
     gradient: "from-cyan-400 via-blue-500 to-indigo-500",

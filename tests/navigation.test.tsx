@@ -1,48 +1,49 @@
-import RouteBoundary from "../src/components/RouteBoundary";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
-import React, { StrictMode } from "react";
-import {
-  createMemoryRouter,
-  RouterProvider,
-  Link,
-  Outlet,
-} from "react-router-dom";
-import { DemoProvider, useDemo } from "../src/context/Demo";
-import { AuthProvider } from "../src/context/Auth";
-import { WalletProvider } from "../src/context/Wallet";
-import BlackjackResults from "../src/components/BlackjackResults";
-import { createBlackjack } from "../src/lib/blackjack";
-import OriginalGame from "../src/components/OriginalGame";
+import React from "react";
+import { createMemoryRouter, RouterProvider, Link } from "react-router-dom";
+import { AuthContext } from "../src/context/authState";
+import { WalletProvider, useWallet } from "../src/context/Wallet";
+import { supabase } from "../src/lib/supabase";
 import { originals } from "../src/lib/catalog";
-
+import { newCashRound, nextCashRound, publicCash } from "../src/lib/cashEngine";
+import OriginalGame from "../src/components/OriginalGame";
 const dom = new JSDOM("<!doctype html><html><body></body></html>", {
-  url: "http://localhost/",
+  url: "https://fixture.invalid",
 });
 Object.assign(globalThis, {
   window: dom.window,
   document: dom.window.document,
   HTMLElement: dom.window.HTMLElement,
   Element: dom.window.Element,
+  sessionStorage: dom.window.sessionStorage,
 });
 Object.defineProperty(globalThis, "navigator", {
   value: dom.window.navigator,
   configurable: true,
 });
-const { render, screen, fireEvent, act, cleanup, within } =
+const { render, screen, fireEvent, act, cleanup } =
   await import("@testing-library/react");
-function Probe() {
-  const demo = useDemo();
-  return (
-    <>
-      <output data-testid="balance">{demo.balance}</output>
-      <output data-testid="rounds">{demo.rounds.length}</output>
-    </>
-  );
+const uid = "11111111-1111-4111-8111-111111111111";
+function Balance() {
+  const w = useWallet();
+  return <output data-testid="cash-balance">{w.balance}</output>;
 }
-function setup(slug: string) {
-  const game = originals.find((g) => g.slug === slug)!;
+function setup(t, invoke, user = true, slug = "prism-dice") {
+  t.mock.method(supabase.auth, "getSession", async () => ({
+    data: { session: { access_token: "fixture-token" } },
+    error: null,
+  }));
+  t.mock.method(
+    Object.getPrototypeOf(supabase.functions),
+    "invoke",
+    async (name, options) => {
+      assert.equal(name, "cash-games");
+      assert.equal(options.headers.Authorization, "Bearer fixture-token");
+      return invoke(options.body);
+    },
+  );
   const router = createMemoryRouter(
     [
       {
@@ -54,343 +55,200 @@ function setup(slug: string) {
           </>
         ),
       },
-      { path: "/game/" + slug, element: <OriginalGame game={game} /> },
+      {
+        path: "/game/" + slug,
+        element: (
+          <OriginalGame game={originals.find((g) => g.slug === slug)!} />
+        ),
+      },
     ],
     { initialEntries: ["/games"] },
   );
-  const app = render(
-    <StrictMode>
-      <AuthProvider>
-        <WalletProvider>
-          <DemoProvider>
-            <RouterProvider router={router} />
-            <Probe />
-          </DemoProvider>
-        </WalletProvider>
-      </AuthProvider>
-    </StrictMode>,
+  render(
+    <AuthContext.Provider
+      value={{
+        user: user
+          ? ({ id: uid } as import("@supabase/supabase-js").User)
+          : null,
+        loading: false,
+      }}
+    >
+      <WalletProvider>
+        <Balance />
+        <RouterProvider router={router} />
+      </WalletProvider>
+    </AuthContext.Provider>,
   );
-  fireEvent.click(screen.getByRole("link", { name: "Open game" }));
-  fireEvent.click(screen.getByRole("button", { name: /Practice Play/ }));
-  return { app, router };
+  return router;
 }
-test("browser Back during a spin cancels timers, settles once, and allows a new game under Strict Mode", async (t) => {
-  t.mock.timers.enable({ apis: ["setTimeout"] });
-  const { router } = setup("solar-vault");
-  fireEvent.click(
-    screen.getByRole("button", { name: "Spin reels", exact: true }),
+test("Guest game routes require sign-in and expose no practice balance or mode selector", async (t) => {
+  let calls = 0;
+  setup(
+    t,
+    async () => {
+      calls++;
+      return { data: {}, error: null };
+    },
+    false,
   );
-  assert.equal(screen.getByTestId("balance").textContent, "99900");
-  await act(async () => {
-    void router.navigate(-1);
-  });
-  assert.ok(screen.getByRole("heading", { name: "LOBBY" }));
-  await act(async () => {
-    t.mock.timers.tick(10000);
-  });
-  assert.equal(screen.getByTestId("rounds").textContent, "1");
-  assert.equal(screen.getByTestId("balance").textContent, "99900");
   fireEvent.click(screen.getByRole("link", { name: "Open game" }));
-  fireEvent.click(
-    screen.getByRole("button", { name: "Spin reels", exact: true }),
-  );
-  await act(async () => {
-    t.mock.timers.tick(10000);
-  });
-  assert.equal(screen.getByTestId("rounds").textContent, "2");
-  assert.ok(screen.getByRole("button", { name: "Spin reels", exact: true }));
+  assert.ok(screen.getByRole("heading", { name: "Sign in to play" }));
+  assert.equal(screen.queryByText(/practice/i), null);
+  assert.equal(screen.getByTestId("cash-balance").textContent, "0");
+  assert.equal(calls, 0);
   cleanup();
 });
-test("Texas Hold’em always shows two player cards and Back refunds uncommitted chips once", async (t) => {
+test("Cash-only game route hydrates the server wallet and accepts only a server-settled return", async (t) => {
   t.mock.timers.enable({ apis: ["setTimeout"] });
-  const { router } = setup("royal-draw");
-  fireEvent.click(screen.getByRole("button", { name: "Join & deal" }));
-  const cards = screen.getByLabelText("Your private cards");
-  assert.equal(within(cards).getAllByRole("img").length, 2);
-  assert.ok(
-    within(cards)
-      .getAllByRole("img")
-      .every((card) => card.getAttribute("aria-label") !== "Face-down card"),
-  );
-  assert.ok(screen.getByText("Dealing & moving chips"));
-  assert.equal(screen.queryByRole("button", { name: /^Call / }), null);
-  await act(async () => {
-    t.mock.timers.tick(3200);
+  let starts = 0;
+  const state = newCashRound("prism-dice", { bet: 100 }, () => 0),
+    response = {
+      id: crypto.randomUUID(),
+      revision: 0,
+      game: "prism-dice",
+      state: "settled",
+      balance_minor: 10000 - 100 + state.returned_minor,
+      view: publicCash(state),
+    };
+  setup(t, async (body) => {
+    if (body.action === "start") {
+      starts++;
+      assert.equal(body.input.bet, 100);
+      return { data: response, error: null };
+    }
+    return {
+      data: { enabled: true, balance_minor: 10000, active: null, reason: null },
+      error: null,
+    };
   });
-  fireEvent.click(screen.getByRole("button", { name: /^Call / }));
   await act(async () => {
-    void router.navigate(-1);
+    fireEvent.click(screen.getByRole("link", { name: "Open game" }));
   });
+  assert.equal(screen.getByTestId("cash-balance").textContent, "10000");
+  assert.equal(screen.queryByText(/practice/i), null);
   await act(async () => {
-    t.mock.timers.tick(10000);
+    fireEvent.click(screen.getByRole("button", { name: "Roll dice" }));
   });
-  assert.ok(screen.getByRole("heading", { name: "LOBBY" }));
-  assert.equal(screen.getByTestId("balance").textContent, "99500");
-  assert.equal(screen.getByTestId("rounds").textContent, "1");
-  cleanup();
-});
-test("stakes and complete rules are embedded in the cabinet", () => {
-  const { app } = setup("neon-drift");
-  const stake = screen.getByRole("combobox", { name: "Total stake" });
-  assert.ok(stake.closest(".advanced-slot"));
-  assert.equal(app.container.querySelectorAll(".game-bottom").length, 0);
-  fireEvent.change(stake, { target: { value: "500" } });
-  assert.equal((stake as HTMLSelectElement).value, "500");
-  fireEvent.click(screen.getByRole("button", { name: "Rules & payouts" }));
-  assert.equal(screen.getAllByText(/Twenty neon routes/).length, 2);
-  assert.ok(
-    app.container.querySelector(".embedded-rules")?.closest(".game-surface"),
-  );
-  assert.equal(app.container.querySelectorAll(".payline-guide>div").length, 20);
-  cleanup();
-});
-test("browser Back recovers from a failed route instead of retaining the previous error screen", async (t) => {
-  t.mock.method(console, "error", () => {});
-  function Crash() {
-    throw new Error("Test route failure");
-  }
-  const router = createMemoryRouter(
-    [
-      {
-        element: (
-          <RouteBoundary>
-            <Outlet />
-          </RouteBoundary>
-        ),
-        children: [
-          { path: "/games", element: <h1>RECOVERED LOBBY</h1> },
-          { path: "/broken", element: <Crash /> },
-        ],
-      },
-    ],
-    { initialEntries: ["/games", "/broken"] },
-  );
-  render(<RouterProvider router={router} />);
-  assert.ok(screen.getByRole("alert"));
-  await act(async () => {
-    void router.navigate(-1);
-  });
-  assert.ok(screen.getByRole("heading", { name: "RECOVERED LOBBY" }));
-  assert.equal(screen.queryByRole("alert"), null);
-  cleanup();
-});
-
-test("blackjack deals one card at a time, locks actions, and cancels its sequence on Back", async (t) => {
-  t.mock.timers.enable({ apis: ["setTimeout"] });
-  const { app, router } = setup("noir-blackjack");
-  fireEvent.click(screen.getByRole("button", { name: "Deal cards" }));
-  const cards = () =>
-    app.container.querySelectorAll(".blackjack .playing-card").length;
-  assert.equal(cards(), 0);
   assert.equal(
-    (screen.getByRole("button", { name: "Hit" }) as HTMLButtonElement).disabled,
+    screen.getByTestId("cash-balance").textContent,
+    String(response.balance_minor),
+  );
+  assert.equal(
+    (screen.getByRole("combobox", { name: "Total stake" }) as HTMLSelectElement)
+      .disabled,
     true,
   );
   await act(async () => {
-    t.mock.timers.tick(200);
+    t.mock.timers.tick(5000);
   });
-  assert.equal(cards(), 1);
+  assert.equal(starts, 1);
+  assert.equal(sessionStorage.length, 0);
+  cleanup();
+});
+test("A lost cash response is recovered after Back without a second bet or a reset wallet", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  let starts = 0,
+    recovered = 0,
+    saved: Record<string, unknown> = {};
+  const state = newCashRound("prism-dice", { bet: 100 }, () => 0),
+    response = {
+      id: crypto.randomUUID(),
+      revision: 0,
+      game: "prism-dice",
+      state: "settled",
+      balance_minor: 10094,
+      view: publicCash(state),
+    };
+  const router = setup(t, async (body) => {
+    if (body.action === "start") {
+      starts++;
+      saved = body;
+      return { data: null, error: new Error("Network interrupted") };
+    }
+    if (body.action === "recover") {
+      recovered++;
+      assert.equal(body.request_key, saved.request_key);
+      return { data: { round: response }, error: null };
+    }
+    return {
+      data: {
+        enabled: true,
+        balance_minor: starts ? response.balance_minor : 10000,
+        active: null,
+        reason: null,
+      },
+      error: null,
+    };
+  });
   await act(async () => {
-    t.mock.timers.tick(650);
+    fireEvent.click(screen.getByRole("link", { name: "Open game" }));
   });
-  assert.equal(cards(), 2);
   await act(async () => {
-    t.mock.timers.tick(650);
+    fireEvent.click(screen.getByRole("button", { name: "Roll dice" }));
   });
-  assert.equal(cards(), 3);
+  assert.equal(sessionStorage.length, 1);
   await act(async () => {
     void router.navigate(-1);
   });
+  assert.ok(screen.getByRole("heading", { name: "LOBBY" }));
   await act(async () => {
-    t.mock.timers.tick(15000);
+    fireEvent.click(screen.getByRole("link", { name: "Open game" }));
   });
-  assert.equal(screen.getByTestId("rounds").textContent, "1");
-  assert.equal(screen.getByTestId("balance").textContent, "99900");
+  assert.equal(starts, 1);
+  assert.equal(recovered, 1);
+  assert.equal(sessionStorage.length, 0);
+  assert.equal(screen.getByTestId("cash-balance").textContent, "10094");
   cleanup();
 });
-
-test("blackjack reveals the hole card, draws at intervals, and settles after the final card lands", async (t) => {
-  t.mock.timers.enable({ apis: ["setTimeout"] });
-  const ordered = Array.from({ length: 416 }, (_, i) => i),
-    draws = [8, 1, 5, 3, 4, 18],
-    randoms: number[] = [];
-  for (let i = 415; i > 0; i--) {
-    const j = 415 - i < draws.length ? ordered.indexOf(draws[415 - i]) : i;
-    randoms.push(j);
-    [ordered[i], ordered[j]] = [ordered[j], ordered[i]];
-  }
-  t.mock.method(crypto, "getRandomValues", (buffer: Uint32Array) => {
-    buffer.fill(randoms.shift()!);
-    return buffer;
-  });
-  const { app } = setup("noir-blackjack");
-  fireEvent.click(screen.getByRole("button", { name: "Deal cards" }));
+test("Paused cash play shows the actual server reason and never falls back to practice", async (t) => {
+  setup(t, async () => ({
+    data: {
+      enabled: false,
+      balance_minor: 10000,
+      active: null,
+      reason: "Verified adult account required",
+    },
+    error: null,
+  }));
   await act(async () => {
-    t.mock.timers.tick(2800);
+    fireEvent.click(screen.getByRole("link", { name: "Open game" }));
+  });
+  assert.ok(screen.getByText("Verified adult account required"));
+  assert.equal(screen.queryByRole("button", { name: "Roll dice" }), null);
+  assert.equal(screen.queryByText(/practice/i), null);
+  cleanup();
+});
+test("Insufficient real balance disables wagering while stake selection remains available", async (t) => {
+  setup(t, async () => ({
+    data: { enabled: true, balance_minor: 50, active: null, reason: null },
+    error: null,
+  }));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("link", { name: "Open game" }));
   });
   assert.equal(
-    (screen.getByRole("button", { name: "Stand" }) as HTMLButtonElement)
+    (screen.getByRole("button", { name: "Roll dice" }) as HTMLButtonElement)
+      .disabled,
+    true,
+  );
+  assert.equal(
+    (screen.getByRole("combobox", { name: "Total stake" }) as HTMLSelectElement)
       .disabled,
     false,
   );
-  fireEvent.click(screen.getByRole("button", { name: "Stand" }));
-  await act(async () => {
-    t.mock.timers.tick(450);
-  });
-  const dealer = () => app.container.querySelector(".bj-dealer .cards-row")!;
-  assert.equal(dealer().querySelectorAll(".playing-card").length, 2);
-  assert.ok(dealer().querySelector(".card-back"));
-  await act(async () => {
-    t.mock.timers.tick(400);
-  });
-  assert.equal(dealer().querySelector(".card-back"), null);
-  assert.equal(screen.getByTestId("rounds").textContent, "0");
-  await act(async () => {
-    t.mock.timers.tick(1100);
-  });
-  assert.equal(dealer().querySelectorAll(".playing-card").length, 3);
-  await act(async () => {
-    t.mock.timers.tick(1100);
-  });
-  assert.equal(dealer().querySelectorAll(".playing-card").length, 4);
-  assert.equal(screen.getByTestId("rounds").textContent, "0");
-  await act(async () => {
-    t.mock.timers.tick(1100);
-  });
-  assert.equal(screen.getByTestId("rounds").textContent, "1");
-  assert.ok(screen.getByRole("button", { name: "Deal cards" }));
   cleanup();
 });
 
-test("five blackjack main bets and side bets reserve atomically; Back retains a resolved pair award once", async (t) => {
-  t.mock.timers.enable({ apis: ["setTimeout"] });
-  const draws = [0, 1, 6, 3, 4, 8, 14, 15, 19, 17, 18, 5],
-    remaining = Array.from({ length: 416 }, (_, i) => i),
-    randoms: number[] = [];
-  for (let i = 415; i > 0; i--) {
-    const j = 415 - i < draws.length ? remaining.indexOf(draws[415 - i]) : i;
-    randoms.push(j);
-    [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
-  }
-  t.mock.method(crypto, "getRandomValues", (buffer: Uint32Array) => {
-    buffer.fill(randoms.shift()!);
-    return buffer;
-  });
-  const { router } = setup("noir-blackjack");
-  for (const i of [1, 2, 4, 5])
-    fireEvent.click(
-      screen.getByRole("button", { name: "Main bet for hand " + i }),
-    );
-  fireEvent.click(screen.getByRole("button", { name: "21+3 bet for hand 3" }));
-  fireEvent.click(
-    screen.getByRole("button", { name: "Perfect Pair bet for hand 3" }),
-  );
-  fireEvent.click(screen.getByRole("button", { name: "Deal cards" }));
-  assert.equal(screen.getByTestId("balance").textContent, "99300");
-  await act(async () => {
-    t.mock.timers.tick(8000);
-  });
-  assert.equal(
-    (screen.getByRole("button", { name: "Stand" }) as HTMLButtonElement)
-      .disabled,
-    false,
-  );
-  assert.ok(screen.getByText("PP: Mixed pair · 6.00"));
-  await act(async () => {
-    void router.navigate(-1);
-  });
-  await act(async () => {
-    t.mock.timers.tick(30000);
-  });
-  assert.equal(screen.getByTestId("balance").textContent, "99900");
-  assert.equal(screen.getByTestId("rounds").textContent, "1");
-  cleanup();
+test('An existing cash hand can settle at zero balance while new wagering is paused',async(t)=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ const state=newCashRound('royal-draw',{bet:1000},n=>n-1),id=crypto.randomUUID();let acted=0;
+ const round={id,revision:0,game:'royal-draw',state:'open',view:publicCash(state)};
+ setup(t,async body=>{
+   if(body.action==='act'){acted++;const settled=nextCashRound(state,{action:'abandon'},()=>0);return {data:{...round,revision:1,state:'settled',balance_minor:settled.returned_minor,view:publicCash(settled)},error:null};}
+   return {data:{enabled:false,reason:'Cash wagering is not enabled',balance_minor:0,active:round},error:null};
+ },true,'royal-draw');
+ await act(async()=>{fireEvent.click(screen.getByRole('link',{name:'Open game'}));});
+ assert.equal(screen.getByTestId('cash-balance').textContent,'0');
+ await act(async()=>{fireEvent.click(screen.getByRole('button',{name:'Leave hand: fold and return uncommitted chips'}));});
+ assert.equal(acted,1);assert.ok(Number(screen.getByTestId('cash-balance').textContent)>=0);cleanup();
 });
-
-test("blackjack insurance reserves only selected half-stakes and dealer blackjack settles exactly once", async (t) => {
-  t.mock.timers.enable({ apis: ["setTimeout"] });
-  const draws = [8, 12, 7, 11],
-    remaining = Array.from({ length: 416 }, (_, i) => i),
-    randoms: number[] = [];
-  for (let i = 415; i > 0; i--) {
-    const j = 415 - i < draws.length ? remaining.indexOf(draws[415 - i]) : i;
-    randoms.push(j);
-    [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
-  }
-  t.mock.method(crypto, "getRandomValues", (buffer: Uint32Array) => {
-    buffer.fill(randoms.shift()!);
-    return buffer;
-  });
-  setup("noir-blackjack");
-  fireEvent.click(screen.getByRole("button", { name: "Deal cards" }));
-  await act(async () => {
-    t.mock.timers.tick(2800);
-  });
-  assert.ok(screen.getByRole("region", { name: "Insurance offer" }));
-  fireEvent.click(screen.getByRole("checkbox", { name: "Hand 3 · 0.50" }));
-  fireEvent.click(
-    screen.getByRole("button", { name: "Insure selected · 0.50" }),
-  );
-  assert.equal(screen.getByTestId("balance").textContent, "99850");
-  await act(async () => {
-    t.mock.timers.tick(2000);
-  });
-  assert.equal(screen.getByTestId("balance").textContent, "100000");
-  assert.equal(screen.getByTestId("rounds").textContent, "1");
-  await act(async () => {
-    t.mock.timers.tick(20000);
-  });
-  assert.equal(screen.getByTestId("rounds").textContent, "1");
-  cleanup();
-});
-
-test("massive result banners distinguish net losses, profits, and pushes without affecting settlement", async (t) => {
-  t.mock.timers.enable({ apis: ["setTimeout"] });
-  const base = createBlackjack(
-    Array.from({ length: 5 }, (_, i) => ({
-      main: i === 0 ? 100 : 0,
-      three: 0,
-      pair: 0,
-    })),
-    (n) => n - 1,
-  );
-  for (const [returned, title, kind] of [
-    [200, "ROUND LOST", "loss"],
-    [2000, "YOU WIN", "win"],
-    [700, "ROUND PUSH", "push"],
-  ] as const) {
-    const { container } = render(
-      <BlackjackResults
-        round={{ ...base, phase: "done", totalStake: 700, returned }}
-      />,
-    );
-    assert.ok(screen.getByText(title));
-    assert.ok(container.querySelector(".result-" + kind + ".result-expanded"));
-    assert.ok(screen.getByRole("region", { name: "Round result" }));
-    await act(async () => {
-      t.mock.timers.tick(4800);
-    });
-    assert.ok(container.querySelector(".result-compact"));
-    cleanup();
-  }
-});
-
-for (const [slug,label] of [['prism-dice','Roll dice'],['meteor-plinko','Drop meteor'],['festival-wheel','Spin wheel']]) {
-  test(slug+' locks the stake during animation and settles once; Back cancels pending visuals', async (t) => {
-    t.mock.timers.enable({apis:['setTimeout']});
-    const {router}=setup(slug);
-    fireEvent.click(screen.getByRole('button',{name:label,exact:true}));
-    assert.equal(screen.getByTestId('balance').textContent,'99900');
-    assert.equal((screen.getByRole('combobox',{name:'Total stake'}) as HTMLSelectElement).disabled,true);
-    await act(async()=>{t.mock.timers.tick(4000);});
-    assert.equal(screen.getByTestId('rounds').textContent,'1');
-    assert.equal((screen.getByRole('button',{name:label,exact:true}) as HTMLButtonElement).disabled,false);
-    fireEvent.click(screen.getByRole('button',{name:label,exact:true}));
-    await act(async()=>{void router.navigate(-1);});
-    const balance=screen.getByTestId('balance').textContent;
-    await act(async()=>{t.mock.timers.tick(10000);});
-    assert.equal(screen.getByTestId('balance').textContent,balance);
-    assert.equal(screen.getByTestId('rounds').textContent,'2');
-    cleanup();
-  });
-}

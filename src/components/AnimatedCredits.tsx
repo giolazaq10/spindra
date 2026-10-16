@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { credits } from "../context/Demo";
+import { credits } from "../lib/money";
 export default function AnimatedCredits({ amount }: { amount: number }) {
   const [display, setDisplay] = useState({ amount, value: 0 });
   useEffect(() => {

@@ -30,7 +30,7 @@ export default function AuthPage({ mode }: { mode: Mode }) {
     setMessage("");
     if (!authConfigured) {
       setError(
-        "Account services are not connected yet. You can explore all original games in practice mode.",
+        "Account services are unavailable. Please try signing in again later.",
       );
       return;
     }

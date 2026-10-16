@@ -1,7 +1,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { Trophy, ShieldMinus, Equal, X } from "lucide-react";
 import type { BlackjackRound } from "../lib/blackjack";
-import { credits } from "../context/Demo";
+import { credits } from "../lib/money";
 import AnimatedCredits from "./AnimatedCredits";
 
 export default function BlackjackResults({ round }: { round: BlackjackRound }) {

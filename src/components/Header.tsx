@@ -2,9 +2,16 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/Auth";
 import { useWallet } from "@/context/Wallet";
-import { credits } from "@/context/Demo";
+import { credits } from "@/lib/money";
 import DepositModal from "./DepositModal";
-import { Menu, X, Dices, Search, Wallet as WalletIcon, Plus } from "lucide-react";
+import {
+  Menu,
+  X,
+  Dices,
+  Search,
+  Wallet as WalletIcon,
+  Plus,
+} from "lucide-react";
 
 const navLinks = [
   { label: "Casino", to: "/games" },
@@ -19,7 +26,12 @@ export default function Header() {
   const [depositOpen, setDepositOpen] = useState(false);
   const location = useLocation();
   const { user } = useAuth();
-  const { balance, mode, currency } = useWallet();
+  const {
+    balance,
+    currency,
+    loading: walletLoading,
+    error: walletError,
+  } = useWallet();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -92,11 +104,15 @@ export default function Header() {
                   <WalletIcon className="w-4 h-4 text-amber-400" />
                   <div className="flex flex-col leading-none">
                     <span className="text-[9px] text-gray-500 tracking-widest uppercase">
-                      {mode === "real" ? "Real" : "Practice"}
+                      Real balance
                     </span>
                     <span className="text-sm font-bold text-white tabular-nums">
-                      {credits(balance)}
-                      {mode === "real" ? ` ${currency}` : ""}
+                      {walletLoading
+                        ? "…"
+                        : walletError
+                          ? "Unavailable"
+                          : credits(balance)}
+                      {` ${currency}`}
                     </span>
                   </div>
                 </div>
@@ -158,11 +174,15 @@ export default function Header() {
                 <WalletIcon className="w-4 h-4 text-amber-400" />
                 <div className="flex flex-col leading-none">
                   <span className="text-[9px] text-gray-500 tracking-widest uppercase">
-                    {mode === "real" ? "Real" : "Practice"}
+                    Real balance
                   </span>
                   <span className="text-sm font-bold text-white tabular-nums">
-                    {credits(balance)}
-                    {mode === "real" ? ` ${currency}` : ""}
+                    {walletLoading
+                      ? "…"
+                      : walletError
+                        ? "Unavailable"
+                        : credits(balance)}
+                    {` ${currency}`}
                   </span>
                 </div>
               </div>
@@ -216,10 +236,7 @@ export default function Header() {
         )}
       </header>
 
-      <DepositModal
-        open={depositOpen}
-        onClose={() => setDepositOpen(false)}
-      />
+      <DepositModal open={depositOpen} onClose={() => setDepositOpen(false)} />
     </>
   );
 }
