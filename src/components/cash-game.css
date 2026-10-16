@@ -578,3 +578,29 @@
     font-size: 12px;
   }
 }
+
+/* Confirmed results share the table's win, loss and push effects. */
+.spindra-extension .cash-table {
+  position: relative;
+}
+.spindra-extension .cash-table > .bj-result-layer.result-expanded {
+  border-radius: inherit;
+}
+.spindra-extension .cash-table .bj-result-hero {
+  margin-top: clamp(24px, 8vw, 95px);
+  width: min(94%, 680px);
+  box-sizing: border-box;
+}
+.spindra-extension .cash-table .result-dismiss {
+  pointer-events: auto;
+  min-width: 36px;
+  min-height: 36px;
+}
+.spindra-extension .cash-table .result-compact .bj-result-hero {
+  margin-top: 0;
+}
+@media (max-width: 600px) {
+  .spindra-extension .cash-table .bj-result-hero {
+    padding: 24px 14px 18px;
+  }
+}

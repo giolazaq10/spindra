@@ -20,6 +20,7 @@ import BlackjackScore from "./BlackjackScore";
 import BlackjackBetting from "./BlackjackBetting";
 import type { SeatBet, SideResult } from "@/lib/blackjack";
 import BlackjackRules from "./BlackjackRules";
+import BlackjackResults from "./BlackjackResults";
 import SlotRules from "./SlotRules";
 
 type BJHand = {
@@ -871,6 +872,15 @@ export default function CashGame({ game }: { game: Original }) {
                   </section>
                 )}
               </>
+            )}
+            {round?.state === "settled" && !busy && (
+              <BlackjackResults
+                key={round.id + ":" + round.revision}
+                round={{
+                  totalStake: round.view.stake_minor,
+                  returned: round.view.returned_minor,
+                }}
+              />
             )}
           </div>
           {round?.state === "settled" && !busy && (
