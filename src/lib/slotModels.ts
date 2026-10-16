@@ -1,6 +1,13 @@
 import { randomInt, type RandomInt, type SlotMath } from "./engine";
+import {
+  premiumSpin,
+  premiumRtp,
+  premiumEvaluate,
+  type PremiumKind,
+} from "./premiumSlots";
 
 export type SlotSpec = {
+  premium?: PremiumKind;
   reels: number;
   rows: number;
   lines: number[][];
@@ -438,6 +445,7 @@ export function makeSlotSpec(index: number, math: SlotMath): SlotSpec {
   return spec;
 }
 export function modelRtp(spec: SlotSpec) {
+  if (spec.premium) return premiumRtp(spec.premium);
   return (
     spec.pays.reduce(
       (sum, awards, symbol) => sum + symbolExpectation(spec, symbol, awards),
@@ -455,6 +463,7 @@ export type SlotWin = {
   scatter?: boolean;
 };
 export function modelEvaluate(grid: number[][], spec: SlotSpec): SlotWin[] {
+  if (spec.premium) return premiumEvaluate(grid, spec);
   if (
     grid.length !== spec.reels ||
     grid.some(
@@ -533,6 +542,7 @@ export function modelEvaluate(grid: number[][], spec: SlotSpec): SlotWin[] {
   return wins;
 }
 export function modelSpin(spec: SlotSpec, rng: RandomInt = randomInt) {
+  if (spec.premium) return premiumSpin(spec, rng);
   const total = spec.weights.reduce((a, b) => a + b, 0);
   const grid = Array.from({ length: spec.reels }, () =>
     Array.from({ length: spec.rows }, () => {

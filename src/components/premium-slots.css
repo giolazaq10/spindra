@@ -1,0 +1,713 @@
+.spindra-extension .premium-slot {
+  position: relative;
+  isolation: isolate;
+  max-width: 1050px;
+  margin: auto;
+  padding: 26px;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid #b7c3f955;
+  color: #fff;
+  background: #121b2c;
+  box-shadow: 0 20px 70px #0007;
+}
+.spindra-extension .premium-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  pointer-events: none;
+}
+.spindra-extension .premium-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  min-height: 95px;
+}
+.spindra-extension .premium-heading h2 {
+  margin: 7px 0 14px;
+  font-size: clamp(30px, 5vw, 54px);
+  line-height: 1;
+}
+.spindra-extension .premium-heading div > span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: #c9e0ee;
+}
+.spindra-extension .signature-seal {
+  border: 1px solid #c8dedb77;
+  padding: 12px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  border-radius: 50%;
+  width: 86px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  flex-shrink: 0;
+}
+.spindra-extension .premium-feature-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid #ffffff22;
+  border-bottom: 1px solid #ffffff22;
+  margin-bottom: 18px;
+  font-size: 12px;
+}
+.spindra-extension .premium-feature-bar > span {
+  font-size: 10px;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  color: #dbe6ca;
+}
+.spindra-extension .signature-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 360px;
+}
+.spindra-extension .signature-cabinet {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: 14px;
+}
+.spindra-extension .signature-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--premium-cols), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--premium-rows), minmax(0, 1fr));
+  gap: 6px;
+}
+.spindra-extension .signature-cell {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+}
+.spindra-extension .premium-symbol {
+  width: 90%;
+  height: 90%;
+  overflow: visible;
+  filter: drop-shadow(0 5px 4px #0006);
+}
+.spindra-extension .signature-motion {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(120deg, #0e1526bb, #20163755, #0e1526bb);
+  border-radius: inherit;
+}
+.spindra-extension .signature-motion span {
+  border: 1px solid #b6fcff;
+  border-radius: 40px;
+  padding: 14px 22px;
+  background: #112639e0;
+  color: #e3ffff;
+  font-size: 11px;
+  letter-spacing: 3px;
+  animation: signature-pulse 0.7s ease-in-out infinite alternate;
+}
+.spindra-extension .signature-status {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: #d5e9e7;
+  overflow: hidden;
+}
+.spindra-extension .signature-status b {
+  white-space: nowrap;
+  color: #e8e7bd;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.spindra-extension .signature-console {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 90px;
+  align-items: center;
+  gap: 16px;
+  height: 108px;
+  border-top: 1px solid #ffffff33;
+}
+.spindra-extension .signature-console small {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #d9ddd2;
+}
+.spindra-extension .signature-console strong {
+  display: block;
+  font-size: 30px;
+  font-variant-numeric: tabular-nums;
+  color: #ffebb6;
+}
+.spindra-extension .signature-console .spin-control {
+  width: 80px;
+  height: 80px;
+  justify-self: end;
+}
+.spindra-extension .signature-skip {
+  border: 1px solid #a4bac255;
+  background: #14262e88;
+  padding: 10px;
+  border-radius: 10px;
+  color: #d2e4e3;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-size: 10px;
+}
+.spindra-extension .signature-skip:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.spindra-extension .signature-award {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  z-index: 4;
+  text-align: center;
+  padding: 16px;
+  pointer-events: none;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #10132300, #101323f5, #10132300);
+  animation: signature-win 0.5s ease-out;
+}
+.spindra-extension .signature-award small {
+  display: block;
+  color: #ffefb7;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 5px;
+}
+.spindra-extension .signature-award strong {
+  font-size: 44px;
+  font-weight: 900;
+  color: #fff3c5;
+  text-shadow: 0 3px #695023;
+}
+.spindra-extension .premium-slot .integrated-controls {
+  background: #0b1424d9;
+  border: 1px solid #ffffff33;
+}
+.spindra-extension .premium-cascade {
+  background: radial-gradient(ellipse at top, #483373, #101c34 80%);
+}
+.spindra-extension .premium-cascade .premium-heading h2 {
+  font-family: Georgia, serif;
+  font-style: italic;
+  color: #dcfffa;
+  text-shadow:
+    0 3px 0 #173c51,
+    0 0 25px #9b81ff77;
+}
+.spindra-extension .premium-cascade .signature-stage {
+  align-items: stretch;
+}
+.spindra-extension .premium-cascade .signature-cabinet {
+  border: 2px solid #b7dfed;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #92b0c655, #233451aa);
+  box-shadow:
+    inset 0 0 35px #81cad133,
+    0 0 25px #9d9cf122;
+}
+.spindra-extension .premium-cascade .signature-grid {
+  gap: 3px;
+  height: clamp(230px, 45vw, 440px);
+}
+.spindra-extension .premium-cascade .signature-cell {
+  aspect-ratio: auto;
+  min-height: 0;
+  background: #182744cc;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px #b9d4e522;
+}
+.spindra-extension .premium-cascade .signature-draw {
+  animation: crystal-land 0.45s cubic-bezier(0.12, 0.8, 0.25, 1) both;
+  animation-delay: calc(var(--cell-order) * 22ms);
+}
+.spindra-extension .premium-cascade .signature-hit {
+  background: #5a598a;
+  box-shadow:
+    inset 0 0 0 2px #befff8,
+    0 0 18px #b4a6f877;
+}
+.spindra-extension .premium-cascade .signature-hit svg {
+  animation: crystal-resonate 0.75s ease-in-out infinite alternate;
+}
+.spindra-extension .cascade-rail {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  width: 100px;
+  flex-shrink: 0;
+  text-align: center;
+}
+.spindra-extension .cascade-rail small {
+  font-size: 9px;
+  letter-spacing: 2px;
+  line-height: 1.6;
+  color: #c0dedf;
+}
+.spindra-extension .cascade-rail b {
+  font-size: 32px;
+  padding: 12px 0;
+  border-radius: 20px;
+  border: 1px solid #b4c8e044;
+  background: #16273caa;
+  color: #8f9cb7;
+}
+.spindra-extension .cascade-rail .charge-active {
+  color: #f5ffff;
+  background: linear-gradient(#6d609b, #3d5f80);
+  border-color: #bffff8;
+  box-shadow: 0 0 22px #b1b4ff66;
+}
+.spindra-extension .cascade-rail > span {
+  font-size: 10px;
+  color: #c1c5e4;
+  line-height: 1.5;
+}
+.spindra-extension .cosmic-ring {
+  transform-origin: 500px 350px;
+  animation: cosmic-drift 30s linear infinite;
+}
+.spindra-extension .ring-1 {
+  animation-direction: reverse;
+  animation-duration: 45s;
+}
+.spindra-extension .premium-vault {
+  border-radius: 8px;
+  border: 5px solid #77786a;
+  background: #242c2d;
+  padding: 20px 35px;
+}
+.spindra-extension .premium-vault .premium-heading h2 {
+  font-family: Georgia, serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ecd6b0;
+  font-size: clamp(32px, 5vw, 50px);
+  text-shadow: 0 2px #16191a;
+}
+.spindra-extension .premium-vault .signature-seal {
+  border-radius: 8px;
+  border: 3px double #b0a58b;
+  color: #ead2a6;
+}
+.spindra-extension .premium-vault .signature-cabinet {
+  max-width: 420px;
+  padding: 18px;
+  border: 9px solid #626b69;
+  outline: 2px solid #b6a386;
+  border-radius: 12px;
+  background: #141d1f;
+  box-shadow: inset 0 0 25px #000;
+}
+.spindra-extension .premium-vault .signature-grid {
+  gap: 8px;
+}
+.spindra-extension .premium-vault .signature-cell {
+  background: #172224;
+  border-radius: 50%;
+}
+.spindra-extension .premium-vault .coin-locked {
+  animation: coin-clamp 0.4s ease-out;
+}
+.spindra-extension .lock-glint {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    120deg,
+    transparent 40%,
+    #fff9 50%,
+    transparent 60%
+  );
+  animation: coin-glint 0.6s ease-out both;
+  pointer-events: none;
+}
+.spindra-extension .vault-counter {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  padding-bottom: 13px;
+  color: #d4c4a1;
+}
+.spindra-extension .vault-counter > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.spindra-extension .vault-counter b {
+  color: #fff0b7;
+  letter-spacing: 1px;
+}
+.spindra-extension .vault-ledger {
+  width: 105px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: #11191bdd;
+  border: 1px solid #c0a97c55;
+  border-radius: 8px;
+}
+.spindra-extension .vault-ledger small {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #c8baa0;
+}
+.spindra-extension .vault-ledger > span {
+  color: #f1d7a3;
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+}
+.spindra-extension .vault-ledger i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #d1b36f;
+  border-radius: 50%;
+  margin-right: 9px;
+}
+.spindra-extension .vault-ledger b {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #fff4d5;
+  border-top: 1px solid #ffffff33;
+  padding-top: 10px;
+}
+.spindra-extension .premium-nitro {
+  background: #143329;
+  border: 3px solid #bfc5ad;
+  border-radius: 38px;
+}
+.spindra-extension .premium-nitro .premium-heading h2 {
+  font-family: Georgia, serif;
+  font-style: italic;
+  color: #e7f0ba;
+  text-shadow: 3px 3px #b83a3d;
+}
+.spindra-extension .premium-nitro .signature-seal {
+  border-color: #e1e4be;
+  color: #f4f3d9;
+  border-style: double;
+  border-width: 4px;
+}
+.spindra-extension .premium-nitro .signature-cabinet {
+  background: linear-gradient(130deg, #f3f0cf, #8c9f8a 45%, #e3e6c2);
+  border: 4px solid #3b5245;
+  border-radius: 26px;
+  padding: 16px;
+  box-shadow: 0 12px 25px #0006;
+}
+.spindra-extension .premium-nitro .signature-grid {
+  border: 5px solid #3d5148;
+  border-radius: 12px;
+  overflow: hidden;
+  gap: 6px;
+  background: #30483c;
+}
+.spindra-extension .premium-nitro .signature-cell {
+  background: linear-gradient(#b3bba4, #fffce4 25%, #fffce4 70%, #c5cbb4);
+  aspect-ratio: 0.78;
+  box-shadow: inset 0 0 16px #25392a33;
+}
+.spindra-extension .premium-nitro .signature-hit {
+  box-shadow:
+    inset 0 0 0 4px #e0f382,
+    inset 0 0 35px #e1ef7e77;
+}
+.spindra-extension .premium-nitro .premium-symbol {
+  max-height: 160px;
+}
+.spindra-extension
+  .premium-nitro.premium-playing
+  .signature-cell:not(.signature-hit)
+  svg {
+  animation: drum-pulse 0.25s linear infinite;
+}
+.spindra-extension .nitro-dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #203d2f;
+  padding: 0 0 14px;
+}
+.spindra-extension .nitro-dashboard > span {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+.spindra-extension .nitro-dashboard small {
+  font-size: 10px;
+}
+.spindra-extension .nitro-gauge {
+  width: 80px;
+  height: 50px;
+  border-radius: 50px 50px 4px 4px;
+  background: #253c31;
+  border: 4px solid #8d9f81;
+  position: relative;
+  overflow: hidden;
+}
+.spindra-extension .nitro-gauge i {
+  position: absolute;
+  width: 3px;
+  height: 30px;
+  background: #e3e98c;
+  left: 35px;
+  bottom: 0;
+  transform-origin: bottom;
+  transition: transform 0.4s ease-out;
+}
+.spindra-extension .nitro-gauge b {
+  position: absolute;
+  right: 7px;
+  bottom: 2px;
+  color: #f6f2c5;
+  font-size: 12px;
+}
+.spindra-extension .motor-gear {
+  transform-origin: 0 0;
+  animation: motor-turn 24s linear infinite;
+}
+.spindra-extension .premium-rulebook table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+.spindra-extension .premium-rulebook td,
+.spindra-extension .premium-rulebook th {
+  padding: 9px 12px;
+  border-bottom: 1px solid #ffffff22;
+  text-align: left;
+  font-size: 12px;
+}
+@keyframes signature-pulse {
+  to {
+    opacity: 0.45;
+    transform: scale(0.98);
+  }
+}
+@keyframes signature-win {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes crystal-land {
+  from {
+    opacity: 0;
+    transform: translateY(-90px) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes crystal-resonate {
+  to {
+    transform: scale(0.9);
+    filter: drop-shadow(0 0 12px #bffffb);
+  }
+}
+@keyframes cosmic-drift {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes coin-clamp {
+  0% {
+    transform: rotateY(90deg) scale(0.7);
+  }
+  70% {
+    transform: rotateY(0) scale(1.1);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes coin-glint {
+  from {
+    opacity: 1;
+    transform: translateX(-40%);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(40%);
+  }
+}
+@keyframes drum-pulse {
+  from {
+    transform: translateY(-15px);
+    filter: blur(2px);
+  }
+  to {
+    transform: translateY(15px);
+    filter: blur(2px);
+  }
+}
+@keyframes motor-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 650px) {
+  .spindra-extension .premium-slot {
+    padding: 14px;
+    border-radius: 16px;
+  }
+  .spindra-extension .premium-heading {
+    min-height: 80px;
+  }
+  .spindra-extension .premium-heading h2 {
+    font-size: 32px;
+  }
+  .spindra-extension .premium-heading div > span {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .spindra-extension .signature-seal {
+    width: 60px;
+    height: 60px;
+    font-size: 9px;
+    padding: 5px;
+  }
+  .spindra-extension .premium-feature-bar {
+    font-size: 10px;
+    gap: 5px;
+    line-height: 1.5;
+  }
+  .spindra-extension .premium-feature-bar > span {
+    font-size: 8px;
+    letter-spacing: 0;
+  }
+  .spindra-extension .signature-stage {
+    min-height: 250px;
+    gap: 8px;
+  }
+  .spindra-extension .cascade-rail {
+    width: 52px;
+    gap: 9px;
+  }
+  .spindra-extension .cascade-rail b {
+    font-size: 22px;
+    padding: 8px 0;
+    border-radius: 12px;
+  }
+  .spindra-extension .cascade-rail small {
+    font-size: 8px;
+    letter-spacing: 0;
+  }
+  .spindra-extension .cascade-rail > span {
+    font-size: 8px;
+  }
+  .spindra-extension .premium-cascade .signature-cabinet {
+    padding: 6px;
+    border-radius: 14px;
+  }
+  .spindra-extension .premium-cascade .signature-cell {
+    border-radius: 6px;
+  }
+  .spindra-extension .premium-cascade .signature-grid {
+    gap: 2px;
+  }
+  .spindra-extension .signature-console {
+    gap: 10px;
+    grid-template-columns: minmax(0, 1fr) 48px 80px;
+  }
+  .spindra-extension .signature-console strong {
+    font-size: 24px;
+  }
+  .spindra-extension .vault-ledger {
+    width: 72px;
+    padding: 8px;
+    gap: 7px;
+  }
+  .spindra-extension .vault-ledger > span {
+    font-size: 12px;
+  }
+  .spindra-extension .vault-ledger i {
+    margin-right: 4px;
+    width: 9px;
+    height: 9px;
+  }
+  .spindra-extension .vault-ledger b {
+    font-size: 9px;
+  }
+  .spindra-extension .premium-vault .signature-cabinet {
+    padding: 8px;
+    border-width: 5px;
+  }
+  .spindra-extension .vault-counter {
+    font-size: 8px;
+    gap: 4px;
+    flex-wrap: wrap;
+    padding-bottom: 8px;
+  }
+  .spindra-extension .premium-vault .signature-grid {
+    gap: 3px;
+  }
+  .spindra-extension .premium-nitro .signature-cabinet {
+    padding: 9px;
+  }
+  .spindra-extension .nitro-dashboard > span {
+    font-size: 10px;
+  }
+  .spindra-extension .nitro-dashboard small {
+    font-size: 8px;
+  }
+  .spindra-extension .signature-award {
+    left: 4%;
+    right: 4%;
+    bottom: 12%;
+    padding: 10px;
+  }
+  .spindra-extension .signature-award strong {
+    font-size: 32px;
+  }
+  .spindra-extension .signature-award small {
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+  .spindra-extension .signature-status {
+    font-size: 10px;
+  }
+  .spindra-extension .signature-status b {
+    font-size: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .premium-slot * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

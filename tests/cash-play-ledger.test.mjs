@@ -8,7 +8,7 @@ import {
   nextCashRound,
   publicCash,
 } from "../src/lib/cashEngine.ts";
-test("All 28 real-balance games reserve and settle their actual engine results through the SQL ledger exactly once", async () => {
+test("All 31 real-balance games reserve and settle their actual engine results through the SQL ledger exactly once", async () => {
   const db = new PGlite(),
     uid = "11111111-1111-4111-8111-111111111111";
   try {
@@ -141,7 +141,7 @@ test("All 28 real-balance games reserve and settle their actual engine results t
     assert.equal(
       (await db.query("select count(*)::int n from cash_game_rounds")).rows[0]
         .n,
-      28,
+      31,
     );
     assert.equal(
       (

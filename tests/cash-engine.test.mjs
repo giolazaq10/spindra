@@ -23,7 +23,12 @@ test("All catalog cash slots use the published math and ignore client payout/res
     );
     const data = s.data;
     assert.equal(s.phase, "settled");
-    assert.deepEqual(data.wins, modelEvaluate(data.grid, g.slot));
+    if (g.slot.premium)
+      assert.equal(
+        data.rate,
+        data.frames.reduce((sum, f) => sum + f.rate, 0),
+      );
+    else assert.deepEqual(data.wins, modelEvaluate(data.grid, g.slot));
     assert.equal(s.returned_minor, 2 * data.rate);
     assert.ok(Number.isSafeInteger(s.returned_minor));
   }

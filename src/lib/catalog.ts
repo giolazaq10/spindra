@@ -1,6 +1,7 @@
 import { makeSlotSpec, modelRtp, type SlotSpec } from "./slotModels";
 import { type SlotMath } from "./engine";
 import type { MiniKind } from "./minigames";
+import { premiumSpec } from "./premiumSlots";
 export type Original = {
   slug: string;
   name: string;
@@ -261,6 +262,51 @@ export const originals: Original[] = themes.map((t, i) => ({
   math: profiles[i % 4],
   slot: makeSlotSpec(i, profiles[i % 4]),
 }));
+originals.unshift(
+  ...(
+    [
+      [
+        "astra-cascade",
+        "Astra Cascade",
+        "cascade",
+        "#151141",
+        "#a2f5ef",
+        "✧",
+        "Crystals cross a collapsing constellation.",
+      ],
+      [
+        "copper-lock",
+        "Copper Lock",
+        "vault",
+        "#292a2c",
+        "#f0c387",
+        "▣",
+        "Lock the coins. Crack the nine-socket vault.",
+      ],
+      [
+        "nitro-sevens",
+        "Nitro Sevens",
+        "nitro",
+        "#172b25",
+        "#e8ff8f",
+        "7",
+        "Three chrome drums. One wild turbo drive.",
+      ],
+    ] as const
+  ).map(([slug, name, premium, color, accent, emblem, tagline]) => ({
+    slug,
+    name,
+    kind: "slots" as const,
+    color,
+    accent,
+    emblem,
+    tagline,
+    animation: "orbit",
+    symbols: [],
+    math: profiles[0],
+    slot: premiumSpec(premium),
+  })),
+);
 originals.push(
   {
     slug: "noir-blackjack",
