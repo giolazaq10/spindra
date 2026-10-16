@@ -46,3 +46,7 @@ Apply `20261016085611_authoritative_cash_rounds.sql` and `20261016090911_cash_ro
 Run `npm run cash:bundle` after engine/math changes; `npm run build` does this automatically. Keep active-round model compatibility when changing a deployed engine: pause new wagers and settle old rounds before replacing their model implementation.
 
 Tests cover published slot payouts, hidden cards/decks, poker chip conservation, blackjack settlement, persistent commands and conflicts, eligibility/exclusions, blocked locations, RLS, duplicate returns and country-signature tampering. Tests are isolated fixtures, not live money transactions or a substitute for operator acceptance tests.
+
+## Minimum stakes
+
+Original cash games accept a $0.20 minimum. Normal stakes use $0.10 increments; poker hand buy-ins use $0.20 increments so both blinds stay in whole cents. Blackjack insurance can be half a main stake. Slot returns add the awards and round down once to a USD cent, so the displayed base RTP is an upper bound before cash rounding at small stakes. Dice also rounds winning returns down to cents.

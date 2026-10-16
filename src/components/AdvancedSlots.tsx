@@ -276,7 +276,7 @@ export default function AdvancedSlots({
               {w.scatter
                 ? ""
                 : s.symbolNames[w.symbol] + " × " + w.count + " · "}
-              {credits((lastStake / 100) * w.rate)}
+              {credits(Math.floor((lastStake * w.rate) / 100))}
             </span>
           ))
         ) : (

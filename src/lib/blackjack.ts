@@ -36,12 +36,14 @@ export function validateBets(bets: SeatBet[]) {
   for (const b of bets) {
     if (
       ![b.main, b.three, b.pair].every(
-        (n) => Number.isSafeInteger(n) && n >= 0 && n % 100 === 0,
+        (n) => Number.isSafeInteger(n) && n >= 0 && n % 10 === 0,
       )
     )
-      throw new Error("Bets must use whole USD amounts");
-    if (b.main && (b.main < 100 || b.main > MAIN_MAX))
-      throw new Error("Main bet range is 1–200 credits");
+      throw new Error("Bets must use $0.10 increments");
+    if (b.main && (b.main < 20 || b.main > MAIN_MAX))
+      throw new Error("Main bet range is $0.20–$200");
+    if ((b.three > 0 && b.three < 20) || (b.pair > 0 && b.pair < 20))
+      throw new Error("Side bet minimum is $0.20");
     if (b.three > b.main || b.pair > b.main)
       throw new Error("Each side bet must not exceed its main bet");
   }

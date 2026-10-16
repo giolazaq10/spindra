@@ -346,7 +346,7 @@ originals.push(
 );
 export const rtpLabel = (g: Original) =>
   g.kind === "slots"
-    ? (modelRtp(g.slot!) * 100).toFixed(2) + "% theoretical RTP"
+    ? "Up to " + (modelRtp(g.slot!) * 100).toFixed(2) + "% theoretical RTP"
     : g.mini
       ? g.mini === "plinko"
         ? "97.50% theoretical RTP"

@@ -101,19 +101,19 @@ test("Guest game routes require sign-in and expose no practice balance or mode s
 test("Cash-only game route hydrates the server wallet and accepts only a server-settled return", async (t) => {
   t.mock.timers.enable({ apis: ["setTimeout"] });
   let starts = 0;
-  const state = newCashRound("prism-dice", { bet: 100 }, () => 0),
+  const state = newCashRound("prism-dice", { bet: 20 }, () => 0),
     response = {
       id: crypto.randomUUID(),
       revision: 0,
       game: "prism-dice",
       state: "settled",
-      balance_minor: 10000 - 100 + state.returned_minor,
+      balance_minor: 10000 - 20 + state.returned_minor,
       view: publicCash(state),
     };
   setup(t, async (body) => {
     if (body.action === "start") {
       starts++;
-      assert.equal(body.input.bet, 100);
+      assert.equal(body.input.bet, 20);
       return { data: response, error: null };
     }
     return {
@@ -136,7 +136,7 @@ test("Cash-only game route hydrates the server wallet and accepts only a server-
   assert.equal(
     (screen.getByRole("combobox", { name: "Total stake" }) as HTMLSelectElement)
       .disabled,
-    true,
+    false,
   );
   await act(async () => {
     t.mock.timers.tick(5000);
@@ -150,13 +150,13 @@ test("A lost cash response is recovered after Back without a second bet or a res
   let starts = 0,
     recovered = 0,
     saved: Record<string, unknown> = {};
-  const state = newCashRound("prism-dice", { bet: 100 }, () => 0),
+  const state = newCashRound("prism-dice", { bet: 20 }, () => 0),
     response = {
       id: crypto.randomUUID(),
       revision: 0,
       game: "prism-dice",
       state: "settled",
-      balance_minor: 10094,
+      balance_minor: 10018,
       view: publicCash(state),
     };
   const router = setup(t, async (body) => {
@@ -198,7 +198,7 @@ test("A lost cash response is recovered after Back without a second bet or a res
   assert.equal(starts, 1);
   assert.equal(recovered, 1);
   assert.equal(sessionStorage.length, 0);
-  assert.equal(screen.getByTestId("cash-balance").textContent, "10094");
+  assert.equal(screen.getByTestId("cash-balance").textContent, "10018");
   cleanup();
 });
 test("Paused cash play shows the actual server reason and never falls back to practice", async (t) => {
@@ -221,7 +221,7 @@ test("Paused cash play shows the actual server reason and never falls back to pr
 });
 test("Insufficient real balance disables wagering while stake selection remains available", async (t) => {
   setup(t, async () => ({
-    data: { enabled: true, balance_minor: 50, active: null, reason: null },
+    data: { enabled: true, balance_minor: 10, active: null, reason: null },
     error: null,
   }));
   await act(async () => {
@@ -300,13 +300,13 @@ test("An existing cash hand can settle at zero balance while new wagering is pau
 
 test("Normal in-flight bets persist safely without displaying recovery confirmation", async (t) => {
   t.mock.timers.enable({ apis: ["setTimeout"] });
-  const state = newCashRound("prism-dice", { bet: 100 }, () => 0),
+  const state = newCashRound("prism-dice", { bet: 20 }, () => 0),
     response = {
       id: crypto.randomUUID(),
       revision: 0,
       game: "prism-dice",
       state: "settled",
-      balance_minor: 10094,
+      balance_minor: 10018,
       view: publicCash(state),
     };
   let resolve!: (r: { data: typeof response; error: null }) => void;
@@ -346,7 +346,53 @@ test("Normal in-flight bets persist safely without displaying recovery confirmat
     resolve({ data: response, error: null });
   });
   assert.equal(sessionStorage.length, 0);
-  assert.equal(screen.getByTestId("cash-balance").textContent, "10094");
+  assert.equal(screen.getByTestId("cash-balance").textContent, "10018");
   assert.equal(starts, 1);
+  cleanup();
+});
+
+test("Rapid cash Dice clicks use three unique request IDs and apply all server wallet returns without animation waits", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const starts: Record<string, unknown>[] = [],
+    waiting: ((r: unknown) => void)[] = [];
+  setup(t, async (body) => {
+    if (body.action === "start") {
+      starts.push(body);
+      return await new Promise((resolve) => waiting.push(resolve));
+    }
+    return {
+      data: { enabled: true, balance_minor: 10000, active: null, reason: null },
+      error: null,
+    };
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("link", { name: "Open game" }));
+  });
+  for (let i = 0; i < 3; i++)
+    fireEvent.click(screen.getByRole("button", { name: "Roll dice" }));
+  await act(async () => {});
+  assert.equal(starts.length, 1);
+  assert.ok(screen.getByText(/3 bets pending/));
+  for (let i = 0; i < 3; i++) {
+    const state = newCashRound("prism-dice", { bet: 20 }, () => 9999);
+    await act(async () => {
+      waiting[i]({
+        data: {
+          id: starts[i].request_key,
+          revision: 0,
+          game: "prism-dice",
+          state: "settled",
+          balance_minor: 10000 - (i + 1) * 20,
+          view: publicCash(state),
+        },
+        error: null,
+      });
+    });
+    assert.equal(starts.length, Math.min(i + 2, 3));
+  }
+  assert.equal(new Set(starts.map((s) => s.request_key)).size, 3);
+  assert.equal(screen.getByTestId("cash-balance").textContent, "9940");
+  assert.equal(sessionStorage.length, 0);
+  assert.equal(screen.queryByText(/An unconfirmed request is saved/), null);
   cleanup();
 });

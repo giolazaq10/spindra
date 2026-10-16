@@ -263,3 +263,8 @@
     transition: none;
   }
 }
+.spindra-extension .rapid-queue { min-height: 22px; color: #b5c9e5; font-size: 12px; }
+.spindra-extension .rapid-results { display: flex; gap: 6px; overflow-x: auto; min-height: 42px; padding: 5px 0 10px; }
+.spindra-extension .rapid-results span { flex-shrink: 0; padding: 5px 9px; background: #ffffff0c; border-radius: 6px; font-size: 12px; font-variant-numeric: tabular-nums; border: 1px solid #ffffff1a; }
+.spindra-extension .rapid-results .return-positive { color: #99f6cf; border-color: #64d1b355; }
+.spindra-extension .rapid-results .return-low { color: #ead1e3; }

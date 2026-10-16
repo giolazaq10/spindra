@@ -68,7 +68,7 @@ export default function CashGame({ game }: { game: Original }) {
     [initialized, setInitialized] = useState(false),
     [eligible, setEligible] = useState(false),
     [message, setMessage] = useState("Server-authorized cash play. USD."),
-    [bet, setBet] = useState(game.kind === "poker" ? 1000 : 100),
+    [bet, setBet] = useState(game.kind === "poker" ? 1000 : 20),
     [rules, setRules] = useState(false),
     [kind, setKind] = useState("red"),
     [straight, setStraight] = useState(0),
@@ -171,7 +171,7 @@ export default function CashGame({ game }: { game: Original }) {
       if (alive.current) {
         const cards =
           game.kind === "blackjack" ? 8 : game.kind === "poker" ? 6 : 1;
-        if (game.kind === "slots") setBusy(false);
+        if (game.kind === "slots" || game.mini) setBusy(false);
         else
           timer.current = setTimeout(() => {
             if (alive.current) setBusy(false);
@@ -256,9 +256,9 @@ export default function CashGame({ game }: { game: Original }) {
     setMessage,
     balance: wallet.realBalance,
     busy: busy || !!pending,
-    canStart: eligible && wallet.realBalance >= bet,
+    canStart: eligible && wallet.realBalance >= bet && !(pending && uncertain),
     setLeaveReturn: () => {},
-    stakes: [100, 200, 500, 1000, 2000],
+    stakes: [20, 50, 100, 200, 500, 1000, 2000],
     message,
     rules,
     toggleRules: () => setRules((v) => !v),
@@ -329,12 +329,13 @@ export default function CashGame({ game }: { game: Original }) {
               body: {
                 request_key: crypto.randomUUID(),
                 game: game.slug,
-                input: { ...input, bet },
+                input: { ...input, bet: input.bet ?? bet },
               },
             });
             return {
               ...r.view.result,
               returned_minor: r.view.returned_minor,
+              balance_minor: r.balance_minor,
             } as unknown as MiniResult;
           }}
         />
@@ -416,7 +417,7 @@ export default function CashGame({ game }: { game: Original }) {
                         value={side}
                         onChange={(e) => setSide(Number(e.target.value))}
                       >
-                        {[0, 100, 200, 500]
+                        {[0, 20, 50, 100, 200, 500]
                           .filter((n) => n <= bet)
                           .map((n) => (
                             <option value={n} key={n}>
@@ -598,8 +599,8 @@ export default function CashGame({ game }: { game: Original }) {
                   }}
                 >
                   {(game.kind === "poker"
-                    ? [1000, 2000, 5000, 10000, 20000]
-                    : [100, 200, 500, 1000, 2000]
+                    ? [20, 100, 200, 1000, 2000, 5000, 10000, 20000]
+                    : [20, 50, 100, 200, 500, 1000, 2000]
                   ).map((n) => (
                     <option key={n} value={n}>
                       {money(n)}

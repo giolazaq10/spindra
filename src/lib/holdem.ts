@@ -143,7 +143,7 @@ export function createHoldem(
   dealer = 0,
   rng: RandomInt = randomInt,
 ): HoldemState {
-  if (!Number.isSafeInteger(buyIn) || buyIn < 100 || buyIn % 20 !== 0)
+  if (!Number.isSafeInteger(buyIn) || buyIn < 20 || buyIn % 20 !== 0)
     throw new Error("Invalid buy-in");
   const shoe = deck(rng),
     players: Seat[] = ["You", "Mira", "Atlas"].map((name) => ({

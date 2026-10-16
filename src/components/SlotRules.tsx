@@ -23,7 +23,13 @@ export default function SlotRules({ game }: { game: Original }) {
           <b>{s.scatter.name}:</b> counted anywhere, separately from line or
           ways wins.{" "}
           {s.scatter.awards
-            .flatMap((award, count) => (!award || s.scatter!.awards[count-1] === award ? [] : [`${count}${s.scatter!.awards[count+1] === award ? "+" : ""}: ${award}×`]))
+            .flatMap((award, count) =>
+              !award || s.scatter!.awards[count - 1] === award
+                ? []
+                : [
+                    `${count}${s.scatter!.awards[count + 1] === award ? "+" : ""}: ${award}×`,
+                  ],
+            )
             .join(" · ")}
           . Scatter symbols never substitute for other symbols. Scatter and
           regular awards add together.
@@ -34,7 +40,10 @@ export default function SlotRules({ game }: { game: Original }) {
       <p>
         No progressive jackpot, bonus purchase or free-spin feature. Every spin
         is independent; past results do not affect the next spin. Theoretical
-        RTP is computed from these exact symbol weights and payouts.
+        RTP is computed from these exact symbol weights and payouts before cash
+        rounding. Cash returns are rounded down once to a USD cent after adding
+        all awards. This can reduce the effective RTP at smaller stakes. Minimum
+        stake: $0.20, in $0.10 increments.
       </p>
       <div className="slot-paytable">
         <div>

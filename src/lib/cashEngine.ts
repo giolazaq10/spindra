@@ -44,11 +44,11 @@ export type CashCommand = { action: string; seats?: number[]; to?: number };
 function amount(v: unknown) {
   if (
     !Number.isSafeInteger(v) ||
-    Number(v) < 100 ||
+    Number(v) < 20 ||
     Number(v) > 20000 ||
-    Number(v) % 100 !== 0
+    Number(v) % 10 !== 0
   )
-    throw new Error("Stake must be a whole USD amount from $1 to $200");
+    throw new Error("Stake must be $0.20 to $200 in $0.10 increments");
   return Number(v);
 }
 function finishDealer(s: BlackjackRound) {
@@ -101,7 +101,7 @@ export function newCashRound(
     returned = result.returned_minor;
   } else if (g.kind === "slots") {
     const result = modelSpin(g.slot!, rng);
-    returned = (stake / 100) * result.rate;
+    returned = Math.floor((stake * result.rate) / 100);
     data = result;
   } else if (g.kind === "roulette") {
     const kind = input.kind as RouletteBet;
