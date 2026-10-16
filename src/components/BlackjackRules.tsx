@@ -92,7 +92,7 @@ export default function BlackjackRules() {
       </table>
       <h4>Cash stakes and settlement</h4>
       <p>
-        Main and side stakes use whole USD amounts. Each side stake must not
+        Main and side stakes start at $0.20, in $0.10 increments. Each side stake must not
         exceed its own main stake. Total stakes across the round, including
         insurance, doubles and splits, are limited to $200. Extra stakes require
         sufficient wallet funds and available daily loss budget.

@@ -41,7 +41,7 @@ test("all twenty-two slots have distinct artwork, mechanics, paytables and valid
     assert.ok(modelRtp(s) > 0.9 && modelRtp(s) < 1, game.name);
     assert.equal(
       rtpLabel(game),
-      (modelRtp(s) * 100).toFixed(2) + "% theoretical RTP",
+      "Up to " + (modelRtp(s) * 100).toFixed(2) + "% theoretical RTP",
     );
     assert.equal(new Set(s.lines.map((p) => p.join())).size, s.lines.length);
     assert.ok(

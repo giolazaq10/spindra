@@ -416,8 +416,8 @@ export function makeSlotSpec(index: number, math: SlotMath): SlotSpec {
       ),
     };
   }
-  // Awards are hundredths of TOTAL stake. Supported stakes are whole credits,
-  // so settlement always uses exact integer minor credits, even with 40 lines.
+  // Awards are hundredths of TOTAL stake. Cash settlement multiplies integer
+  // minor stakes and floors the combined return once to a USD cent.
   const raw = math.pays.map((pay, symbol) =>
     Array.from(
       { length: reels - minimum + 1 },

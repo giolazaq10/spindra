@@ -25,9 +25,9 @@ export function miniPlay(
 ): MiniResult {
   if (
     !Number.isSafeInteger(stake) ||
-    stake < 100 ||
+    stake < 20 ||
     stake > 20000 ||
-    stake % 100
+    stake % 10
   )
     throw new Error("Invalid minigame stake");
   if (type === "dice") {
@@ -62,7 +62,7 @@ export function miniPlay(
       path,
       bin,
       multiplier: rate / 100,
-      returned_minor: (stake / 100) * rate,
+      returned_minor: (stake * rate) / 100,
     };
   }
   if (type === "wheel") {
@@ -72,7 +72,7 @@ export function miniPlay(
       type,
       sector,
       multiplier: rate / 100,
-      returned_minor: (stake / 100) * rate,
+      returned_minor: (stake * rate) / 100,
     };
   }
   throw new Error("Unknown minigame");

@@ -60,7 +60,7 @@ export const games: Game[] = originals.map((g, i) => {
       : "data:image/svg+xml," + encodeURIComponent(image),
     rtp:
       g.kind === "slots"
-        ? (modelRtp(g.slot!) * 100).toFixed(2) + "%"
+        ? "up to " + (modelRtp(g.slot!) * 100).toFixed(2) + "%"
         : g.kind === "roulette"
           ? "97.30%"
           : null,

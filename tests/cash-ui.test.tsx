@@ -111,13 +111,13 @@ for (const [slug, label] of [
     async (t) => {
       t.mock.timers.enable({ apis: ["setTimeout"] });
       const calls = [];
-      const state = newCashRound(slug, { bet: 100 }, () => 0);
+      const state = newCashRound(slug, { bet: 20 }, () => 0);
       const fixture = {
         id: crypto.randomUUID(),
         revision: 0,
         game: slug,
         state: "settled",
-        balance_minor: 10000 - 100 + state.returned_minor,
+        balance_minor: 10000 - 20 + state.returned_minor,
         view: publicCash(state),
       };
       t.mock.method(supabase.auth, "getSession", async () => ({
@@ -172,7 +172,7 @@ for (const [slug, label] of [
         });
         const start = calls.find((c) => c.action === "start");
         assert.equal(start.game, slug);
-        assert.equal(start.input.bet, 100);
+        assert.equal(start.input.bet, 20);
         assert.deepEqual(Object.keys(start.input).sort(), [
           "bet",
           "over",
@@ -186,7 +186,7 @@ for (const [slug, label] of [
           screen.getByText(
             (state.returned_minor / 100).toFixed(2) +
               " · " +
-              (state.returned_minor / 100).toFixed(2) +
+              (state.returned_minor / state.stake_minor).toFixed(2) +
               "×",
           ),
         );

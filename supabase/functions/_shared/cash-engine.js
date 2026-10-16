@@ -899,7 +899,7 @@ var wheelPays = [
 ];
 var plinkoPays = [1e3, 350, 140, 60, 40, 60, 140, 350, 1e3];
 function miniPlay(type, stake, input = {}, rng = randomInt) {
-  if (!Number.isSafeInteger(stake) || stake < 100 || stake > 2e4 || stake % 100)
+  if (!Number.isSafeInteger(stake) || stake < 20 || stake > 2e4 || stake % 10)
     throw new Error("Invalid minigame stake");
   if (type === "dice") {
     const threshold = input.threshold ?? 5e3;
@@ -925,7 +925,7 @@ function miniPlay(type, stake, input = {}, rng = randomInt) {
       path,
       bin,
       multiplier: rate / 100,
-      returned_minor: stake / 100 * rate
+      returned_minor: stake * rate / 100
     };
   }
   if (type === "wheel") {
@@ -934,7 +934,7 @@ function miniPlay(type, stake, input = {}, rng = randomInt) {
       type,
       sector,
       multiplier: rate / 100,
-      returned_minor: stake / 100 * rate
+      returned_minor: stake * rate / 100
     };
   }
   throw new Error("Unknown minigame");
@@ -946,11 +946,13 @@ function validateBets(bets) {
   if (bets.length !== 5) throw new Error("Five betting spots required");
   for (const b of bets) {
     if (![b.main, b.three, b.pair].every(
-      (n) => Number.isSafeInteger(n) && n >= 0 && n % 100 === 0
+      (n) => Number.isSafeInteger(n) && n >= 0 && n % 10 === 0
     ))
-      throw new Error("Bets must use whole USD amounts");
-    if (b.main && (b.main < 100 || b.main > MAIN_MAX))
-      throw new Error("Main bet range is 1\u2013200 credits");
+      throw new Error("Bets must use $0.10 increments");
+    if (b.main && (b.main < 20 || b.main > MAIN_MAX))
+      throw new Error("Main bet range is $0.20\u2013$200");
+    if (b.three > 0 && b.three < 20 || b.pair > 0 && b.pair < 20)
+      throw new Error("Side bet minimum is $0.20");
     if (b.three > b.main || b.pair > b.main)
       throw new Error("Each side bet must not exceed its main bet");
   }
@@ -1240,7 +1242,7 @@ var commit = (p, amount2) => {
   return paid;
 };
 function createHoldem(buyIn, dealer = 0, rng = randomInt) {
-  if (!Number.isSafeInteger(buyIn) || buyIn < 100 || buyIn % 20 !== 0)
+  if (!Number.isSafeInteger(buyIn) || buyIn < 20 || buyIn % 20 !== 0)
     throw new Error("Invalid buy-in");
   const shoe = deck(rng), players = ["You", "Mira", "Atlas"].map((name) => ({
     name,
@@ -1431,8 +1433,8 @@ function botAction(hole, board, legal, bigBlind, rng = randomInt) {
 // src/lib/cashEngine.ts
 var CASH_MODEL = "spindra-cash-v1";
 function amount(v) {
-  if (!Number.isSafeInteger(v) || Number(v) < 100 || Number(v) > 2e4 || Number(v) % 100 !== 0)
-    throw new Error("Stake must be a whole USD amount from $1 to $200");
+  if (!Number.isSafeInteger(v) || Number(v) < 20 || Number(v) > 2e4 || Number(v) % 10 !== 0)
+    throw new Error("Stake must be $0.20 to $200 in $0.10 increments");
   return Number(v);
 }
 function finishDealer(s) {
@@ -1474,7 +1476,7 @@ function newCashRound(game, input, rng = randomInt) {
     returned = result2.returned_minor;
   } else if (g.kind === "slots") {
     const result2 = modelSpin(g.slot, rng);
-    returned = stake / 100 * result2.rate;
+    returned = Math.floor(stake * result2.rate / 100);
     data = result2;
   } else if (g.kind === "roulette") {
     const kind = input.kind;

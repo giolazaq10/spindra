@@ -52,9 +52,9 @@ test("All 28 real-balance games reserve and settle their actual engine results t
       let state = newCashRound(
         g.slug,
         {
-          bet: g.kind === "poker" ? 1000 : 100,
+          bet: 20,
           bets: [
-            { main: 100, three: 100, pair: 100 },
+            { main: 20, three: 20, pair: 20 },
             ...Array.from({ length: 4 }, () => ({
               main: 0,
               three: 0,
