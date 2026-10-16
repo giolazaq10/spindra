@@ -171,7 +171,7 @@ export default function CashGame({ game }: { game: Original }) {
       if (alive.current) {
         const cards =
           game.kind === "blackjack" ? 8 : game.kind === "poker" ? 6 : 1;
-        if (game.kind === "slots") setBusy(false);
+        if (game.kind === "slots" || game.mini) setBusy(false);
         else
           timer.current = setTimeout(() => {
             if (alive.current) setBusy(false);
@@ -256,7 +256,7 @@ export default function CashGame({ game }: { game: Original }) {
     setMessage,
     balance: wallet.realBalance,
     busy: busy || !!pending,
-    canStart: eligible && wallet.realBalance >= bet,
+    canStart: eligible && wallet.realBalance >= bet && !(pending && uncertain),
     setLeaveReturn: () => {},
     stakes: [100, 200, 500, 1000, 2000],
     message,
@@ -329,12 +329,13 @@ export default function CashGame({ game }: { game: Original }) {
               body: {
                 request_key: crypto.randomUUID(),
                 game: game.slug,
-                input: { ...input, bet },
+                input: { ...input, bet: input.bet ?? bet },
               },
             });
             return {
               ...r.view.result,
               returned_minor: r.view.returned_minor,
+              balance_minor: r.balance_minor,
             } as unknown as MiniResult;
           }}
         />

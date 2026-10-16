@@ -8,7 +8,8 @@ import {
 } from "@/lib/minigames";
 import type { Controls } from "./OriginalGame";
 import GameControls from "./GameControls";
-export default function MiniGames({
+import RapidMiniGames from "./RapidMiniGames";
+function AnimatedMiniGame({
   type,
   controls: c,
   serverPlay,
@@ -228,5 +229,14 @@ export default function MiniGames({
         </p>
       </details>
     </div>
+  );
+}
+export default function MiniGames(
+  props: Parameters<typeof AnimatedMiniGame>[0],
+) {
+  return props.type === "wheel" ? (
+    <AnimatedMiniGame {...props} />
+  ) : (
+    <RapidMiniGames {...props} type={props.type} />
   );
 }

@@ -1,6 +1,7 @@
 import { randomInt, type RandomInt } from "./engine";
 export type MiniKind = "dice" | "plinko" | "wheel";
 export type MiniResult = {
+  balance_minor?: number;
   type: MiniKind;
   returned_minor: number;
   multiplier: number;

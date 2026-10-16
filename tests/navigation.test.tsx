@@ -136,7 +136,7 @@ test("Cash-only game route hydrates the server wallet and accepts only a server-
   assert.equal(
     (screen.getByRole("combobox", { name: "Total stake" }) as HTMLSelectElement)
       .disabled,
-    true,
+    false,
   );
   await act(async () => {
     t.mock.timers.tick(5000);
@@ -348,5 +348,51 @@ test("Normal in-flight bets persist safely without displaying recovery confirmat
   assert.equal(sessionStorage.length, 0);
   assert.equal(screen.getByTestId("cash-balance").textContent, "10094");
   assert.equal(starts, 1);
+  cleanup();
+});
+
+test("Rapid cash Dice clicks use three unique request IDs and apply all server wallet returns without animation waits", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const starts: Record<string, unknown>[] = [],
+    waiting: ((r: unknown) => void)[] = [];
+  setup(t, async (body) => {
+    if (body.action === "start") {
+      starts.push(body);
+      return await new Promise((resolve) => waiting.push(resolve));
+    }
+    return {
+      data: { enabled: true, balance_minor: 10000, active: null, reason: null },
+      error: null,
+    };
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("link", { name: "Open game" }));
+  });
+  for (let i = 0; i < 3; i++)
+    fireEvent.click(screen.getByRole("button", { name: "Roll dice" }));
+  await act(async () => {});
+  assert.equal(starts.length, 1);
+  assert.ok(screen.getByText(/3 bets pending/));
+  for (let i = 0; i < 3; i++) {
+    const state = newCashRound("prism-dice", { bet: 100 }, () => 9999);
+    await act(async () => {
+      waiting[i]({
+        data: {
+          id: starts[i].request_key,
+          revision: 0,
+          game: "prism-dice",
+          state: "settled",
+          balance_minor: 10000 - (i + 1) * 100,
+          view: publicCash(state),
+        },
+        error: null,
+      });
+    });
+    assert.equal(starts.length, Math.min(i + 2, 3));
+  }
+  assert.equal(new Set(starts.map((s) => s.request_key)).size, 3);
+  assert.equal(screen.getByTestId("cash-balance").textContent, "9700");
+  assert.equal(sessionStorage.length, 0);
+  assert.equal(screen.queryByText(/An unconfirmed request is saved/), null);
   cleanup();
 });
