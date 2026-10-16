@@ -15,9 +15,7 @@ export default function AdvancedSlots({
 }: {
   game: Original;
   controls: Controls;
-  serverSpin?: (
-    stake: number,
-  ) => Promise<{
+  serverSpin?: (stake: number) => Promise<{
     grid: number[][];
     wins: SlotWin[];
     rate: number;
@@ -203,34 +201,34 @@ export default function AdvancedSlots({
               ))}
           </svg>
         </div>
+        {wins.length > 0 && (
+          <div
+            key={round}
+            className={
+              "win-celebration " + (returned >= lastStake * 5 ? "big-win" : "")
+            }
+            aria-hidden="true"
+          >
+            <strong>
+              {returned >= lastStake * 10
+                ? "SPECTACULAR WIN"
+                : returned >= lastStake * 5
+                  ? "BIG WIN"
+                  : returned > lastStake
+                    ? "YOU WIN"
+                    : "REEL RETURN"}
+            </strong>
+            <span>
+              <AnimatedCredits amount={returned} />
+            </span>
+            {Array.from({ length: 12 }, (_, i) => (
+              <i key={i} style={{ "--coin": i } as CSSProperties}>
+                ✦
+              </i>
+            ))}
+          </div>
+        )}
       </div>
-      {wins.length > 0 && (
-        <div
-          key={round}
-          className={
-            "win-celebration " + (returned >= lastStake * 5 ? "big-win" : "")
-          }
-          aria-hidden="true"
-        >
-          <strong>
-            {returned >= lastStake * 10
-              ? "SPECTACULAR WIN"
-              : returned >= lastStake * 5
-                ? "BIG WIN"
-                : returned > lastStake
-                  ? "YOU WIN"
-                  : "REEL RETURN"}
-          </strong>
-          <span>
-            <AnimatedCredits amount={returned} />
-          </span>
-          {Array.from({ length: 12 }, (_, i) => (
-            <i key={i} style={{ "--coin": i } as CSSProperties}>
-              ✦
-            </i>
-          ))}
-        </div>
-      )}
       <div className="slot-console">
         <div>
           <small>ACTIVE PATTERNS</small>

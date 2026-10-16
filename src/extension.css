@@ -3986,6 +3986,8 @@
   color: #fff;
   text-shadow: 0 1px 3px #000;
   min-height: 40px;
+  height: 40px;
+  overflow: hidden;
   margin: 4px 0;
 }
 .spindra-extension .distinct-slot .reel-cabinet {
@@ -4135,6 +4137,14 @@
 .spindra-extension .distinct-slot .slot-console {
   color: #fff;
   padding: 15px 4px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+}
+.spindra-extension .distinct-slot .slot-console > div {
+  min-width: 0;
+  overflow: hidden;
+}
+.spindra-extension .distinct-slot .slot-console b {
+  white-space: nowrap;
 }
 .spindra-extension .distinct-slot .slot-console small {
   font-size: 11px;
@@ -4236,6 +4246,14 @@
   background: linear-gradient(90deg, #161e3500, #141e34ee, #161e3500);
   animation: win-banner-in 0.6s ease-out both;
   color: #fff3c1;
+}
+.spindra-extension .distinct-slot .reel-cabinet > .win-celebration {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 4;
+  margin: 0;
 }
 .spindra-extension .win-celebration strong {
   display: block;
