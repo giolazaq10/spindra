@@ -14,10 +14,18 @@ import MiniGames from "./MiniGames";
 import type { MiniResult } from "@/lib/minigames";
 import { miniRules } from "@/lib/minigames";
 import PlayingCard from "./PlayingCard";
+import BlackjackScore from "./BlackjackScore";
 import BlackjackRules from "./BlackjackRules";
 import SlotRules from "./SlotRules";
 
-type BJHand = { id: string; seat: number; cards: Card[]; bet: number };
+type BJHand = {
+  id: string;
+  seat: number;
+  cards: Card[];
+  bet: number;
+  split?: boolean;
+  surrendered?: boolean;
+};
 type Table = {
   phase?: string;
   dealer?: (Card | null)[];
@@ -362,7 +370,12 @@ export default function CashGame({ game }: { game: Original }) {
         />
       ) : (
         <>
-          <div className="cash-table">
+          <div
+            className={
+              "cash-table" +
+              (game.kind === "blackjack" ? " cash-blackjack" : "")
+            }
+          >
             <span className="eyebrow">SERVER DEALT · USD</span>
             {game.kind === "roulette" ? (
               <>
@@ -434,17 +447,22 @@ export default function CashGame({ game }: { game: Original }) {
                 )}
                 {table?.dealer && (
                   <>
-                    <h3>Dealer</h3>
-                    <div className="cash-cards">
-                      {table.dealer.map((card, i) => (
-                        <PlayingCard
-                          key={i + ":" + (card?.rank ?? "hidden")}
-                          card={card || undefined}
-                          hidden={!card}
-                          delay={i * 550}
-                        />
-                      ))}
-                    </div>
+                    <section
+                      className="blackjack-dealer"
+                      aria-label="Dealer hand"
+                    >
+                      <BlackjackScore label="Dealer" cards={table.dealer} />
+                      <div className="cash-cards">
+                        {table.dealer.map((card, i) => (
+                          <PlayingCard
+                            key={i + ":" + (card?.rank ?? "hidden")}
+                            card={card || undefined}
+                            hidden={!card}
+                            delay={i * 550}
+                          />
+                        ))}
+                      </div>
+                    </section>
                   </>
                 )}
                 {table?.hands?.map((h, i) => (
@@ -456,8 +474,37 @@ export default function CashGame({ game }: { game: Original }) {
                     }
                   >
                     <h3>
-                      Hand {h.seat + 1} · {money(h.bet)}
+                      Your hand {h.seat + 1}
+                      {h.split
+                        ? " · Split " +
+                          (table
+                            .hands!.filter((other) => other.seat === h.seat)
+                            .indexOf(h) +
+                            1)
+                        : ""}{" "}
+                      · Bet {money(h.bet)}
                     </h3>
+                    <BlackjackScore
+                      label={
+                        "Your hand " +
+                        (h.seat + 1) +
+                        (h.split
+                          ? " · Split " +
+                            (table
+                              .hands!.filter((other) => other.seat === h.seat)
+                              .indexOf(h) +
+                              1)
+                          : "")
+                      }
+                      cards={h.cards}
+                      split={h.split}
+                      surrendered={h.surrendered}
+                      active={
+                        table.active === i &&
+                        active &&
+                        table.phase === "playing"
+                      }
+                    />
                     <div className="cash-cards">
                       {h.cards.map((card, j) => (
                         <PlayingCard key={j} card={card} delay={j * 550} />

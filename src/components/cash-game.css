@@ -119,3 +119,99 @@
     min-height: 80px;
   }
 }
+
+/* Keep card values and totals readable independently of chip amounts. */
+.spindra-extension .cash-blackjack .blackjack-dealer {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 16px;
+  border: 1px solid #8196b7;
+  border-radius: 16px;
+  background: #102238;
+}
+.spindra-extension .cash-blackjack .cash-hand {
+  min-width: min(100%, 270px);
+  background: #112e3d;
+}
+.spindra-extension .cash-blackjack .cash-hand h3 {
+  font-size: 15px;
+  color: #eef6ff;
+}
+.spindra-extension .blackjack-score {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  text-align: left;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #071625;
+  border: 1px solid #6d829d;
+  color: #fff;
+}
+.spindra-extension .blackjack-score-label {
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+}
+.spindra-extension .blackjack-score small {
+  display: block;
+  font-size: 12px;
+  color: #d2dfed;
+  margin-top: 5px;
+}
+.spindra-extension .blackjack-score > strong {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.spindra-extension .blackjack-turn {
+  flex-basis: 100%;
+  color: #ffdf95;
+  font-size: 14px;
+}
+.spindra-extension .cash-active .blackjack-score {
+  border: 2px solid #f5c264;
+}
+.spindra-extension .score-bust > strong {
+  color: #ffb3b3;
+}
+.spindra-extension .cash-blackjack .playing-card {
+  width: 78px;
+  min-width: 78px;
+  height: 112px;
+  background-color: #fffdf4;
+}
+.spindra-extension .cash-blackjack .playing-card small {
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.05;
+}
+.spindra-extension .cash-blackjack .playing-card strong {
+  font-size: 32px;
+}
+@media (max-width: 600px) {
+  .spindra-extension .cash-blackjack .playing-card {
+    width: 64px;
+    min-width: 64px;
+    height: 96px;
+  }
+  .spindra-extension .cash-blackjack .playing-card small {
+    font-size: 18px;
+  }
+  .spindra-extension .cash-blackjack .blackjack-dealer {
+    padding: 10px;
+  }
+  .spindra-extension .cash-blackjack .cash-hand {
+    display: block;
+  }
+  .spindra-extension .blackjack-score {
+    padding: 10px 12px;
+  }
+  .spindra-extension .blackjack-score > strong {
+    font-size: 32px;
+  }
+}
