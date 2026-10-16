@@ -187,6 +187,7 @@ test("A lost cash response is recovered after Back without a second bet or a res
     fireEvent.click(screen.getByRole("button", { name: "Roll dice" }));
   });
   assert.equal(sessionStorage.length, 1);
+  assert.ok(screen.getByText(/An unconfirmed request is saved/));
   await act(async () => {
     void router.navigate(-1);
   });
@@ -239,16 +240,113 @@ test("Insufficient real balance disables wagering while stake selection remains 
   cleanup();
 });
 
-test('An existing cash hand can settle at zero balance while new wagering is paused',async(t)=>{
- t.mock.timers.enable({apis:['setTimeout']});
- const state=newCashRound('royal-draw',{bet:1000},n=>n-1),id=crypto.randomUUID();let acted=0;
- const round={id,revision:0,game:'royal-draw',state:'open',view:publicCash(state)};
- setup(t,async body=>{
-   if(body.action==='act'){acted++;const settled=nextCashRound(state,{action:'abandon'},()=>0);return {data:{...round,revision:1,state:'settled',balance_minor:settled.returned_minor,view:publicCash(settled)},error:null};}
-   return {data:{enabled:false,reason:'Cash wagering is not enabled',balance_minor:0,active:round},error:null};
- },true,'royal-draw');
- await act(async()=>{fireEvent.click(screen.getByRole('link',{name:'Open game'}));});
- assert.equal(screen.getByTestId('cash-balance').textContent,'0');
- await act(async()=>{fireEvent.click(screen.getByRole('button',{name:'Leave hand: fold and return uncommitted chips'}));});
- assert.equal(acted,1);assert.ok(Number(screen.getByTestId('cash-balance').textContent)>=0);cleanup();
+test("An existing cash hand can settle at zero balance while new wagering is paused", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const state = newCashRound("royal-draw", { bet: 1000 }, (n) => n - 1),
+    id = crypto.randomUUID();
+  let acted = 0;
+  const round = {
+    id,
+    revision: 0,
+    game: "royal-draw",
+    state: "open",
+    view: publicCash(state),
+  };
+  setup(
+    t,
+    async (body) => {
+      if (body.action === "act") {
+        acted++;
+        const settled = nextCashRound(state, { action: "abandon" }, () => 0);
+        return {
+          data: {
+            ...round,
+            revision: 1,
+            state: "settled",
+            balance_minor: settled.returned_minor,
+            view: publicCash(settled),
+          },
+          error: null,
+        };
+      }
+      return {
+        data: {
+          enabled: false,
+          reason: "Cash wagering is not enabled",
+          balance_minor: 0,
+          active: round,
+        },
+        error: null,
+      };
+    },
+    true,
+    "royal-draw",
+  );
+  await act(async () => {
+    fireEvent.click(screen.getByRole("link", { name: "Open game" }));
+  });
+  assert.equal(screen.getByTestId("cash-balance").textContent, "0");
+  await act(async () => {
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Leave hand: fold and return uncommitted chips",
+      }),
+    );
+  });
+  assert.equal(acted, 1);
+  assert.ok(Number(screen.getByTestId("cash-balance").textContent) >= 0);
+  cleanup();
+});
+
+test("Normal in-flight bets persist safely without displaying recovery confirmation", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const state = newCashRound("prism-dice", { bet: 100 }, () => 0),
+    response = {
+      id: crypto.randomUUID(),
+      revision: 0,
+      game: "prism-dice",
+      state: "settled",
+      balance_minor: 10094,
+      view: publicCash(state),
+    };
+  let resolve!: (r: { data: typeof response; error: null }) => void;
+  let starts = 0;
+  const request = new Promise<{ data: typeof response; error: null }>((r) => {
+    resolve = r;
+  });
+  setup(t, async (body) => {
+    if (body.action === "start") {
+      starts++;
+      return request;
+    }
+    return {
+      data: { enabled: true, balance_minor: 10000, active: null, reason: null },
+      error: null,
+    };
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("link", { name: "Open game" }));
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Roll dice" }));
+  });
+  assert.equal(sessionStorage.length, 1);
+  assert.equal(starts, 1);
+  assert.equal(screen.queryByText(/An unconfirmed request is saved/), null);
+  assert.equal(screen.queryByRole("button", { name: "Recover result" }), null);
+  assert.equal(
+    screen.queryByRole("button", { name: "Retry same request" }),
+    null,
+  );
+  await act(async () => {
+    t.mock.timers.tick(1000);
+  });
+  assert.equal(screen.queryByText(/An unconfirmed request is saved/), null);
+  await act(async () => {
+    resolve({ data: response, error: null });
+  });
+  assert.equal(sessionStorage.length, 0);
+  assert.equal(screen.getByTestId("cash-balance").textContent, "10094");
+  assert.equal(starts, 1);
+  cleanup();
 });

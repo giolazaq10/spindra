@@ -63,6 +63,7 @@ export default function CashGame({ game }: { game: Original }) {
   const { acceptServerBalance } = wallet;
   const [round, setRound] = useState<CashRound | null>(null),
     [pending, setPending] = useState<Pending | null>(null),
+    [uncertain, setUncertain] = useState(false),
     [busy, setBusy] = useState(false),
     [initialized, setInitialized] = useState(false),
     [eligible, setEligible] = useState(false),
@@ -96,6 +97,8 @@ export default function CashGame({ game }: { game: Original }) {
         const saved = sessionStorage.getItem(storageKey);
         if (saved) {
           const p = JSON.parse(saved) as Pending;
+          setPending(p);
+          setUncertain(true);
           const recovered = await cashApi<{ round: CashRound | null }>(
             "recover",
             { request_key: p.body.request_key },
@@ -103,6 +106,8 @@ export default function CashGame({ game }: { game: Original }) {
           if (!active) return;
           if (recovered.round) {
             setRound(recovered.round);
+            setPending(null);
+            setUncertain(false);
             sessionStorage.removeItem(storageKey);
           } else setPending(p);
         }
@@ -123,11 +128,13 @@ export default function CashGame({ game }: { game: Original }) {
     if (p) sessionStorage.setItem(storageKey, JSON.stringify(p));
     else sessionStorage.removeItem(storageKey);
     setPending(p);
+    if (!p) setUncertain(false);
   }
   async function send(p: Pending) {
     if (lock.current) throw new Error("Request already in progress");
     lock.current = true;
     setBusy(true);
+    setUncertain(false);
     store(p);
     try {
       const response = await cashApi<CashRound>(p.action, p.body);
@@ -150,6 +157,7 @@ export default function CashGame({ game }: { game: Original }) {
           text,
         );
       if (definitive) store(null);
+      else if (alive.current) setUncertain(true);
       if (alive.current)
         setMessage(
           text +
@@ -284,7 +292,7 @@ export default function CashGame({ game }: { game: Original }) {
       <p>
         Cash balance <strong>{money(wallet.realBalance)}</strong>
       </p>
-      {pending && (
+      {pending && uncertain && (
         <div className="cash-recovery">
           <p>
             An unconfirmed request is saved. Its request ID prevents duplicate
