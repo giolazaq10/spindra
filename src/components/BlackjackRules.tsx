@@ -95,7 +95,7 @@ export default function BlackjackRules() {
         Main and side stakes start at $0.20, in $0.10 increments. Each side stake must not
         exceed its own main stake. Total stakes across the round, including
         insurance, doubles and splits, are limited to $200. Extra stakes require
-        sufficient wallet funds and available daily loss budget.
+        sufficient wallet funds.
       </p>
       <p>
         Side results use the initial cards and are credited with main and

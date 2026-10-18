@@ -143,7 +143,7 @@ export default function CashOperations() {
             Save cash-game settings
           </button>
           <p>
-            Max total stake per round: $200. Account loss limits, verified adult
+            Max total stake per round: $200. Verified adult
             identity, confirmed email, exclusions and sufficient balance remain
             mandatory. A paused game can finish an existing round but cannot
             accept a new wager or extra stake.

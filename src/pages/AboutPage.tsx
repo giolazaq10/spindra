@@ -122,13 +122,12 @@ export default function AboutPage() {
             </h2>
             <p className="text-gray-400 leading-relaxed mb-4">
               We are committed to promoting responsible gaming. Our platform
-              includes session loss limits, self-exclusion options, and
+              includes self-exclusion options, and
               resources for those who need support.
             </p>
             <div className="flex flex-wrap gap-2">
               {[
                 "Self-Exclusion",
-                "Session Loss Limits",
                 "Session History",
                 "Responsible Play",
               ].map((tag) => (

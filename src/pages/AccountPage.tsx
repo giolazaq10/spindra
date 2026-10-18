@@ -13,7 +13,6 @@ type Profile = {
   kyc_status: string;
   country: string;
   excluded_until: string | null;
-  daily_loss_limit_minor: number;
 };
 type Balance = { balance_minor: number; currency: string };
 type Entry = {
@@ -50,7 +49,7 @@ export default function AccountPage() {
           supabase
             .from("player_profiles")
             .select(
-              "display_name,kyc_status,country,excluded_until,daily_loss_limit_minor",
+              "display_name,kyc_status,country,excluded_until",
             )
             .eq("id", user.id)
             .maybeSingle(),
@@ -222,14 +221,6 @@ export default function AccountPage() {
             <dd>{profile?.country || "Not available"}</dd>
           </div>
           <div>
-            <dt>Cash loss limit</dt>
-            <dd>
-              {profile
-                ? credits(profile.daily_loss_limit_minor) + " per UTC day"
-                : "Unavailable"}
-            </dd>
-          </div>
-          <div>
             <dt>Account exclusion</dt>
             <dd>
               {profile?.excluded_until
@@ -239,7 +230,7 @@ export default function AccountPage() {
           </div>
         </dl>
         <Link to="/responsible-gaming" className="text-link">
-          Manage limits and time away →
+          Manage time away →
         </Link>
       </div>
       <div className="panel history">

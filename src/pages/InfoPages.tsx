@@ -5,26 +5,19 @@ import { useAuth } from "@/context/Auth";
 import { supabase } from "@/lib/supabase";
 export function ResponsiblePage() {
   const { user } = useAuth();
-  const [cashLimit, setCashLimit] = useState("100"),
+  const [confirm, setConfirm] = useState(false),
     [message, setMessage] = useState(""),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
-  async function accountAction(action: "limit" | "exclude") {
+  async function exclude() {
     if (!user) return;
     setBusy(true);
     setError("");
-    const { error } = await supabase.rpc(
-      action === "limit" ? "lower_loss_limit" : "self_exclude",
-      action === "limit"
-        ? { p_limit: Math.round(Number(cashLimit) * 100) }
-        : {},
-    );
+    const { error } = await supabase.rpc("self_exclude", {});
     if (error) setError(error.message);
     else
       setMessage(
-        action === "limit"
-          ? "Cash loss limit lowered."
-          : "Account excluded for at least 30 days. This cannot be undone in the app.",
+        "Account excluded for at least 30 days. This cannot be undone in the app.",
       );
     setBusy(false);
   }
@@ -39,46 +32,28 @@ export function ResponsiblePage() {
         <article className="panel">
           <h2>Account protection</h2>
           <p>
-            Daily cash loss limits can only be lowered here. Exclusion lasts at
-            least 30 days and blocks new wagers on every game. Existing rounds
-            can still settle.
+            Self-exclusion lasts at least 30 days and blocks new wagers on every
+            game. Existing rounds can still settle.
           </p>
-          <label>
-            Daily loss limit (USD)
+          <label className="check">
             <input
-              type="number"
-              min="1"
-              step="1"
-              value={cashLimit}
-              onChange={(e) => setCashLimit(e.target.value)}
+              type="checkbox"
+              checked={confirm}
+              onChange={(e) => setConfirm(e.target.checked)}
             />
+            <span>Exclude my account for 30 days.</span>
           </label>
           <button
-            className="button secondary"
-            disabled={
-              busy ||
-              !Number.isFinite(Number(cashLimit)) ||
-              Number(cashLimit) < 1
-            }
-            onClick={() => void accountAction("limit")}
+            className="button danger"
+            disabled={busy || !confirm}
+            onClick={() => void exclude()}
           >
-            Lower cash limit
+            Confirm 30-day account exclusion
           </button>
-          <details>
-            <summary>Exclude my account for 30 days</summary>
-            <p>This action cannot be reversed through the app.</p>
-            <button
-              className="button danger"
-              disabled={busy}
-              onClick={() => void accountAction("exclude")}
-            >
-              Confirm 30-day account exclusion
-            </button>
-          </details>
         </article>
       ) : (
         <Link className="button primary" to="/sign-in">
-          Sign in to manage account limits
+          Sign in to manage your account
         </Link>
       )}
       {message && <p role="status">{message}</p>}

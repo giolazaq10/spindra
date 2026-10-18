@@ -209,7 +209,7 @@ export default function CashGame({ game }: { game: Original }) {
       const text =
         e instanceof Error ? e.message : "Request could not be confirmed";
       const definitive =
-        /Insufficient cash balance|Daily loss limit exceeded|Cash wagering is not enabled|Verified adult account required|Cash play is unavailable|Account is self-excluded|Stake must|Invalid blackjack bets|Action unavailable/.test(
+        /Insufficient cash balance|Cash wagering is not enabled|Verified adult account required|Cash play is unavailable|Account is self-excluded|Stake must|Invalid blackjack bets|Action unavailable/.test(
           text,
         );
       if (definitive) store(null);
@@ -995,7 +995,7 @@ export default function CashGame({ game }: { game: Original }) {
             Returns include stake. Unconfirmed requests retain the same ID on
             retry. Open hands resume after refresh; after 15 minutes blackjack
             stands and completes, while poker folds and returns uncommitted
-            chips. Daily account loss limits apply to all cash games.
+            chips.
           </p>
           {game.mini ? (
             <p>{miniRules(game.mini)}</p>
