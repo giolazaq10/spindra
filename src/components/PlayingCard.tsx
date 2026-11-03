@@ -16,10 +16,12 @@ export default function PlayingCard({
   card,
   hidden = false,
   delay = 0,
+  reveal = false,
 }: {
   card?: Card;
   hidden?: boolean;
   delay?: number;
+  reveal?: boolean;
 }) {
   if (hidden || !card)
     return (
@@ -44,7 +46,9 @@ export default function PlayingCard({
       aria-label={cardLabel(card)}
       style={{ animationDelay: delay + "ms" }}
       className={
-        "playing-card face-up " + (card.suit % 2 === 1 ? "red-card" : "")
+        "playing-card face-up " +
+        (card.suit % 2 === 1 ? "red-card " : "") +
+        (reveal ? "card-reveal" : "")
       }
     >
       <small>

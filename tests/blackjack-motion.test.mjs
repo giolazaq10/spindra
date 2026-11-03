@@ -98,3 +98,40 @@ test("Split cards retain physical identity, and the dealer reveals before drawin
   assert.equal(frames[2].round.view.table.dealer[2].id, "draw");
   assert.equal(frames.at(-1).round.state, "settled");
 });
+
+test("Confirmed side bets remain visible on later hits and natural rounds still deal the hole card face down first", () => {
+  const previous = fixture(
+    [hand([card(5, "a"), card(6, "b")])],
+    [card(10, "up"), null],
+  );
+  previous.view.table.sideResults = [
+    { three: { returned: 120 }, pair: { returned: 0 } },
+  ];
+  const next = fixture(
+    [hand([...previous.view.table.hands[0].cards, card(2, "new")])],
+    previous.view.table.dealer,
+  );
+  next.view.table.sideResults = previous.view.table.sideResults;
+  assert.deepEqual(
+    blackjackMotion(previous, next)[0].round.view.table.sideResults,
+    previous.view.table.sideResults,
+  );
+  const natural = fixture(
+    [hand([card(14, "a"), card(10, "b")])],
+    [card(10, "up"), card(14, "hole")],
+    "settled",
+  );
+  const frames = blackjackMotion(null, natural);
+  assert.ok(
+    frames.some(
+      (f) =>
+        f.round.view.table.dealer.length === 2 &&
+        f.round.view.table.dealer[1] === null,
+    ),
+  );
+  const revealed = frames.findIndex(
+    (f) => f.round.view.table.dealer[1]?.id === "hole",
+  );
+  assert.ok(revealed > 0);
+  assert.equal(frames[revealed - 1].round.view.table.dealer[1], null);
+});

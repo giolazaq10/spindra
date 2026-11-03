@@ -23,6 +23,8 @@ import BlackjackBetting from "./BlackjackBetting";
 import type { SeatBet, SideResult } from "@/lib/blackjack";
 import BlackjackRules from "./BlackjackRules";
 import BlackjackResults from "./BlackjackResults";
+import BlackjackSettlement from "./BlackjackSettlement";
+import { blackjackBreakdown } from "../lib/blackjackBreakdown";
 import { blackjackMotion } from "./blackjackMotion";
 import SlotRules from "./SlotRules";
 
@@ -124,7 +126,16 @@ export default function CashGame({ game }: { game: Original }) {
         if (!active) return;
         setEligible(status.enabled === true);
         acceptServerBalance(status.balance_minor);
-        if (status.active) setRound(status.active);
+        if (status.active) {
+          setRound(status.active);
+          if (
+            status.active.game === game.slug &&
+            status.active.view.table?.bets
+          ) {
+            setBlackjackBets(status.active.view.table.bets);
+            setPreviousBlackjackBets(status.active.view.table.bets);
+          }
+        }
         if (status.reason) setMessage(status.reason);
         const saved = sessionStorage.getItem(storageKey);
         if (saved) {
@@ -158,7 +169,7 @@ export default function CashGame({ game }: { game: Original }) {
       alive.current = false;
       dealTimers.current.forEach(clearTimeout);
     };
-  }, [storageKey, acceptServerBalance]);
+  }, [storageKey, acceptServerBalance, game.slug]);
   function store(p: Pending | null) {
     if (p) sessionStorage.setItem(storageKey, JSON.stringify(p));
     else sessionStorage.removeItem(storageKey);
@@ -323,6 +334,8 @@ export default function CashGame({ game }: { game: Original }) {
   );
   const insuranceTotal =
     table?.bets?.reduce((sum, b) => sum + b.main / 2, 0) || 0;
+  const bjResult =
+    game.kind === "blackjack" && !busy ? blackjackBreakdown(round) : null;
   const actionStake = table?.hands?.[table.active ?? 0]?.bet || 0;
   const pokerPlayers =
     table?.players ||
@@ -538,7 +551,26 @@ export default function CashGame({ game }: { game: Original }) {
               </>
             ) : game.kind === "blackjack" ? (
               <>
-                <h2>Multihand blackjack</h2>
+                <header className="bj-cash-heading">
+                  <div>
+                    <small>SPINDRA ORIGINALS</small>
+                    <h2>Noir Blackjack</h2>
+                  </div>
+                  <span role="status" className="bj-table-state">
+                    {busy
+                      ? table?.phase === "dealing"
+                        ? "Dealing cards…"
+                        : "Confirming action…"
+                      : active
+                        ? table?.phase === "insurance"
+                          ? "Insurance offered"
+                          : "Your turn · Hand " +
+                            ((table?.hands?.[table.active ?? 0]?.seat ?? 0) + 1)
+                        : round?.state === "settled"
+                          ? "Round complete"
+                          : "Place your chips"}
+                  </span>
+                </header>
                 <p className="blackjack-table-rules">
                   Blackjack 3:2 · Dealer hits soft 17 · Insurance 2:1
                 </p>
@@ -551,6 +583,7 @@ export default function CashGame({ game }: { game: Original }) {
                         card={card || undefined}
                         hidden={!card}
                         delay={0}
+                        reveal={i === 1 && !!card}
                       />
                     ))}
                   </div>
@@ -558,45 +591,39 @@ export default function CashGame({ game }: { game: Original }) {
                 <BlackjackBetting
                   bets={active ? table?.bets || blackjackBets : blackjackBets}
                   previous={previousBlackjackBets}
-                  onChange={setBlackjackBets}
+                  onChange={(next) => {
+                    setBlackjackBets(next);
+                    if (round?.state === "settled") setRound(null);
+                  }}
                   balance={wallet.realBalance}
                   disabled={busy || !!pending || active}
                   activeSeat={
-                    active ? table?.hands?.[table.active ?? 0]?.seat : undefined
+                    active && table?.phase === "playing" && !busy
+                      ? table?.hands?.[table.active ?? 0]?.seat
+                      : undefined
                   }
                   renderHand={(seat) => (
                     <div className="blackjack-seat-cards">
                       {table?.hands
                         ?.filter((h) => h.seat === seat)
-                        .map((h) => (
-                          <article
-                            key={h.id}
-                            className={
-                              "cash-hand " +
-                              (table.hands?.[table.active ?? 0]?.id === h.id &&
-                              active
-                                ? "cash-active"
-                                : "")
-                            }
-                          >
-                            <h3>
-                              Your hand {h.seat + 1}
-                              {h.split
-                                ? " · Split " +
-                                  (table
-                                    .hands!.filter(
-                                      (other) => other.seat === h.seat,
-                                    )
-                                    .indexOf(h) +
-                                    1)
-                                : ""}{" "}
-                              · Bet {money(h.bet)}
-                            </h3>
-                            <BlackjackScore
-                              label={
-                                "Your hand " +
-                                (h.seat + 1) +
-                                (h.split
+                        .map((h) => {
+                          const outcome = bjResult?.reconciled
+                            ? bjResult.hands.find((r) => r.id === h.id)
+                            : undefined;
+                          return (
+                            <article
+                              key={h.id}
+                              className={
+                                "cash-hand " +
+                                (table.hands?.[table.active ?? 0]?.id ===
+                                  h.id && active
+                                  ? "cash-active"
+                                  : "")
+                              }
+                            >
+                              <h3>
+                                Your hand {h.seat + 1}
+                                {h.split
                                   ? " · Split " +
                                     (table
                                       .hands!.filter(
@@ -604,24 +631,62 @@ export default function CashGame({ game }: { game: Original }) {
                                       )
                                       .indexOf(h) +
                                       1)
-                                  : "")
-                              }
-                              cards={h.cards}
-                              split={h.split}
-                              surrendered={h.surrendered}
-                              active={
-                                table.hands?.[table.active ?? 0]?.id === h.id &&
-                                active &&
-                                table.phase === "playing"
-                              }
-                            />
-                            <div className="cash-cards">
-                              {h.cards.map((card, j) => (
-                                <PlayingCard key={j} card={card} delay={0} />
-                              ))}
-                            </div>
-                          </article>
-                        ))}
+                                  : ""}{" "}
+                                · Bet {money(h.bet)}
+                              </h3>
+                              <BlackjackScore
+                                label={
+                                  h.split
+                                    ? "Split " +
+                                      ((table.hands
+                                        ?.filter(
+                                          (other) => other.seat === h.seat,
+                                        )
+                                        .indexOf(h) || 0) +
+                                        1)
+                                    : "Total"
+                                }
+                                cards={h.cards}
+                                split={h.split}
+                                surrendered={h.surrendered}
+                                active={
+                                  table.hands?.[table.active ?? 0]?.id ===
+                                    h.id &&
+                                  active &&
+                                  table.phase === "playing"
+                                }
+                              />
+                              <div className="cash-cards">
+                                {h.cards.map((card, j) => (
+                                  <PlayingCard key={j} card={card} delay={0} />
+                                ))}
+                              </div>
+                              {outcome ? (
+                                <div
+                                  className={
+                                    "bj-main-verdict " +
+                                    (outcome.net > 0
+                                      ? "verdict-win"
+                                      : outcome.net < 0
+                                        ? "verdict-loss"
+                                        : "verdict-push")
+                                  }
+                                >
+                                  <b>{outcome.outcome}</b>
+                                  <span>
+                                    Staked {money(outcome.stake)} · Returned{" "}
+                                    {money(outcome.returned)}
+                                  </span>
+                                </div>
+                              ) : (
+                                <div
+                                  className="bj-verdict-space"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </article>
+                          );
+                        })}
                     </div>
                   )}
                 />
@@ -629,11 +694,16 @@ export default function CashGame({ game }: { game: Original }) {
                   {!active && dealButton}
                   {table?.sideResults &&
                     table.bets?.some((b) => b.three || b.pair) && (
-                      <details
+                      <section
                         className="blackjack-side-results"
                         aria-label="Side bet results"
                       >
-                        <summary>Side bet results</summary>
+                        <h3>
+                          Side bet results{" "}
+                          <small>
+                            {active ? "Paid when round ends" : "Final returns"}
+                          </small>
+                        </h3>
                         {table.sideResults.map((result, seat) => (
                           <div key={seat}>
                             {(["three", "pair"] as const)
@@ -650,7 +720,7 @@ export default function CashGame({ game }: { game: Original }) {
                                     {result[kind].name} ·{" "}
                                     {result[kind].returned
                                       ? "Return " + money(result[kind].returned)
-                                      : "No win"}
+                                      : "Returned $0.00"}
                                     {active && result[kind].returned > 0
                                       ? " · paid at round end"
                                       : ""}
@@ -659,7 +729,7 @@ export default function CashGame({ game }: { game: Original }) {
                               ))}
                           </div>
                         ))}
-                      </details>
+                      </section>
                     )}
                   {active && table?.phase === "insurance" ? (
                     <>
@@ -958,16 +1028,20 @@ export default function CashGame({ game }: { game: Original }) {
                 {dealButton}
               </div>
             )}
-            {round?.state === "settled" && !busy && (
-              <BlackjackResults
-                compact
-                key={round.id + ":" + round.revision}
-                round={{
-                  totalStake: round.view.stake_minor,
-                  returned: round.view.returned_minor,
-                }}
-              />
-            )}
+            {round?.state === "settled" &&
+              !busy &&
+              (game.kind === "blackjack" ? (
+                <BlackjackSettlement round={round} />
+              ) : (
+                <BlackjackResults
+                  compact
+                  key={round.id + ":" + round.revision}
+                  round={{
+                    totalStake: round.view.stake_minor,
+                    returned: round.view.returned_minor,
+                  }}
+                />
+              ))}
           </div>
           {active && (
             <button

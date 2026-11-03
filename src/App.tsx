@@ -13,6 +13,7 @@ import Footer from "@/components/Footer";
 import HomePage from "@/pages/HomePage";
 import "./extension.css";
 import "./components/cash-game.css";
+import "./components/blackjack-cash.css";
 import "./components/minigames.css";
 import './components/premium-slots.css';
 import RouteBoundary from "@/components/RouteBoundary";
