@@ -1,0 +1,33 @@
+{
+  "projectId": "71973238",
+  "functions": {
+    "cash-games": {
+      "hasChanged": false,
+      "hash": "718fdf543f20e32fec8b5d2049a7f915d1bf303fbc05afabaa23c22551b67cfe7cb3806c5e44e7631e42f6318867073e96d54ce3703f9645b08b26fa9b336802"
+    },
+    "crypto-deposit": {
+      "hasChanged": false,
+      "hash": "f627f7ffdefa3cb76c0b5c52ba7375fb0601ce15d7c58a41c4cbad1840954a3f"
+    },
+    "game-launch": {
+      "hasChanged": false,
+      "hash": "17ff3e5611900e0c43b7f956b2e05fab2b88f2ef5e714311c49fcecaffa6fbd6"
+    },
+    "nowpayments-ipn": {
+      "hasChanged": false,
+      "hash": "caa67cf86c43ebfcec3b994d3f01f77eafed9d971960803a1d9a29a2457dd3b27cb3806c5e44e7631e42f6318867073e96d54ce3703f9645b08b26fa9b336802"
+    },
+    "provider-callback": {
+      "hasChanged": false,
+      "hash": "41c3104c138fed45166c8cff6f93cc80af96133c4d14eefccb23defe74938073"
+    },
+    "wallet-api": {
+      "hasChanged": false,
+      "hash": "7aaa8aa5e4ac0524173f40cb0458394c0dbc3b881d395b542b912993e18a97597cb3806c5e44e7631e42f6318867073e96d54ce3703f9645b08b26fa9b336802"
+    },
+    "wallet-worker": {
+      "hasChanged": false,
+      "hash": "437f1465b13590cc56ed227a66de99f3601590bc78d7a987c061615c70c75d0b7cb3806c5e44e7631e42f6318867073e96d54ce3703f9645b08b26fa9b336802"
+    }
+  }
+}

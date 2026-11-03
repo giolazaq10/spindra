@@ -9,7 +9,6 @@ import {
   type CashEvent,
 } from "@/lib/walletApi";
 import CashOperations from "@/components/CashOperations";
-import AccountSecurity from "@/components/AccountSecurity";
 import "../bank.css";
 type Player = {
   id: string;
@@ -148,16 +147,13 @@ export default function AdminPage() {
       </div>
       {error && (
         <p role="alert" className="error">
-          {error === "MFA_REQUIRED"
-            ? "Verify your authenticator to unlock admin controls."
-            : error}
+          {error}
         </p>
       )}
       {message && <p role="status">{message}</p>}
-      <AccountSecurity onVerified={() => void refresh()} />
       {!data ? (
         <p className="muted">
-          Verify two-factor authentication, then load the dashboard.
+          Use Refresh dashboard to load the latest data.
         </p>
       ) : (
         <>

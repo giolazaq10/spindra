@@ -62,7 +62,6 @@ export async function authenticate(req: Request) {
 }
 export async function admin(req: Request) {
   const auth = await authenticate(req);
-  if (auth.aal !== "aal2") throw new Error("MFA_REQUIRED");
   const { data, error } = await db()
     .from("admin_roles")
     .select("role")

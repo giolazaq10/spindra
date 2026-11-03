@@ -1,11 +1,7 @@
 import { useState } from "react";
 import QRCode from "@/lib/vendor/qr-code.js";
 import { supabase } from "@/lib/supabase";
-export default function AccountSecurity({
-  onVerified,
-}: {
-  onVerified?: () => void;
-}) {
+export default function AccountSecurity() {
   const [factor, setFactor] = useState(""),
     [qr, setQr] = useState(""),
     [code, setCode] = useState(""),
@@ -53,7 +49,6 @@ export default function AccountSecurity({
       setFactor("");
       setCode("");
       setMessage("Two-factor authentication verified for this session.");
-      onVerified?.();
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Verification failed");
     } finally {
@@ -63,7 +58,7 @@ export default function AccountSecurity({
   return (
     <div className="bank-security">
       <h3>Two-factor security</h3>
-      <p>Required for withdrawals and admin controls.</p>
+      <p>Required for withdrawals.</p>
       {message && <p role="status">{message}</p>}
       {qr && (
         <img
