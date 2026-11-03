@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { slotLook } from "../lib/slotPresentation";
 import type { PremiumKind } from "@/lib/premiumSlots";
 import { vaultCoinPays } from "@/lib/premiumSlots";
 export function PremiumBackdrop({ kind }: { kind: PremiumKind }) {
@@ -405,15 +406,43 @@ export function PremiumCover({
   name: string;
   feature: string;
 }) {
+  const look = slotLook(
+    kind === "cascade" ? "astral" : kind === "vault" ? "foundry" : "motor",
+  );
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="1000"
-      height="650"
-      viewBox="0 0 1000 650"
+      height="750"
+      viewBox="0 0 1000 750"
     >
+      <defs>
+        <radialGradient id="premium-cover-halo">
+          <stop stopColor={look.primary} stopOpacity=".65" />
+          <stop offset="1" stopColor={look.secondary} stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="premium-title" x2="0" y2="1">
+          <stop stopColor="#fff" />
+          <stop offset="1" stopColor={look.primary} />
+        </linearGradient>
+      </defs>
+      <rect width="1000" height="650" fill={look.deep} />
       <PremiumBackdrop kind={kind} />
-      <rect y="390" width="1000" height="260" fill="#0b111c" opacity=".83" />
+      <ellipse
+        cx="500"
+        cy="240"
+        rx="480"
+        ry="330"
+        fill="url(#premium-cover-halo)"
+      />
+      <path
+        d="M35 145V35H240M760 35H965V145M35 605V715H240M760 715H965V605"
+        fill="none"
+        stroke={look.primary}
+        strokeWidth="2"
+        opacity=".6"
+      />
+      <rect y="420" width="1000" height="330" fill="#0b111c" opacity=".83" />
       {[0, 1, 2].map((i) => (
         <svg
           key={i}
@@ -440,7 +469,7 @@ export function PremiumCover({
       <text
         x="45"
         y="58"
-        fill="#e9f2dc"
+        fill={look.primary}
         fontSize="17"
         letterSpacing="6"
         fontFamily="sans-serif"
@@ -449,9 +478,9 @@ export function PremiumCover({
       </text>
       <text
         x="500"
-        y="470"
+        y="510"
         textAnchor="middle"
-        fill="#fff2cc"
+        fill="url(#premium-title)"
         fontSize="68"
         fontWeight="bold"
         fontFamily="Georgia,serif"
@@ -460,7 +489,7 @@ export function PremiumCover({
       </text>
       <text
         x="500"
-        y="531"
+        y="572"
         textAnchor="middle"
         fill="#b9e6de"
         fontSize="21"
@@ -470,14 +499,18 @@ export function PremiumCover({
       </text>
       <text
         x="500"
-        y="586"
+        y="644"
         textAnchor="middle"
         fill="#c4cbd6"
         fontSize="15"
         letterSpacing="4"
         fontFamily="sans-serif"
       >
-        ORIGINAL ART · DISTINCT MECHANICS
+        {kind === "cascade"
+          ? "CELESTIAL CASCADES · UP TO 3×"
+          : kind === "vault"
+            ? "LOCK COINS · RESET RESPINS"
+            : "WILD GEAR · UP TO 5× BOOST"}
       </text>
     </svg>
   );

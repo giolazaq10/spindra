@@ -56,7 +56,7 @@ export const games: Game[] = originals.map((g, i) => {
     provider_id: provider.id,
     category_id: g.kind,
     image_url: g.slot
-      ? "/originals/" + g.slug + ".svg"
+      ? "/originals/" + g.slug + ".svg?v=2"
       : "data:image/svg+xml," + encodeURIComponent(image),
     rtp:
       g.kind === "slots"

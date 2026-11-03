@@ -7,6 +7,7 @@ import AnimatedCredits from "./AnimatedCredits";
 import { credits } from "../lib/money";
 import type { Controls } from "./OriginalGame";
 import GameControls from "./GameControls";
+import { slotLook, slotThemeVars } from "../lib/slotPresentation";
 import { SlotScenery, SlotSymbol } from "./SlotArt";
 const ReelSymbol = memo(SlotSymbol);
 export default function AdvancedSlots({
@@ -105,9 +106,19 @@ export default function AdvancedSlots({
     s.mode === "ways" ? s.rows ** s.reels + " WAYS" : s.lines.length + " LINES";
   return (
     <div
-      className={"advanced-slot distinct-slot scene-" + s.scene}
+      className={
+        "advanced-slot distinct-slot slot-polished family-" +
+        slotLook(s.scene).family +
+        " scene-" +
+        s.scene +
+        (spinning ? " slot-in-motion" : "")
+      }
       style={
-        { "--slot-reels": s.reels, "--slot-rows": s.rows } as CSSProperties
+        {
+          ...slotThemeVars(s.scene),
+          "--slot-reels": s.reels,
+          "--slot-rows": s.rows,
+        } as CSSProperties
       }
     >
       <SlotScenery scene={s.scene} />
@@ -120,7 +131,7 @@ export default function AdvancedSlots({
       <div className="cabinet-heading">
         <span className="cabinet-mark">{game.emblem}</span>
         <div>
-          <small>SPINDRA ORIGINALS</small>
+          <small>SPINDRA ORIGINALS · {slotLook(s.scene).label}</small>
           <h2>{game.name}</h2>
         </div>
         <span className="cabinet-badge">

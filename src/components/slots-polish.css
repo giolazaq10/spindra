@@ -1,0 +1,636 @@
+/* A shared finish with individual palettes and cabinet silhouettes. */
+.spindra-extension .slot-polished {
+  isolation: isolate;
+  --slot-primary: #ffca43;
+  --slot-secondary: #ff774b;
+  --slot-deep: #221b3e;
+  --slot-paper: #fff2d4;
+  --slot-ink: #282644;
+}
+.spindra-extension .distinct-slot.slot-polished {
+  border: 1px solid color-mix(in srgb, var(--slot-primary) 65%, transparent);
+  border-radius: 28px;
+  padding: 24px;
+  background:
+    radial-gradient(
+      ellipse at 12% 0%,
+      color-mix(in srgb, var(--slot-primary) 28%, transparent),
+      transparent 56%
+    ),
+    radial-gradient(
+      ellipse at 100% 50%,
+      color-mix(in srgb, var(--slot-secondary) 25%, transparent),
+      transparent 65%
+    ),
+    var(--slot-deep);
+  box-shadow:
+    0 18px 52px #0005,
+    inset 0 1px #fff3;
+}
+.spindra-extension .slot-polished .slot-scenery {
+  opacity: 0.72;
+  pointer-events: none;
+}
+.spindra-extension .slot-polished .scene-overlay {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--slot-deep) 25%, transparent),
+    transparent 45%,
+    var(--slot-deep)
+  );
+}
+.spindra-extension .slot-polished .cabinet-heading {
+  position: relative;
+  min-height: 90px;
+  gap: 16px;
+  margin: 0 0 14px;
+}
+.spindra-extension .slot-polished .cabinet-heading h2 {
+  font-size: clamp(28px, 4.5vw, 48px);
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin: 8px 0;
+  color: #fff;
+  text-shadow:
+    0 3px 0 var(--slot-deep),
+    0 5px 14px #0006;
+}
+.spindra-extension .slot-polished .cabinet-heading small {
+  color: color-mix(in srgb, var(--slot-primary) 65%, white);
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+.spindra-extension .slot-polished .cabinet-mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--slot-primary) 28%, var(--slot-deep)),
+    var(--slot-deep)
+  );
+  border: 1px solid var(--slot-primary);
+  color: var(--slot-primary);
+  font-size: 36px;
+  box-shadow: inset 0 1px #fff4;
+  filter: none;
+}
+.spindra-extension .slot-polished .cabinet-badge {
+  padding: 10px 13px;
+  background: color-mix(in srgb, var(--slot-deep) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--slot-primary) 65%, transparent);
+  border-radius: 14px;
+  color: #f7f4ff;
+  font-size: 10px;
+  line-height: 1.6;
+  box-shadow: inset 0 1px #fff2;
+}
+.spindra-extension .slot-polished .mechanic-banner {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: color-mix(in srgb, var(--slot-deep) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--slot-secondary) 45%, transparent);
+  border-radius: 12px;
+  padding: 11px 15px;
+  color: #fff;
+  font-size: 12px;
+}
+.spindra-extension .slot-polished .mechanic-banner b {
+  color: color-mix(in srgb, var(--slot-primary) 70%, white);
+}
+.spindra-extension .slot-polished .mechanic-banner span {
+  color: #e7e6fa;
+  font-size: 10px;
+}
+.spindra-extension .slot-polished .slot-marquee {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 40px;
+  margin: 5px 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #f3f0ff;
+  text-shadow: 0 1px 3px #000b;
+}
+.spindra-extension .slot-polished .reel-cabinet {
+  position: relative;
+  border-radius: 22px;
+  padding: 8px;
+  background: linear-gradient(
+    130deg,
+    #fff6,
+    var(--slot-primary) 20%,
+    color-mix(in srgb, var(--slot-primary) 45%, var(--slot-deep)) 48%,
+    var(--slot-secondary) 75%,
+    #fff9
+  );
+  border: 1px solid color-mix(in srgb, var(--slot-primary) 75%, white);
+  box-shadow:
+    inset 0 2px 2px #fff7,
+    0 12px 24px #0005;
+}
+.spindra-extension .slot-polished .advanced-reels {
+  --cell-height: 112px;
+  border: 2px solid var(--slot-deep);
+  border-radius: 15px;
+  background: var(--slot-deep);
+  gap: 3px;
+  box-shadow: inset 0 0 20px #0002;
+}
+.spindra-extension .slot-polished .advanced-reel {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--slot-paper) 90%, var(--slot-deep)),
+    var(--slot-paper) 15%,
+    var(--slot-paper) 85%,
+    color-mix(in srgb, var(--slot-paper) 90%, var(--slot-deep))
+  );
+}
+.spindra-extension .slot-polished .advanced-reel:after {
+  background: linear-gradient(
+    var(--slot-deep),
+    transparent 12%,
+    transparent 88%,
+    var(--slot-deep)
+  );
+  opacity: 0.16;
+}
+.spindra-extension .slot-polished .symbol-cell {
+  border-bottom: 1px solid color-mix(in srgb, var(--slot-ink) 9%, transparent);
+  position: relative;
+}
+.spindra-extension .slot-polished .illustrated-symbol {
+  height: 100%;
+  width: 100%;
+  padding: 4px 2px 14px;
+  box-sizing: border-box;
+  filter: none;
+  position: relative;
+}
+.spindra-extension .slot-polished .illustrated-symbol .symbol-frame {
+  position: relative;
+  inset: auto;
+  height: calc(100% - 2px);
+  max-height: 94px;
+  width: auto;
+  max-width: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 2px 1px #0002);
+}
+.spindra-extension .slot-polished .symbol-name {
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  right: 3px;
+  display: block;
+  text-align: center;
+  font-size: 9px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.35px;
+  text-transform: uppercase;
+  color: var(--slot-ink);
+  background: none;
+  text-shadow: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spindra-extension .slot-polished .scatter-symbol .symbol-name {
+  color: #362012;
+  background: #ffe17c;
+  border: 1px solid #be8b27;
+  border-radius: 10px;
+  padding: 2px 4px;
+  bottom: 1px;
+}
+.spindra-extension .slot-polished .symbol-winning {
+  background: color-mix(in srgb, var(--slot-primary) 32%, var(--slot-paper));
+  box-shadow: inset 0 0 0 2px var(--slot-primary);
+}
+.spindra-extension .slot-polished .symbol-winning .symbol-frame {
+  animation: polished-symbol-win 700ms ease-in-out 2;
+}
+.spindra-extension .slot-polished .reel-moving .symbol-frame {
+  filter: none;
+}
+.spindra-extension .slot-polished .slot-console {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 88px;
+  align-items: center;
+  min-height: 104px;
+  gap: 14px;
+  margin: 14px 0 0;
+  padding: 12px 18px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--slot-primary) 45%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--slot-deep) 85%, #080f23),
+    #0c1428ed
+  );
+  box-shadow: inset 0 1px #ffffff16;
+}
+.spindra-extension .slot-polished .slot-console small {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #c5d3ed;
+}
+.spindra-extension .slot-polished .slot-console b {
+  font-size: clamp(18px, 2.7vw, 27px);
+  color: #fff4d5;
+  text-shadow: none;
+}
+.spindra-extension .slot-polished .spin-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  position: relative;
+  inset: auto;
+  width: 78px;
+  height: 78px;
+  min-width: 78px;
+  min-height: 78px;
+  transform: none;
+  margin: 0;
+  align-self: center;
+  justify-self: end;
+  border: 3px solid #fff5;
+  border-radius: 50%;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--slot-primary) 75%, white),
+    var(--slot-primary) 55%,
+    color-mix(in srgb, var(--slot-primary) 70%, var(--slot-deep))
+  );
+  color: #182238;
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--slot-primary) 38%, var(--slot-deep)),
+    0 6px 15px #0006,
+    inset 0 2px #fff8;
+  transition:
+    filter 150ms,
+    box-shadow 150ms;
+}
+.spindra-extension .slot-polished .spin-control span {
+  font-weight: 900;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.spindra-extension .slot-polished .spin-control:not(:disabled):hover {
+  filter: brightness(1.1);
+  transform: none;
+}
+.spindra-extension .slot-polished .spin-control:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+.spindra-extension .slot-polished .integrated-controls {
+  position: relative;
+  margin-top: 10px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid #a9bddb40;
+  background: #0b1429ed;
+  gap: 12px;
+  color: #fff;
+}
+.spindra-extension .slot-polished .integrated-controls small {
+  color: #c5d3ed;
+  font-size: 9px;
+  letter-spacing: 0.8px;
+}
+.spindra-extension .slot-polished .integrated-controls strong {
+  color: #fff;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.spindra-extension .slot-polished .stake-dial select {
+  background: #182840;
+  border: 1px solid #69809e;
+  color: #fff;
+  font-weight: 800;
+  border-radius: 9px;
+  min-height: 36px;
+}
+.spindra-extension .slot-polished .stake-dial button,
+.spindra-extension .slot-polished .cabinet-rules {
+  background: #182840;
+  border: 1px solid #69809e;
+  color: #e8f0ff;
+  border-radius: 9px;
+  min-height: 36px;
+}
+.spindra-extension .slot-polished .cabinet-status {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #c7d6e9;
+}
+.spindra-extension .slot-polished .win-celebration {
+  border-radius: 15px;
+  background: radial-gradient(ellipse, #10152ac9, transparent 72%);
+  pointer-events: none;
+}
+.spindra-extension .slot-polished .win-celebration strong {
+  color: #ffe88f;
+  text-shadow:
+    0 3px #6d3d25,
+    0 0 20px #ffdc7a88;
+  font-size: clamp(21px, 4vw, 46px);
+  letter-spacing: 1px;
+}
+.spindra-extension .slot-polished .win-celebration > span {
+  font-size: clamp(27px, 5vw, 54px);
+  color: white;
+}
+.spindra-extension .slot-polished.family-neon .cabinet-heading h2 {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--slot-primary);
+  text-shadow:
+    2px 2px var(--slot-deep),
+    0 0 20px color-mix(in srgb, var(--slot-primary) 35%, transparent);
+}
+.spindra-extension .slot-polished.family-neon .reel-cabinet {
+  border-radius: 16px;
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--slot-primary) 22%, transparent),
+    inset 0 1px #fff8;
+}
+.spindra-extension .slot-polished.family-botanical .cabinet-heading h2,
+.spindra-extension .slot-polished.family-treasure .cabinet-heading h2 {
+  font-family: Georgia, serif;
+  font-style: italic;
+}
+.spindra-extension .slot-polished.family-botanical .reel-cabinet {
+  border-radius: 30px 12px 30px 12px;
+}
+.spindra-extension .slot-polished.family-frost .reel-cabinet {
+  border-radius: 28px 28px 12px 12px;
+}
+.spindra-extension .slot-polished.family-candy .cabinet-heading h2 {
+  color: #fff0ff;
+  text-shadow:
+    0 3px #a74692,
+    2px 5px #3c235a;
+  font-family: Georgia, serif;
+}
+.spindra-extension .slot-polished.family-candy .reel-cabinet {
+  background: repeating-linear-gradient(
+    135deg,
+    #ffe4f4 0 16px,
+    var(--slot-primary) 16px 32px,
+    var(--slot-secondary) 32px 48px
+  );
+  border-radius: 28px;
+}
+.spindra-extension .slot-polished.family-sunlit .cabinet-heading h2 {
+  color: #fff1c1;
+}
+.spindra-extension .slot-polished.slot-in-motion .scene-particles i,
+.spindra-extension .slot-polished.slot-in-motion .storm-bolt,
+.spindra-extension .slot-polished.slot-in-motion .pirate-vessel,
+.spindra-extension .slot-polished.slot-in-motion .aurora-curtain {
+  animation-play-state: paused;
+}
+.spindra-extension .premium-slot.slot-polished {
+  border-color: var(--slot-primary);
+  background:
+    radial-gradient(
+      ellipse at 10% 0%,
+      color-mix(in srgb, var(--slot-primary) 34%, transparent),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse at 95% 80%,
+      color-mix(in srgb, var(--slot-secondary) 20%, transparent),
+      transparent 60%
+    ),
+    var(--slot-deep);
+  box-shadow:
+    0 18px 52px #0005,
+    inset 0 1px #fff3;
+}
+.spindra-extension .slot-polished .premium-backdrop {
+  opacity: 0.8;
+}
+.spindra-extension .slot-polished .premium-heading h2 {
+  font-weight: 900;
+  color: #fff4ea;
+  text-shadow:
+    0 3px 0 var(--slot-deep),
+    0 0 25px color-mix(in srgb, var(--slot-primary) 30%, transparent);
+}
+.spindra-extension .slot-polished .signature-seal {
+  border-color: var(--slot-primary);
+  border-radius: 18px;
+  color: var(--slot-primary);
+  background: color-mix(in srgb, var(--slot-deep) 88%, transparent);
+  font-weight: 800;
+}
+.spindra-extension .slot-polished .premium-feature-bar {
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--slot-primary) 45%, transparent);
+  border-radius: 12px;
+  background: #10172e99;
+  color: #fff0d5;
+}
+.spindra-extension .slot-polished.premium-cascade .signature-cabinet {
+  background: linear-gradient(145deg, #c7adff, #6ff1e2 52%, #7855be);
+  border-color: #d3c4ff;
+  padding: 7px;
+  box-shadow: 0 0 24px #c9a3ff22;
+}
+.spindra-extension .slot-polished.premium-cascade .signature-cell {
+  background: radial-gradient(ellipse at 35% 25%, #54467a, #26284b);
+  border: 1px solid #d8c0ff33;
+  box-shadow: inset 0 1px #ffffff24;
+}
+.spindra-extension .slot-polished.premium-cascade .signature-hit {
+  background: radial-gradient(ellipse, #8a63c4, #34315e);
+  border-color: #baffec;
+}
+.spindra-extension .slot-polished.premium-vault .signature-cabinet {
+  border-color: #efc088;
+  background: linear-gradient(145deg, #6e4a3b, #26363c);
+  box-shadow:
+    inset 0 0 25px #fdcf681c,
+    0 8px 25px #0004;
+}
+.spindra-extension .slot-polished.premium-vault .signature-cell {
+  background: radial-gradient(ellipse at top, #45545a, #1a2630);
+  border-color: #bc965e;
+}
+.spindra-extension .slot-polished.premium-nitro .signature-cabinet {
+  background: linear-gradient(135deg, #c3e0d8, #456b68 40%, #deedb7);
+  border-color: #f0f8d4;
+}
+.spindra-extension .slot-polished.premium-nitro .signature-cell {
+  background: linear-gradient(#fff6d9, #fffef3 45%, #e7e6c7);
+}
+.spindra-extension .slot-polished .signature-console {
+  min-height: 104px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 88px;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border: 1px solid color-mix(in srgb, var(--slot-primary) 45%, transparent);
+  border-radius: 18px;
+  background: #0b1429ed;
+}
+.spindra-extension .slot-polished .signature-console > div strong {
+  font-size: clamp(22px, 3vw, 30px);
+  color: #fff1c4;
+}
+.spindra-extension .slot-polished .signature-skip {
+  color: #d1e5ff;
+  border: 1px solid #7895b2;
+  border-radius: 12px;
+  background: #1a2940;
+  height: 48px;
+}
+.spindra-extension .slot-polished .signature-status {
+  color: #f0e8ff;
+  font-size: 12px;
+}
+.spindra-extension .slot-polished button:focus-visible,
+.spindra-extension .slot-polished select:focus-visible {
+  outline: 3px solid #fff3aa;
+  outline-offset: 3px;
+}
+@keyframes polished-symbol-win {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.05);
+  }
+}
+@media (max-width: 650px) {
+  .spindra-extension .distinct-slot.slot-polished,
+  .spindra-extension .premium-slot.slot-polished {
+    padding: 14px;
+    border-radius: 20px;
+  }
+  .spindra-extension .slot-polished .cabinet-heading {
+    gap: 10px;
+    min-height: 74px;
+  }
+  .spindra-extension .slot-polished .cabinet-mark {
+    width: 46px;
+    height: 46px;
+    font-size: 27px;
+    border-radius: 14px;
+  }
+  .spindra-extension .slot-polished .cabinet-heading h2 {
+    font-size: clamp(23px, 5.2vw, 34px);
+    letter-spacing: -0.5px;
+  }
+  .spindra-extension .slot-polished .cabinet-heading small {
+    font-size: 8px;
+    letter-spacing: 0.8px;
+  }
+  .spindra-extension .slot-polished .cabinet-badge {
+    padding: 7px;
+    font-size: 8px;
+  }
+  .spindra-extension .slot-polished .mechanic-banner {
+    padding: 9px 10px;
+    gap: 8px;
+  }
+  .spindra-extension .slot-polished .mechanic-banner b {
+    font-size: 10px;
+  }
+  .spindra-extension .slot-polished .mechanic-banner span {
+    font-size: 8px;
+  }
+  .spindra-extension .slot-polished .advanced-reels {
+    --cell-height: 82px;
+    gap: 2px;
+  }
+  .spindra-extension .slot-polished .reel-cabinet {
+    padding: 5px;
+  }
+  .spindra-extension .slot-polished .illustrated-symbol .symbol-frame {
+    max-height: 66px;
+  }
+  .spindra-extension .slot-polished .symbol-name {
+    font-size: 7px;
+    letter-spacing: 0;
+  }
+  .spindra-extension .slot-polished .illustrated-symbol {
+    padding-bottom: 12px;
+  }
+  .spindra-extension .slot-polished .slot-console,
+  .spindra-extension .slot-polished .signature-console {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 74px;
+    gap: 8px;
+    padding: 10px 12px;
+    min-height: 92px;
+  }
+  .spindra-extension .slot-polished .signature-console {
+    grid-template-columns: minmax(0, 1fr) 46px 74px;
+  }
+  .spindra-extension .slot-polished .spin-control {
+    width: 66px;
+    height: 66px;
+    min-width: 66px;
+    min-height: 66px;
+  }
+  .spindra-extension .slot-polished .slot-console small {
+    font-size: 7px;
+    letter-spacing: 0.4px;
+  }
+  .spindra-extension .slot-polished .slot-console b {
+    font-size: 17px;
+  }
+  .spindra-extension .slot-polished .integrated-controls {
+    padding: 11px;
+    gap: 9px;
+  }
+  .spindra-extension .slot-polished .integrated-controls strong {
+    font-size: 16px;
+  }
+  .spindra-extension .slot-polished .premium-heading h2 {
+    font-size: clamp(27px, 6vw, 40px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .slot-polished .symbol-winning .symbol-frame {
+    animation: none;
+  }
+  .spindra-extension .slot-polished .spin-control {
+    transition: none;
+  }
+}
+
+.spindra-extension .slot-polished .signature-console > div {
+  min-width: 0;
+  overflow: hidden;
+}
+.spindra-extension .slot-polished .signature-console > div strong {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spindra-extension .slot-polished .reel-moving .themed-symbol {
+  filter: none;
+}
+.spindra-extension .slot-polished .reel-stopped .reel-strip {
+  animation-duration: 240ms;
+}
