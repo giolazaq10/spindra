@@ -50,6 +50,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useId, type CSSProperties } from "react";
+import { slotLook } from "../lib/slotPresentation";
 import type { SlotSpec } from "../lib/slotModels";
 const icons: Record<string, LucideIcon> = {
   sun: Sun,
@@ -146,9 +147,14 @@ export function SlotSymbol({ spec, index }: { spec: SlotSpec; index: number }) {
     scatter = index === 7;
   const Icon = icons[spec.icons[scatter ? 0 : index]] || Gem;
   const name = scatter ? spec.scatter!.name : spec.symbolNames[index];
+  const look = slotLook(spec.scene);
   const color = scatter
     ? "#ffcd42"
-    : jewelColors[(index + (sceneTints[spec.scene] || 0)) % 7];
+    : index === 6
+      ? look.primary
+      : index === 5
+        ? look.secondary
+        : jewelColors[(index + (sceneTints[spec.scene] || 0)) % 7];
   return (
     <div
       className={
@@ -162,12 +168,55 @@ export function SlotSymbol({ spec, index }: { spec: SlotSpec; index: number }) {
     >
       <svg className="symbol-frame" viewBox="0 0 100 100" aria-hidden="true">
         <defs>
+          <radialGradient id={id + "-medal"}>
+            <stop stopColor={color} stopOpacity=".35" />
+            <stop offset="1" stopColor={look.deep} stopOpacity=".9" />
+          </radialGradient>
           <linearGradient id={id} x1="0" y1="0" x2=".8" y2="1">
             <stop stopColor="#ffffff" />
             <stop offset=".22" stopColor={color} />
             <stop offset="1" stopColor={color} stopOpacity=".7" />
           </linearGradient>
         </defs>
+        {look.family === "neon" ? (
+          <path
+            d="M28 5H72L94 28V72L72 95H28L6 72V28Z"
+            fill={"url(#" + id + "-medal)"}
+            stroke={color}
+            strokeWidth="1.5"
+          />
+        ) : look.family === "candy" || look.family === "botanical" ? (
+          <path
+            d="M50 7Q69 0 77 18Q99 20 91 43Q104 63 83 75Q79 99 56 91Q34 105 23 83Q0 78 10 55Q-4 34 18 23Q20 2 43 10Z"
+            fill={"url(#" + id + "-medal)"}
+            stroke={color}
+            strokeWidth="1.2"
+          />
+        ) : look.family === "frost" ? (
+          <path
+            d="M50 3L84 17L98 50L84 83L50 97L16 83L2 50L16 17Z"
+            fill={"url(#" + id + "-medal)"}
+            stroke={color}
+            strokeWidth="1.5"
+          />
+        ) : (
+          <circle
+            cx="50"
+            cy="50"
+            r="45"
+            fill={"url(#" + id + "-medal)"}
+            stroke={color}
+            strokeWidth="1.4"
+          />
+        )}
+        <path
+          d="M20 32Q38 9 69 18"
+          fill="none"
+          stroke="#ffffff"
+          strokeOpacity=".65"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
         {index >= 5 && (
           <path
             d="M50 4L62 15L79 12L82 29L96 39L87 54L91 72L73 76L63 93L48 84L30 91L24 75L7 66L16 49L10 31L29 28L35 10Z"
@@ -179,11 +228,21 @@ export function SlotSymbol({ spec, index }: { spec: SlotSpec; index: number }) {
         )}
         <ellipse cx="50" cy="87" rx="28" ry="5" fill="#172243" opacity=".18" />
         <Icon
+          x={index >= 5 ? 23 : 15}
+          y={index >= 5 ? 24 : 14}
+          width={index >= 5 ? 60 : 76}
+          height={index >= 5 ? 60 : 76}
+          color={look.deep}
+          fill={look.deep}
+          strokeWidth="4"
+          opacity=".7"
+        />
+        <Icon
           x={index >= 5 ? 21 : 13}
           y={index >= 5 ? 20 : 10}
           width={index >= 5 ? 60 : 76}
           height={index >= 5 ? 60 : 76}
-          color="#252340"
+          color="#18213f"
           strokeWidth="1.35"
           fill={"url(#" + id + ")"}
         />

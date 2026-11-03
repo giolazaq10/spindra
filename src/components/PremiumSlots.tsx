@@ -8,6 +8,7 @@ import { vaultCoinPays } from "@/lib/premiumSlots";
 import type { Controls } from "./OriginalGame";
 import { PremiumBackdrop, PremiumSymbol } from "./PremiumSlotArt";
 import GameControls from "./GameControls";
+import { slotThemeVars } from "../lib/slotPresentation";
 import { credits } from "@/lib/money";
 import AnimatedCredits from "./AnimatedCredits";
 export type PremiumResult = {
@@ -163,11 +164,12 @@ export default function PremiumSlots({
   return (
     <div
       className={
-        "premium-slot premium-" +
+        "premium-slot slot-polished premium-" +
         kind +
         (playing ? " premium-playing" : "") +
         (playing && stage === 0 ? " premium-spinning" : "")
       }
+      style={slotThemeVars(s.scene) as CSSProperties}
     >
       <PremiumBackdrop kind={kind} />
       <header className="premium-heading">

@@ -16,6 +16,7 @@ import "./components/cash-game.css";
 import "./components/blackjack-cash.css";
 import "./components/minigames.css";
 import './components/premium-slots.css';
+import './components/slots-polish.css';
 import RouteBoundary from "@/components/RouteBoundary";
 import CasinoPage from "@/pages/CasinoPage";
 import AuthPage from "@/pages/AuthPage";
