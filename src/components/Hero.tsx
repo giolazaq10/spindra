@@ -88,9 +88,6 @@ export default function Hero() {
               <div className="text-4xl sm:text-5xl font-extrabold text-gradient-gold tabular-nums tracking-tight">
                 ${jackpot.toLocaleString()}
               </div>
-              <div className="text-xs text-gray-500 mt-2">
-                Illustrative counter
-              </div>
             </div>
 
             {/* CTAs */}
