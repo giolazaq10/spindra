@@ -43,6 +43,7 @@ import useTableMotion from "./useTableMotion";
 import BlackjackResults from "./BlackjackResults";
 import AnimatedCredits from "./AnimatedCredits";
 import BlackjackRules from "./BlackjackRules";
+import "./blackjack-table.css";
 const chips = [100, 200, 500, 1000, 2500, 10000];
 const initialBets = () =>
   Array.from({ length: 5 }, (_, i) => ({
