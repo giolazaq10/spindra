@@ -23,7 +23,7 @@
     },
     "wallet-api": {
       "hasChanged": false,
-      "hash": "7aaa8aa5e4ac0524173f40cb0458394c0dbc3b881d395b542b912993e18a97597cb3806c5e44e7631e42f6318867073e96d54ce3703f9645b08b26fa9b336802"
+      "hash": "3dc27cce1065ec5ac91f5d0cd4576c08fcf80feddefe30adf3538674302c6f4d7cb3806c5e44e7631e42f6318867073e96d54ce3703f9645b08b26fa9b336802"
     },
     "wallet-worker": {
       "hasChanged": false,

@@ -68,9 +68,22 @@ Deno.serve(async (req: Request) => {
         ]);
         if (result.some((r) => r.error))
           throw new Error("Admin data unavailable");
+        const accounts = await db().auth.admin.listUsers({
+          page: 1,
+          perPage: 1000,
+        });
+        if (accounts.error) throw new Error("Admin data unavailable");
         return reply({
           role: a.role,
           players: result[0].data,
+          accounts: accounts.data.users.map((u) => ({
+            id: u.id,
+            email: u.email ?? "",
+            created_at: u.created_at,
+            last_sign_in_at: u.last_sign_in_at ?? null,
+            email_confirmed_at: u.email_confirmed_at ?? null,
+            banned_until: u.banned_until ?? null,
+          })),
           addresses: result[1].data,
           deposits: result[2].data,
           withdrawals: result[3].data,

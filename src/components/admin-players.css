@@ -1,0 +1,202 @@
+.admin-players {
+  display: grid;
+  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: 16px;
+}
+.admin-players-list,
+.admin-player-detail {
+  background: #ffffff06;
+  border: 1px solid #ffffff18;
+  border-radius: 18px;
+  padding: 20px;
+}
+.admin-players-list {
+  position: sticky;
+  top: 96px;
+  max-height: calc(100dvh - 120px);
+  display: flex;
+  flex-direction: column;
+}
+.admin-players-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 0 12px;
+  border: 1px solid #ffffff24;
+  border-radius: 12px;
+  background: #090f21;
+  color: #abb4ce;
+}
+.admin-players-search input {
+  border: 0;
+  margin: 0;
+  padding: 12px 0;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-players-search input:focus {
+  outline: none;
+}
+.admin-players-search:focus-within {
+  border-color: #fbbf2477;
+}
+.admin-player-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  display: grid;
+  gap: 8px;
+}
+.admin-player-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  padding: 12px 14px;
+  text-align: left;
+  border-radius: 12px;
+  border: 1px solid #ffffff1a;
+  background: #ffffff06;
+  color: #f4f5fa;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+.admin-player-row:hover {
+  background: #ffffff0d;
+  transform: translateX(2px);
+}
+.admin-player-row.active {
+  background: #fbbf2420;
+  border-color: #fbbf2477;
+}
+.admin-player-row:focus-visible {
+  outline: 2px solid #fbbf24;
+  outline-offset: 2px;
+}
+.admin-player-name {
+  font-weight: 700;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-player-email {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: #b4bfd5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-player-row .admin-badge {
+  grid-row: 1;
+  grid-column: 2;
+  align-self: center;
+}
+.admin-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: #ffffff14;
+  color: #d4dbee;
+}
+.admin-badge.active {
+  background: #10b98126;
+  color: #6ee7b7;
+}
+.admin-badge.suspended {
+  background: #ef476f26;
+  color: #ffa7b9;
+}
+.admin-player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ffffff18;
+}
+.admin-player-header h2 {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 4px;
+}
+.admin-player-header p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.admin-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.admin-detail-field {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #070d1b;
+  min-width: 0;
+}
+.admin-detail-field dt {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #8a96b3;
+  margin-bottom: 4px;
+}
+.admin-detail-field dd {
+  margin: 0;
+  font-size: 14px;
+  color: #f4f5fa;
+  overflow-wrap: anywhere;
+}
+.admin-player-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.admin-player-owner {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #ffffff18;
+}
+.admin-player-owner h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  color: #d4dbee;
+}
+.admin-player-edit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0 16px;
+}
+.admin-player-edit .admin-player-actions {
+  grid-column: 1 / -1;
+}
+@media (max-width: 900px) {
+  .admin-players {
+    grid-template-columns: 1fr;
+  }
+  .admin-players-list {
+    position: static;
+    max-height: none;
+  }
+  .admin-player-list {
+    max-height: 360px;
+  }
+}

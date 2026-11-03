@@ -9,16 +9,8 @@ import {
   type CashEvent,
 } from "@/lib/walletApi";
 import CashOperations from "@/components/CashOperations";
+import AdminPlayers, { type Account, type Player } from "@/components/AdminPlayers";
 import "../bank.css";
-type Player = {
-  id: string;
-  display_name: string;
-  country: string;
-  date_of_birth: string;
-  account_status: string;
-  kyc_status: string;
-  wallets: { balance_minor: number }[];
-};
 type Settings = {
   deposits_enabled: boolean;
   withdrawals_enabled: boolean;
@@ -29,6 +21,7 @@ type Settings = {
 type Snapshot = {
   role: string;
   players: Player[];
+  accounts: Account[];
   assets: Asset[];
   withdrawals: Withdrawal[];
   ledger: CashEvent[];
@@ -232,114 +225,18 @@ export default function AdminPage() {
               </p>
             </article>
           )}
-          {tab === "players" &&
-            data.players.map((p) => (
-              <article className="panel" key={p.id}>
-                <h3>{p.display_name || p.id}</h3>
-                <code>{p.id}</code>
-                <p>
-                  {p.account_status} · KYC {p.kyc_status} ·{" "}
-                  {p.country || "Country missing"} · born{" "}
-                  {p.date_of_birth || "not recorded"}
-                </p>
-                {write && (
-                  <>
-                    <button
-                      className="button secondary"
-                      disabled={busy}
-                      onClick={() =>
-                        void action("player", p.id, {
-                          account_status:
-                            p.account_status === "active"
-                              ? "suspended"
-                              : "active",
-                          reason: reason(),
-                        })
-                      }
-                    >
-                      Toggle suspension
-                    </button>
-                    <button
-                      className="button secondary"
-                      disabled={busy}
-                      onClick={() => {
-                        const status = window.prompt(
-                          "Verified identity review result: pending, verified, rejected",
-                        );
-                        if (status)
-                          void action("player", p.id, {
-                            kyc_status: status,
-                            reason: reason(),
-                          });
-                      }}
-                    >
-                      Set KYC status
-                    </button>
-                    <button
-                      className="button secondary"
-                      disabled={busy}
-                      onClick={() => {
-                        const dob = window.prompt(
-                          "Verified date of birth (YYYY-MM-DD)",
-                          p.date_of_birth || "",
-                        );
-                        const country = window.prompt(
-                          "Verified two-letter country code",
-                          p.country || "",
-                        );
-                        if (dob && country)
-                          void action("player", p.id, {
-                            date_of_birth: dob,
-                            country: country.toUpperCase(),
-                            reason: reason(),
-                          });
-                      }}
-                    >
-                      Record verified identity details
-                    </button>
-                  </>
-                )}
-                {owner && (
-                  <>
-                    <button
-                      className="button secondary"
-                      disabled={busy}
-                      onClick={() => {
-                        const delta = window.prompt(
-                          "Cash adjustment in USD; negative to debit.",
-                        );
-                        if (delta && /^-?\d+(\.\d{1,2})?$/.test(delta))
-                          void action("balance_adjustment", p.id, {
-                            delta_minor: Math.round(Number(delta) * 100),
-                            request_key: crypto.randomUUID(),
-                            reason: reason(),
-                          });
-                      }}
-                    >
-                      Audited cash adjustment
-                    </button>
-                    <button
-                      className="button secondary"
-                      disabled={busy}
-                      onClick={() => {
-                        const r = window.prompt(
-                          "Role: owner, operator, support, none",
-                          data.roles.find((r) => r.user_id === p.id)?.role ||
-                            "none",
-                        );
-                        if (r)
-                          void action("role", p.id, {
-                            role: r,
-                            reason: reason(),
-                          });
-                      }}
-                    >
-                      Manage admin role
-                    </button>
-                  </>
-                )}
-              </article>
-            ))}
+          {tab === "players" && (
+            <AdminPlayers
+              players={data.players}
+              accounts={data.accounts}
+              roles={data.roles}
+              owner={owner}
+              write={write}
+              busy={busy}
+              onAction={action}
+              askReason={reason}
+            />
+          )}
           {tab === "withdrawals" && (
             <>
               <p className="muted">
