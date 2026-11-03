@@ -397,7 +397,7 @@ test("Cash blackjack submits independent chip bets for each seat and shows side 
     ]);
     assert.equal(screen.queryByLabelText("Side bet results"), null);
     await act(async () => {
-      t.mock.timers.tick(2300);
+      t.mock.timers.tick(2500);
     });
     assert.ok(screen.getByLabelText("Side bet results"));
     assert.match(

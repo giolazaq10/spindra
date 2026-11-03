@@ -1,0 +1,425 @@
+/* Styles for the authenticated cash table, independent of the legacy table. */
+.spindra-extension .cash-blackjack {
+  background: radial-gradient(
+    ellipse at 50% 25%,
+    #214860,
+    #142c43 65%,
+    #101d30
+  );
+  border: 1px solid #4a6580;
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow:
+    inset 0 0 0 7px #0a17265c,
+    0 18px 45px #0003;
+}
+.spindra-extension .cash-blackjack .bj-cash-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px 8px;
+}
+.spindra-extension .cash-blackjack .bj-cash-heading small {
+  color: #b0c4d9;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+.spindra-extension .cash-blackjack .bj-cash-heading h2 {
+  margin: 4px 0 0;
+  font-size: 23px;
+  text-align: left;
+  color: #fff;
+}
+.spindra-extension .cash-blackjack .bj-table-state {
+  font-size: 12px;
+  color: #ffe2a0;
+  background: #0b1b2c;
+  padding: 9px 14px;
+  border: 1px solid #7e7252;
+  border-radius: 30px;
+  white-space: nowrap;
+}
+.spindra-extension .cash-blackjack .blackjack-table-rules {
+  color: #b7c9d9;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  margin: 4px 0 10px;
+}
+.spindra-extension .cash-blackjack .blackjack-dealer {
+  padding: 8px 0 14px;
+  min-height: 145px;
+  border-bottom: 1px solid #acc9dc26;
+}
+.spindra-extension .cash-blackjack .blackjack-dealer .cash-cards {
+  min-height: 96px;
+  margin: 10px 0 0;
+}
+.spindra-extension .cash-blackjack .blackjack-score {
+  border: 1px solid #7089a0;
+  background: #0a1a2a;
+  gap: 8px;
+  border-radius: 12px;
+  padding: 5px 10px;
+  box-shadow: 0 3px 9px #0002;
+}
+.spindra-extension .cash-blackjack .blackjack-score-label {
+  font-size: 11px;
+  color: #c8d8e7;
+}
+.spindra-extension .cash-blackjack .blackjack-score > strong {
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: 0.3px;
+}
+.spindra-extension .cash-blackjack .blackjack-score.score-bust > strong {
+  color: #ffb8c2;
+}
+.spindra-extension .cash-blackjack .blackjack-seat-cards {
+  min-height: 165px;
+  align-items: center;
+  gap: 8px;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-spots {
+  gap: 8px;
+  padding: 12px 2px 8px;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-spots > article {
+  border-radius: 18px;
+  padding: 10px 6px;
+  transition:
+    background-color 180ms,
+    border-color 180ms,
+    box-shadow 180ms;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-spots > .bet-spot-funded {
+  background: #10273c66;
+  border-color: #b4cfe420;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-spots > .bet-spot-active {
+  background: #e7c27310;
+  border-color: #e7c273;
+  box-shadow: inset 0 0 0 1px #e7c27333;
+}
+.spindra-extension .cash-blackjack .blackjack-bet-spots h4 {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: #dbe7ef;
+}
+.spindra-extension .cash-blackjack .cash-hand {
+  gap: 5px;
+}
+.spindra-extension .cash-blackjack .cash-hand .cash-cards {
+  min-height: 96px;
+  margin: 7px 0 3px;
+}
+.spindra-extension .cash-blackjack .playing-card {
+  width: 68px;
+  min-width: 68px;
+  height: 96px;
+  padding: 6px;
+  border: 1px solid #cdd7e1;
+  border-radius: 7px;
+  box-shadow: 0 4px 8px #0005;
+  backface-visibility: hidden;
+}
+.spindra-extension .cash-blackjack .playing-card.face-up {
+  color: #132639;
+  background: linear-gradient(150deg, #fff, #eff3f7);
+  animation: cash-card-land 320ms cubic-bezier(0.18, 0.7, 0.25, 1) both;
+}
+.spindra-extension .cash-blackjack .playing-card.red-card {
+  color: #bb243b;
+}
+.spindra-extension .cash-blackjack .playing-card small {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+}
+.spindra-extension .cash-blackjack .playing-card strong {
+  font-size: 27px;
+}
+.spindra-extension .cash-blackjack .cash-hand .playing-card + .playing-card {
+  margin-left: -30px;
+}
+.spindra-extension .cash-blackjack .playing-card.card-back {
+  border: 2px solid #c8ab68;
+  background: repeating-linear-gradient(45deg, #1c3559 0 5px, #2a4c71 5px 10px);
+  animation: cash-card-land 320ms ease-out both;
+}
+.spindra-extension .cash-blackjack .playing-card.card-reveal {
+  animation: cash-hole-reveal 380ms ease-out both;
+  transform-origin: 50% 50%;
+}
+.spindra-extension .cash-blackjack .blackjack-main-bet {
+  border-color: #70bcd0;
+  background: #122a3b;
+  transition:
+    background-color 150ms,
+    box-shadow 150ms;
+}
+.spindra-extension .cash-blackjack .bet-spot-funded .blackjack-main-bet {
+  background: radial-gradient(circle at 35% 30%, #ffe6a4, #d7b25b);
+  color: #1c2530;
+  border: 3px dashed #fff3c1;
+  box-shadow: 0 3px 9px #0004;
+}
+.spindra-extension .cash-blackjack .blackjack-side-bets button {
+  background: #102338;
+  border-color: #69819a;
+  border-radius: 10px;
+  min-height: 44px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-bets span {
+  color: #c6d8e7;
+  font-size: 10px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-bets strong {
+  font-size: 12px;
+}
+.spindra-extension .cash-blackjack .blackjack-chip-rack {
+  padding-top: 12px;
+  border-top: 1px solid #acc9dc26;
+  margin-top: 8px;
+}
+.spindra-extension .cash-blackjack .blackjack-betting .blackjack-chip {
+  width: 48px;
+  height: 48px;
+  background: radial-gradient(circle at 35% 25%, #36516b, #14283f);
+  box-shadow: 0 3px 5px #0003;
+}
+.spindra-extension .cash-blackjack .blackjack-action-bar {
+  position: relative;
+  min-height: 52px;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #acc9dc26;
+}
+.spindra-extension .cash-blackjack .blackjack-action-bar .button {
+  min-width: 86px;
+  border-radius: 12px;
+  min-height: 44px;
+  font-weight: 750;
+  transition:
+    background-color 150ms,
+    transform 100ms;
+}
+.spindra-extension
+  .cash-blackjack
+  .blackjack-action-bar
+  .button:not(:disabled):active {
+  transform: translateY(1px);
+}
+.spindra-extension .cash-blackjack .blackjack-action-bar .button.primary {
+  min-width: 160px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-results {
+  order: 2;
+  flex-basis: 100%;
+  background: #0c1d2db3;
+  border: 1px solid #71889d40;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-results h3 {
+  font-size: 12px;
+  margin: 0 0 7px;
+  color: #e0ebf4;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.spindra-extension .cash-blackjack .blackjack-side-results h3 small {
+  font-size: 10px;
+  font-weight: 400;
+  color: #adc2d4;
+}
+.spindra-extension .cash-blackjack .blackjack-side-results p {
+  font-size: 12px;
+  margin: 5px 0;
+}
+.spindra-extension .cash-blackjack .bj-main-verdict {
+  min-height: 35px;
+  display: grid;
+  gap: 3px;
+  text-align: center;
+  font-size: 10px;
+  animation: bj-result-land 250ms ease-out both;
+}
+.spindra-extension .cash-blackjack .bj-main-verdict b {
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+.spindra-extension .cash-blackjack .verdict-win {
+  color: #a6efcf;
+}
+.spindra-extension .cash-blackjack .verdict-loss {
+  color: #ffb7c3;
+}
+.spindra-extension .cash-blackjack .verdict-push {
+  color: #d6e5f3;
+}
+.spindra-extension .cash-blackjack .bj-settlement {
+  margin-top: 14px;
+  padding: 16px;
+  background: #091827bd;
+  border: 1px solid #5b758b;
+  border-radius: 16px;
+  color: #e8f0f7;
+  animation: bj-result-land 280ms ease-out both;
+}
+.spindra-extension .cash-blackjack .bj-settlement > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.spindra-extension .cash-blackjack .bj-settlement header small {
+  font-size: 10px;
+  color: #c0cfdb;
+  display: block;
+}
+.spindra-extension .cash-blackjack .bj-settlement h3 {
+  font-size: 20px;
+  margin: 3px 0;
+  color: #fff;
+}
+.spindra-extension .cash-blackjack .bj-settlement header > div:last-child {
+  text-align: right;
+}
+.spindra-extension .cash-blackjack .bj-settlement header span {
+  font-size: 11px;
+  display: block;
+  color: #c0cfdb;
+}
+.spindra-extension .cash-blackjack .bj-settlement header strong {
+  display: block;
+  font-size: 28px;
+  line-height: 1.2;
+  color: #ffe2a0;
+  font-variant-numeric: tabular-nums;
+}
+.spindra-extension .cash-blackjack .bj-payout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 8px;
+}
+.spindra-extension .cash-blackjack .bj-payout-grid article {
+  padding: 12px;
+  border: 1px solid #50677d;
+  border-radius: 10px;
+  background: #102338;
+}
+.spindra-extension .cash-blackjack .bj-payout-grid h4 {
+  font-size: 13px;
+  margin: 0 0 9px;
+  color: #fff;
+}
+.spindra-extension .cash-blackjack .bj-payout-grid dl {
+  margin: 0;
+  font-size: 12px;
+}
+.spindra-extension .cash-blackjack .bj-payout-grid dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+}
+.spindra-extension .cash-blackjack .bj-payout-grid dt {
+  color: #bed0df;
+}
+.spindra-extension .cash-blackjack .bj-payout-grid dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.spindra-extension .cash-blackjack .payout-win {
+  border-color: #69b59b;
+}
+.spindra-extension .cash-blackjack .payout-win dl > div:last-child dd {
+  color: #a6efcf;
+}
+.spindra-extension .cash-blackjack .payout-loss dl > div:last-child dd {
+  color: #ffb7c3;
+}
+.spindra-extension .cash-blackjack .bj-return-note {
+  font-size: 11px;
+  color: #b2c7d8;
+  margin: 10px 0 0;
+}
+@keyframes cash-card-land {
+  from {
+    opacity: 0;
+    transform: translate(24px, -32px) rotate(5deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes cash-hole-reveal {
+  from {
+    opacity: 0.3;
+    transform: perspective(550px) rotateY(90deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(550px) rotateY(0);
+  }
+}
+@keyframes bj-result-land {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 800px) {
+  .spindra-extension .cash-blackjack .blackjack-bet-spots {
+    grid-template-columns: repeat(5, minmax(154px, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .spindra-extension .cash-blackjack {
+    padding: 12px;
+    border-radius: 18px;
+  }
+  .spindra-extension .cash-blackjack .bj-cash-heading h2 {
+    font-size: 20px;
+  }
+  .spindra-extension .cash-blackjack .bj-table-state {
+    font-size: 10px;
+    padding: 8px 10px;
+  }
+  .spindra-extension .cash-blackjack .bj-settlement {
+    padding: 12px;
+  }
+  .spindra-extension .cash-blackjack .bj-payout-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .spindra-extension .cash-blackjack .bj-payout-grid article {
+    padding: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .cash-blackjack .playing-card,
+  .spindra-extension .cash-blackjack .playing-card.face-up,
+  .spindra-extension .cash-blackjack .playing-card.card-reveal,
+  .spindra-extension .cash-blackjack .bj-settlement,
+  .spindra-extension .cash-blackjack .bj-main-verdict {
+    animation: none;
+    transition: none;
+  }
+}
+
+.spindra-extension .cash-blackjack .bj-verdict-space {
+  height: 35px;
+}
+.spindra-extension .cash-blackjack .blackjack-seat-cards {
+  min-height: 190px;
+}

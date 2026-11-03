@@ -16,7 +16,7 @@ export function blackjackMotion(previous: CashRound | null, next: CashRound) {
   staged.view.returned_minor = 0;
   staged.view.allowed = {};
   table.phase = "dealing";
-  table.sideResults = undefined;
+  table.sideResults = old?.sideResults;
   table.dealer = old?.dealer ? structuredClone(old.dealer) : [];
   table.hands = target.hands.map((h) => {
     const before = old?.hands?.find((p) => p.id === h.id)?.cards;
@@ -35,7 +35,7 @@ export function blackjackMotion(previous: CashRound | null, next: CashRound) {
   let at = 100;
   const capture = () => {
     frames.push({ at, round: structuredClone(staged) });
-    at += 350;
+    at += 380;
   };
   if (!old) {
     for (let pass = 0; pass < 2; pass++) {
@@ -46,10 +46,15 @@ export function blackjackMotion(previous: CashRound | null, next: CashRound) {
         }
       });
       if (pass < target.dealer.length) {
-        table.dealer.push(target.dealer[pass]);
+        table.dealer.push(pass === 1 ? null : target.dealer[pass]);
         capture();
       }
     }
+    for (let i = 1; i < target.dealer.length; i++)
+      if (target.dealer[i] !== null) {
+        table.dealer[i] = target.dealer[i];
+        capture();
+      }
   } else {
     target.hands.forEach((hand, i) => {
       for (let j = table.hands![i].cards.length; j < hand.cards.length; j++) {
