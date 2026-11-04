@@ -31,9 +31,13 @@ export default function SlotWinCelebration({
         : tier === "big"
           ? "BIG WIN"
           : bonus
-            ? "BONUS WIN"
+            ? returned > stake
+              ? "BONUS WIN"
+              : "BONUS RETURN"
             : scatter
-              ? "SCATTER WIN"
+              ? returned > stake
+                ? "SCATTER WIN"
+                : "SCATTER RETURN"
               : returned > stake
                 ? "YOU WIN"
                 : "RETURN";
@@ -46,11 +50,11 @@ export default function SlotWinCelebration({
       }
       data-win-tier={tier}
     >
-      {(big || returned > stake || bonus) && (
+      {(big || returned > stake) && (
         <CinematicEffects cue={big ? tier : "win"} />
       )}
-      <div className="slot-win-rays" aria-hidden="true" />
-      {(big || returned > stake || bonus) && (
+      {returned > stake && <div className="slot-win-rays" aria-hidden="true" />}
+      {(big || returned > stake) && (
         <div className="slot-win-particles" aria-hidden="true">
           {Array.from(
             { length: tier === "epic" ? 42 : big ? 30 : 14 },
@@ -79,7 +83,7 @@ export default function SlotWinCelebration({
         >
           ×
         </button>
-        {(returned > stake || bonus) && (
+        {returned > stake && (
           <div className="slot-award-crown" aria-hidden="true">
             ✧ <span>♛</span> ✧
           </div>

@@ -1,11 +1,15 @@
 import type { CSSProperties } from "react";
 import CinematicEffects from "./CinematicEffects";
+import MaterialSymbol from "./MaterialSymbol";
+import { worldDirection } from "../lib/worldDirector";
 export default function ScatterCelebration({
   onStart,
   onSkip,
+  scene = "solar",
 }: {
   onStart: () => void;
   onSkip: () => void;
+  scene?: string;
 }) {
   return (
     <section
@@ -26,7 +30,13 @@ export default function ScatterCelebration({
           {[0, 1, 2].map((i) => (
             <span key={i} style={{ "--token": i } as CSSProperties}>
               <svg viewBox="0 0 40 40">
-                <path d="M20 2l5 11 12 2-9 9 2 13-10-6-11 6 2-13-9-9 13-2Z" />
+                <path
+                  className="symbol-vector"
+                  d="M20 2l5 11 12 2-9 9 2 13-10-6-11 6 2-13-9-9 13-2Z"
+                />
+                <g transform="scale(.4)">
+                  <MaterialSymbol scene={scene} cell={8} />
+                </g>
               </svg>
             </span>
           ))}
@@ -46,7 +56,9 @@ export default function ScatterCelebration({
         ))}
       </div>
       <div className="scatter-bonus-card">
-        <span className="scatter-kicker">SCATTER PORTAL UNLOCKED</span>
+        <span className="scatter-kicker">
+          {worldDirection(scene).focus} · BONUS UNLOCKED
+        </span>
         <strong className="scatter-award-number">10</strong>
         <h3>FREE SPINS</h3>
         <p>Your bonus is ready</p>

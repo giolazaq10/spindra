@@ -1,3 +1,4 @@
+import MaterialSymbol from "./MaterialSymbol";
 import { useId } from "react";
 import { slotLook } from "../lib/slotPresentation";
 import type { PremiumKind } from "@/lib/premiumSlots";
@@ -134,12 +135,16 @@ const gemColors = [
 export function PremiumSymbol({
   kind,
   index,
+  raster = true,
 }: {
   kind: PremiumKind;
   index: number;
+  raster?: boolean;
 }) {
   const id = useId().replace(/:/g, ""),
     color = gemColors[index % 7];
+  const scene =
+    kind === "cascade" ? "astral" : kind === "vault" ? "foundry" : "motor";
   if (kind === "cascade")
     return (
       <svg
@@ -152,37 +157,40 @@ export function PremiumSymbol({
           ]
         }
       >
-        <defs>
-          <linearGradient id={id} x2=".8" y2="1">
-            <stop stopColor="#fff" />
-            <stop offset=".4" stopColor={color} />
-            <stop offset="1" stopColor="#423d81" />
-          </linearGradient>
-        </defs>
-        <path
-          d={
-            index % 3 === 0
-              ? "M50 4L88 30L83 76L50 96L13 71L10 28Z"
-              : index % 3 === 1
-                ? "M50 5L91 48L50 96L9 48Z"
-                : "M28 8H72L94 38L71 91H29L6 38Z"
-          }
-          fill={"url(#" + id + ")"}
-          stroke="#f3faff"
-          strokeWidth="2"
-        />
-        <path
-          d="M50 5L35 34L12 29L31 68L50 95L68 66L88 30L64 35Z"
-          fill={color}
-          opacity=".6"
-        />
-        <path d="M35 34L64 35L68 66L31 68Z" fill="#fff" opacity=".25" />
-        <path
-          d="M18 29L34 16M69 20L81 31"
-          stroke="#fff"
-          strokeWidth="4"
-          strokeLinecap="round"
-        />
+        <g className={raster ? "symbol-vector" : undefined}>
+          <defs>
+            <linearGradient id={id} x2=".8" y2="1">
+              <stop stopColor="#fff" />
+              <stop offset=".4" stopColor={color} />
+              <stop offset="1" stopColor="#423d81" />
+            </linearGradient>
+          </defs>
+          <path
+            d={
+              index % 3 === 0
+                ? "M50 4L88 30L83 76L50 96L13 71L10 28Z"
+                : index % 3 === 1
+                  ? "M50 5L91 48L50 96L9 48Z"
+                  : "M28 8H72L94 38L71 91H29L6 38Z"
+            }
+            fill={"url(#" + id + ")"}
+            stroke="#f3faff"
+            strokeWidth="2"
+          />
+          <path
+            d="M50 5L35 34L12 29L31 68L50 95L68 66L88 30L64 35Z"
+            fill={color}
+            opacity=".6"
+          />
+          <path d="M35 34L64 35L68 66L31 68Z" fill="#fff" opacity=".25" />
+          <path
+            d="M18 29L34 16M69 20L81 31"
+            stroke="#fff"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+        </g>
+        {raster && <MaterialSymbol scene={scene} cell={index} />}
       </svg>
     );
   if (kind === "vault")
@@ -199,53 +207,78 @@ export function PremiumSymbol({
             : "Empty vault socket"
         }
       >
-        <defs>
-          <radialGradient id={id}>
-            <stop stopColor={index ? "#ffe8a9" : "#263136"} />
-            <stop offset=".7" stopColor={index ? "#bf8a47" : "#11191c"} />
-            <stop offset="1" stopColor={index ? "#6b4927" : "#293136"} />
-          </radialGradient>
-        </defs>
-        <circle
-          cx="50"
-          cy="50"
-          r="43"
-          fill={"url(#" + id + ")"}
-          stroke={index ? "#f8d999" : "#626662"}
-          strokeWidth={index ? 5 : 2}
-        />
-        <circle
-          cx="50"
-          cy="50"
-          r="34"
-          fill="none"
-          stroke={index ? "#6d4a29" : "#3b4546"}
-          strokeWidth="1.5"
-          strokeDasharray={index ? "2 4" : "0"}
-        />
-        {index ? (
-          <>
-            <path
-              d="M43 31v-7a7 7 0 0114 0v7"
-              fill="none"
-              stroke="#56432d"
-              strokeWidth="3"
-            />
-            <rect x="39" y="29" width="22" height="17" rx="3" fill="#76572d" />
-            <text
-              x="50"
-              y="68"
-              textAnchor="middle"
-              fontSize={vaultCoinPays[index - 1] >= 100 ? 19 : 23}
-              fontWeight="900"
-              fill="#382d20"
-            >
-              {vaultCoinPays[index - 1] / 100}×
-            </text>
-            <path d="M20 28L28 20" stroke="#fff7d5" strokeWidth="4" />
-          </>
-        ) : (
-          <path d="M35 50H65M50 35V65" stroke="#5a6667" strokeWidth="3" />
+        <g className={raster ? "symbol-vector" : undefined}>
+          <defs>
+            <radialGradient id={id}>
+              <stop stopColor={index ? "#ffe8a9" : "#263136"} />
+              <stop offset=".7" stopColor={index ? "#bf8a47" : "#11191c"} />
+              <stop offset="1" stopColor={index ? "#6b4927" : "#293136"} />
+            </radialGradient>
+          </defs>
+          <circle
+            cx="50"
+            cy="50"
+            r="43"
+            fill={"url(#" + id + ")"}
+            stroke={index ? "#f8d999" : "#626662"}
+            strokeWidth={index ? 5 : 2}
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r="34"
+            fill="none"
+            stroke={index ? "#6d4a29" : "#3b4546"}
+            strokeWidth="1.5"
+            strokeDasharray={index ? "2 4" : "0"}
+          />
+          {index ? (
+            <>
+              <path
+                d="M43 31v-7a7 7 0 0114 0v7"
+                fill="none"
+                stroke="#56432d"
+                strokeWidth="3"
+              />
+              <rect
+                x="39"
+                y="29"
+                width="22"
+                height="17"
+                rx="3"
+                fill="#76572d"
+              />
+              <text
+                x="50"
+                y="68"
+                textAnchor="middle"
+                fontSize={vaultCoinPays[index - 1] >= 100 ? 19 : 23}
+                fontWeight="900"
+                fill="#382d20"
+              >
+                {vaultCoinPays[index - 1] / 100}×
+              </text>
+              <path d="M20 28L28 20" stroke="#fff7d5" strokeWidth="4" />
+            </>
+          ) : (
+            <path d="M35 50H65M50 35V65" stroke="#5a6667" strokeWidth="3" />
+          )}
+        </g>
+        {raster && <MaterialSymbol scene={scene} cell={index} />}
+        {raster && index > 0 && (
+          <text
+            className="material-value-label"
+            x="50"
+            y="68"
+            textAnchor="middle"
+            fontSize="21"
+            fontWeight="900"
+            fill="#382d20"
+            stroke="#fff0c4"
+            strokeWidth=".5"
+          >
+            {vaultCoinPays[index - 1] / 100}×
+          </text>
         )}
       </svg>
     );
@@ -260,139 +293,172 @@ export function PremiumSymbol({
         ]
       }
     >
-      {index === 0 ? (
-        <>
-          <path
-            d="M40 49Q39 16 66 13M65 53Q73 26 66 13Q85 13 84 26"
-            fill="none"
-            stroke="#326247"
-            strokeWidth="6"
-          />
-          <circle
-            cx="32"
-            cy="65"
-            r="21"
-            fill="#e2484c"
-            stroke="#7e1f31"
-            strokeWidth="4"
-          />
-          <circle
-            cx="72"
-            cy="67"
-            r="20"
-            fill="#fc6762"
-            stroke="#7e1f31"
-            strokeWidth="4"
-          />
-          <path
-            d="M20 57L30 51M61 61L68 56"
-            stroke="#ffb7ac"
-            strokeWidth="5"
-            strokeLinecap="round"
-          />
-        </>
-      ) : index === 1 ? (
-        <>
-          <ellipse
-            cx="50"
-            cy="53"
-            rx="38"
-            ry="25"
-            transform="rotate(-25 50 53)"
-            fill="#f5cc36"
-            stroke="#a68627"
-            strokeWidth="4"
-          />
-          <path d="M73 28Q85 10 92 23Q82 37 73 28" fill="#5e9757" />
-        </>
-      ) : index === 2 ? (
-        <>
-          <path
-            d="M25 68V45Q25 20 50 20T75 45V68L86 77H14Z"
-            fill="#f2b53e"
-            stroke="#9c6725"
-            strokeWidth="4"
-          />
-          <circle cx="50" cy="81" r="8" fill="#c88a24" />
-          <path
-            d="M36 43V59"
-            stroke="#ffe1a0"
-            strokeWidth="6"
-            strokeLinecap="round"
-          />
-        </>
-      ) : index === 3 ? (
-        <>
-          <rect
-            x="7"
-            y="27"
-            width="86"
-            height="47"
-            rx="7"
-            fill="#213a32"
-            stroke="#577866"
-            strokeWidth="3"
-          />
+      <g className={raster ? "symbol-vector" : undefined}>
+        {index === 0 ? (
+          <>
+            <path
+              d="M40 49Q39 16 66 13M65 53Q73 26 66 13Q85 13 84 26"
+              fill="none"
+              stroke="#326247"
+              strokeWidth="6"
+            />
+            <circle
+              cx="32"
+              cy="65"
+              r="21"
+              fill="#e2484c"
+              stroke="#7e1f31"
+              strokeWidth="4"
+            />
+            <circle
+              cx="72"
+              cy="67"
+              r="20"
+              fill="#fc6762"
+              stroke="#7e1f31"
+              strokeWidth="4"
+            />
+            <path
+              d="M20 57L30 51M61 61L68 56"
+              stroke="#ffb7ac"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+          </>
+        ) : index === 1 ? (
+          <>
+            <ellipse
+              cx="50"
+              cy="53"
+              rx="38"
+              ry="25"
+              transform="rotate(-25 50 53)"
+              fill="#f5cc36"
+              stroke="#a68627"
+              strokeWidth="4"
+            />
+            <path d="M73 28Q85 10 92 23Q82 37 73 28" fill="#5e9757" />
+          </>
+        ) : index === 2 ? (
+          <>
+            <path
+              d="M25 68V45Q25 20 50 20T75 45V68L86 77H14Z"
+              fill="#f2b53e"
+              stroke="#9c6725"
+              strokeWidth="4"
+            />
+            <circle cx="50" cy="81" r="8" fill="#c88a24" />
+            <path
+              d="M36 43V59"
+              stroke="#ffe1a0"
+              strokeWidth="6"
+              strokeLinecap="round"
+            />
+          </>
+        ) : index === 3 ? (
+          <>
+            <rect
+              x="7"
+              y="27"
+              width="86"
+              height="47"
+              rx="7"
+              fill="#213a32"
+              stroke="#577866"
+              strokeWidth="3"
+            />
+            <text
+              x="50"
+              y="61"
+              textAnchor="middle"
+              fontSize="32"
+              fontWeight="900"
+              fill="#e9efce"
+            >
+              BAR
+            </text>
+          </>
+        ) : index === 4 ? (
+          <>
+            <path
+              d="M9 35L28 13H72L91 35L50 89Z"
+              fill="#7cdce4"
+              stroke="#276b79"
+              strokeWidth="4"
+            />
+            <path
+              d="M9 35H91M28 13L38 35L50 89L62 35L72 13"
+              fill="none"
+              stroke="#d7fffb"
+              strokeWidth="3"
+            />
+          </>
+        ) : index === 5 ? (
           <text
             x="50"
-            y="61"
+            y="84"
             textAnchor="middle"
-            fontSize="32"
+            fontSize="94"
+            fontFamily="Georgia,serif"
             fontWeight="900"
-            fill="#e9efce"
+            fill="#df4244"
+            stroke="#fff2c6"
+            strokeWidth="2"
           >
-            BAR
+            7
           </text>
-        </>
-      ) : index === 4 ? (
-        <>
-          <path
-            d="M9 35L28 13H72L91 35L50 89Z"
-            fill="#7cdce4"
-            stroke="#276b79"
-            strokeWidth="4"
-          />
-          <path
-            d="M9 35H91M28 13L38 35L50 89L62 35L72 13"
-            fill="none"
-            stroke="#d7fffb"
-            strokeWidth="3"
-          />
-        </>
-      ) : index === 5 ? (
+        ) : (
+          <>
+            <path
+              d="M40 7H60L63 20L78 16L86 34L76 44L90 53L82 73L66 71L61 90H40L36 76L20 81L11 61L24 50L9 40L20 21L36 23Z"
+              fill="#afb9a0"
+              stroke="#42584c"
+              strokeWidth="3"
+            />
+            <circle cx="50" cy="49" r="23" fill="#24483a" />
+            <text
+              x="50"
+              y="55"
+              textAnchor="middle"
+              fontSize="13"
+              fill="#eff6c5"
+              fontWeight="900"
+            >
+              WILD
+            </text>
+          </>
+        )}
+      </g>
+      {raster && <MaterialSymbol scene={scene} cell={index} />}
+      {raster && index === 3 && (
         <text
+          className="material-value-label"
           x="50"
-          y="84"
+          y="61"
           textAnchor="middle"
-          fontSize="94"
-          fontFamily="Georgia,serif"
+          fontSize="27"
           fontWeight="900"
-          fill="#df4244"
-          stroke="#fff2c6"
-          strokeWidth="2"
+          fill="#fff8dc"
+          stroke="#183747"
+          strokeWidth=".7"
         >
-          7
+          BAR
         </text>
-      ) : (
-        <>
-          <path
-            d="M40 7H60L63 20L78 16L86 34L76 44L90 53L82 73L66 71L61 90H40L36 76L20 81L11 61L24 50L9 40L20 21L36 23Z"
-            fill="#afb9a0"
-            stroke="#42584c"
-            strokeWidth="3"
-          />
-          <circle cx="50" cy="49" r="23" fill="#24483a" />
-          <text
-            x="50"
-            y="55"
-            textAnchor="middle"
-            fontSize="13"
-            fill="#eff6c5"
-            fontWeight="900"
-          >
-            WILD
-          </text>
-        </>
+      )}
+      {raster && index === 6 && (
+        <text
+          className="material-value-label"
+          x="50"
+          y="70"
+          textAnchor="middle"
+          fontSize="15"
+          fontWeight="900"
+          fill="#fff9d7"
+          stroke="#173b4b"
+          strokeWidth=".6"
+        >
+          WILD
+        </text>
       )}
     </svg>
   );

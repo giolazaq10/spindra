@@ -51,6 +51,7 @@ import {
 } from "lucide-react";
 import { useId, type CSSProperties } from "react";
 import SlotObject from "./SlotObject";
+import MaterialSymbol from "./MaterialSymbol";
 import { slotLook } from "../lib/slotPresentation";
 import type { SlotSpec } from "../lib/slotModels";
 const icons: Record<string, LucideIcon> = {
@@ -143,7 +144,15 @@ const jewelColors = [
   "#ee6bd9",
   "#ff9c41",
 ];
-export function SlotSymbol({ spec, index }: { spec: SlotSpec; index: number }) {
+export function SlotSymbol({
+  spec,
+  index,
+  raster = true,
+}: {
+  spec: SlotSpec;
+  index: number;
+  raster?: boolean;
+}) {
   const id = useId().replace(/:/g, ""),
     scatter =
       !!spec.scatter && index === (spec.scatter.symbol ?? spec.pays.length),
@@ -184,7 +193,19 @@ export function SlotSymbol({ spec, index }: { spec: SlotSpec; index: number }) {
             <stop offset="1" stopColor={look.deep} />
           </linearGradient>
         </defs>
-        <SlotObject kind={object} paint={id} scene={spec.scene} />
+        {raster ? (
+          <g className="symbol-vector">
+            <SlotObject kind={object} paint={id} scene={spec.scene} />
+          </g>
+        ) : (
+          <SlotObject kind={object} paint={id} scene={spec.scene} />
+        )}
+        {raster && (
+          <MaterialSymbol
+            scene={spec.scene}
+            cell={wild ? 7 : scatter ? 8 : index}
+          />
+        )}
         {(wild || scatter) && (
           <g className="object-award-label">
             <rect

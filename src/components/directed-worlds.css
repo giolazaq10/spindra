@@ -1,0 +1,449 @@
+html {
+  scrollbar-gutter: stable;
+}
+@supports not (scrollbar-gutter: stable) {
+  html {
+    overflow-y: scroll;
+  }
+}
+.spindra-extension .slot-polished .directed-environment {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  contain: paint;
+}
+.spindra-extension .directed-environment-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+}
+.spindra-extension .environment-ready .directed-environment-art {
+  opacity: 1;
+  transform: translate3d(
+      calc(var(--world-look-x, 0) * -7px),
+      calc(var(--world-look-y, 0) * -5px),
+      0
+    )
+    scale(1.025);
+  transition:
+    opacity 0.6s,
+    transform 0.7s ease-out;
+}
+.spindra-extension
+  .has-directed-world[data-environment-art-ready="true"]
+  > .slot-scenery,
+.spindra-extension
+  .has-directed-world[data-environment-art-ready="true"]
+  > .premium-backdrop,
+.spindra-extension
+  .has-directed-world[data-environment-art-ready="true"]
+  .slot-atmosphere
+  .world-depth {
+  display: none;
+}
+.spindra-extension .world-emblem {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.spindra-extension .directed-environment-light {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#16244222, transparent 40%, #101d3b95);
+}
+.spindra-extension .directed-environment canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.spindra-extension .world-symbol-preload {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.spindra-extension .symbol-raster {
+  display: none;
+}
+.spindra-extension [data-symbol-art-ready="true"] .symbol-raster {
+  display: block;
+}
+.spindra-extension [data-symbol-art-ready="true"] .symbol-vector {
+  display: none;
+}
+.spindra-extension .has-directed-world .symbol-winning .symbol-raster {
+  animation: material-win-settle 0.7s cubic-bezier(0.22, 1, 0.36, 1) 3;
+  transform-origin: 50px 60px;
+}
+.spindra-extension .has-directed-world .reel-landing .symbol-raster {
+  animation: material-arrive 260ms cubic-bezier(0.22, 1.1, 0.36, 1) both;
+  transform-origin: 50px 80px;
+}
+.spindra-extension
+  .scene-candy
+  .reel-stopped
+  .symbol-tier-0:not(.wild-symbol)
+  .symbol-raster,
+.spindra-extension .scene-candy .reel-stopped .symbol-tier-2 .symbol-raster {
+  animation: material-candy-idle 4.8s ease-in-out infinite;
+  transform-origin: 50px 70px;
+}
+.spindra-extension .scene-reef .reel-stopped .symbol-tier-0 .symbol-raster {
+  animation: material-fish-idle 5.4s ease-in-out infinite;
+  transform-origin: 50px 60px;
+}
+.spindra-extension .scene-dragon .reel-stopped .symbol-tier-0 .symbol-raster {
+  animation: material-flame-idle 2.4s ease-in-out infinite;
+  transform-origin: 50px 85px;
+}
+.spindra-extension .has-directed-world .symbol-winning .symbol-raster {
+  animation: material-win-settle 0.7s cubic-bezier(0.22, 1, 0.36, 1) 3;
+}
+@keyframes material-arrive {
+  0% {
+    transform: translateY(-4px) scale(0.97, 1.06);
+  }
+  65% {
+    transform: translateY(2px) scale(1.04, 0.96);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes material-candy-idle {
+  0%,
+  75%,
+  100% {
+    transform: none;
+  }
+  82% {
+    transform: rotate(-3deg) scale(1.03, 0.97);
+  }
+  90% {
+    transform: rotate(3deg) scale(0.98, 1.02);
+  }
+}
+@keyframes material-fish-idle {
+  0%,
+  100% {
+    transform: translateY(1px) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(1deg);
+  }
+}
+@keyframes material-flame-idle {
+  0%,
+  100% {
+    transform: scale(1, 0.98);
+  }
+  50% {
+    transform: scale(0.98, 1.03);
+  }
+}
+@keyframes material-win-settle {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.08, 0.95) translateY(2px);
+  }
+  65% {
+    transform: scale(0.98, 1.06) translateY(-3px);
+  }
+}
+.spindra-extension .has-directed-world .scene-overlay {
+  opacity: 0.2;
+}
+.spindra-extension .has-directed-world .slot-atmosphere {
+  opacity: 0.5;
+}
+.spindra-extension .has-directed-world .cabinet-heading,
+.spindra-extension .has-directed-world .premium-heading {
+  position: relative;
+  z-index: 1;
+}
+.spindra-extension .has-directed-world .directed-reel-stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+.spindra-extension .world-reel-stage {
+  min-width: 0;
+}
+.spindra-extension .world-character-stage {
+  position: relative;
+  align-self: stretch;
+  min-height: 270px;
+  pointer-events: none;
+}
+.spindra-extension .world-character {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 210px;
+  height: 260px;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.35s;
+  contain: layout style;
+}
+.spindra-extension .world-character.character-ready {
+  opacity: 1;
+}
+.spindra-extension .rig-preload {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.spindra-extension .rig-breath {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 95%;
+}
+.spindra-extension .rig-part {
+  position: absolute;
+  background-image: var(--rig-atlas);
+  background-size: 200% 200%;
+  background-repeat: no-repeat;
+}
+.spindra-extension .rig-body {
+  width: 140px;
+  height: 140px;
+  left: 35px;
+  top: 99px;
+  background-position: 100% 0;
+  z-index: 2;
+}
+.spindra-extension .rig-head-motion {
+  position: absolute;
+  width: 105px;
+  height: 105px;
+  left: 53px;
+  top: 18px;
+  z-index: 4;
+  transform-origin: 50% 87%;
+}
+.spindra-extension .rig-head {
+  inset: 0;
+  background-position: 0 0;
+}
+.spindra-extension .rig-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.spindra-extension .rig-eyelids {
+  transform-origin: 51px 44px;
+}
+.spindra-extension .rig-eyebrows {
+  transition: transform 0.35s;
+  transform-origin: 51px 40px;
+}
+.spindra-extension .rig-left {
+  position: absolute;
+  width: 105px;
+  height: 110px;
+  left: -15px;
+  top: 107px;
+  z-index: 1;
+  transform-origin: 80% 10%;
+}
+.spindra-extension .rig-right {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  left: 65px;
+  top: 106px;
+  z-index: 3;
+  transform-origin: 88% 10%;
+}
+.spindra-extension .rig-left-texture {
+  inset: 0;
+  background-position: 0 100%;
+  transform: scaleX(-1);
+}
+.spindra-extension .rig-right-texture {
+  inset: 0;
+  background-position: 100% 100%;
+  transform: scaleX(-1);
+}
+.spindra-extension .rig-fishing-rod {
+  position: absolute;
+  width: 140px;
+  height: 185px;
+  left: -32px;
+  top: -82px;
+  overflow: visible;
+  transform-origin: 40% 90%;
+}
+.spindra-extension .rig-rod-shaft {
+  stroke: #684a39;
+  stroke-width: 3;
+  fill: none;
+}
+.spindra-extension .rig-line {
+  stroke: #edfff5b0;
+  stroke-width: 1;
+  fill: none;
+}
+.spindra-extension .rig-float {
+  fill: #ffbb8d;
+  stroke: #fff6c3;
+  stroke-width: 1;
+}
+.spindra-extension .world-character-caption {
+  position: absolute;
+  bottom: 0;
+  left: 7px;
+  right: 7px;
+  padding: 6px 5px;
+  border-radius: 12px;
+  color: #fff;
+  background: #10253ad4;
+  text-align: center;
+  box-shadow: 0 3px 12px #10253a30;
+}
+.spindra-extension .world-character-caption b {
+  display: block;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+.spindra-extension .world-character-caption span {
+  display: block;
+  font-size: 9px;
+  color: #d9ecf4;
+  margin-top: 2px;
+}
+.spindra-extension
+  .world-character[data-actor-state="anticipation"]
+  .rig-eyebrows {
+  transform: translateY(-1.2px);
+}
+.spindra-extension
+  .world-character[data-actor-state="disappointed"]
+  .rig-brow-left {
+  transform: rotate(-9deg);
+  transform-origin: 38px 39px;
+}
+.spindra-extension
+  .world-character[data-actor-state="disappointed"]
+  .rig-brow-right {
+  transform: rotate(9deg);
+  transform-origin: 64px 39px;
+}
+.spindra-extension .world-character[data-actor-state="triumph"] .rig-eyebrows,
+.spindra-extension .world-character[data-actor-state="bonus"] .rig-eyebrows {
+  transform: translateY(-2px);
+}
+.spindra-extension .has-directed-world .signature-stage {
+  min-width: 0;
+}
+.spindra-extension .has-directed-world .premium-feature-bar {
+  position: relative;
+  z-index: 1;
+}
+.spindra-extension .has-directed-world .slot-control-deck {
+  position: relative;
+  z-index: 2;
+}
+.spindra-extension .has-directed-world .slot-bonus-bar {
+  height: 64px;
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+.spindra-extension
+  .has-directed-world
+  .slot-bonus-bar:not(.bonus-visible)
+  > span {
+  grid-column: 1/-1;
+}
+.spindra-extension .has-directed-world .slot-bonus-bar strong {
+  font-size: 13px;
+  line-height: 1.25;
+}
+.spindra-extension .has-directed-world .slot-bonus-bar span {
+  font-size: 10px;
+  line-height: 1.3;
+}
+.spindra-extension .has-directed-world .slot-bonus-bar button {
+  max-width: 120px;
+  font-size: 10px;
+  line-height: 1.2;
+}
+@media (max-width: 800px) {
+  .spindra-extension .has-directed-world .directed-reel-stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .spindra-extension .world-character-stage {
+    height: 88px;
+    min-height: 88px;
+    overflow: hidden;
+    margin-top: 0;
+  }
+  .spindra-extension .world-character {
+    width: 210px;
+    height: 260px;
+    left: 53px;
+    top: 5px;
+    transform: scale(0.48);
+    transform-origin: top left;
+  }
+  .spindra-extension .world-character-caption {
+    left: 205px;
+    right: auto;
+    width: 210px;
+    top: 62px;
+    bottom: auto;
+    padding: 9px 12px;
+    text-align: left;
+  }
+  .spindra-extension .world-character-caption b {
+    font-size: 22px;
+  }
+  .spindra-extension .world-character-caption span {
+    font-size: 16px;
+  }
+  .spindra-extension .rig-fishing-rod {
+    display: none;
+  }
+  .spindra-extension .has-directed-world .slot-marquee {
+    height: 36px;
+    min-height: 36px;
+    max-height: 36px;
+    overflow: hidden;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .environment-ready .directed-environment-art {
+    transform: none;
+  }
+  .spindra-extension .has-directed-world .symbol-raster {
+    animation: none !important;
+  }
+  .spindra-extension .world-character,
+  .spindra-extension .directed-environment-art,
+  .spindra-extension .rig-eyebrows {
+    transition: none;
+  }
+}

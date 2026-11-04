@@ -509,12 +509,16 @@ export default memo(function LivingWorld({
     const fine =
       window.matchMedia?.("(pointer: fine)").matches &&
       !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const reducedMotion = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)",
+    );
     const invalidate = () => {
       bounds = null;
     };
     const move = (event: Event) => {
       if (
         !fine ||
+        reducedMotion?.matches ||
         disposed ||
         document.hidden ||
         typeof requestAnimationFrame !== "function"
@@ -537,6 +541,8 @@ export default memo(function LivingWorld({
         if (disposed) return;
         el.style.setProperty("--world-look-x", String(x));
         el.style.setProperty("--world-look-y", String(y));
+        (cabinet as HTMLElement).style.setProperty("--world-look-x", String(x));
+        (cabinet as HTMLElement).style.setProperty("--world-look-y", String(y));
       });
     };
     const reset = () => {
@@ -544,15 +550,21 @@ export default memo(function LivingWorld({
       frame = 0;
       el.style.setProperty("--world-look-x", "0");
       el.style.setProperty("--world-look-y", "0");
+      (cabinet as HTMLElement).style.setProperty("--world-look-x", "0");
+      (cabinet as HTMLElement).style.setProperty("--world-look-y", "0");
     };
     cabinet.addEventListener("pointermove", move, { passive: true });
+    reducedMotion?.addEventListener?.("change", reset);
     cabinet.addEventListener("pointerleave", reset);
     window.addEventListener("resize", invalidate);
     window.addEventListener("scroll", invalidate, { passive: true });
     return () => {
       disposed = true;
+      (cabinet as HTMLElement).style.removeProperty("--world-look-x");
+      (cabinet as HTMLElement).style.removeProperty("--world-look-y");
       if (frame) cancelAnimationFrame(frame);
       cabinet.removeEventListener("pointermove", move);
+      reducedMotion?.removeEventListener?.("change", reset);
       cabinet.removeEventListener("pointerleave", reset);
       window.removeEventListener("resize", invalidate);
       window.removeEventListener("scroll", invalidate);

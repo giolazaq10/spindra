@@ -28,7 +28,7 @@ for (const g of originals.filter((g) => g.slot)) {
   ).replace("<svg", '<svg x="0" y="0" width="1000" height="650"');
   const symbol = (index, x, y, size) => {
     const raw = renderToStaticMarkup(
-      createElement(SlotSymbol, { spec: g.slot, index }),
+      createElement(SlotSymbol, { spec: g.slot, index, raster: false }),
     );
     return raw
       .slice(raw.indexOf("<svg"), raw.lastIndexOf("</svg>") + 6)
