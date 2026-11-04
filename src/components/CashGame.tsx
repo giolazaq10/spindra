@@ -9,7 +9,7 @@ import { redNumbers } from "@/lib/engine";
 import CashPokerSeat from "./CashPokerSeat";
 import RouletteBets from "./RouletteBets";
 import { pokerMotion } from "./pokerMotion";
-import type { SlotWin } from "@/lib/slotModels";
+import { SLOT_RULES_VERSION, type SlotWin } from "@/lib/slotModels";
 import type { Controls } from "./OriginalGame";
 import AdvancedSlots from "./AdvancedSlots";
 import PremiumSlots from "./PremiumSlots";
@@ -251,6 +251,9 @@ export default function CashGame({ game }: { game: Original }) {
         game: game.slug,
         input: {
           bet,
+          ...(game.kind === "slots" && !game.slot?.premium
+            ? { slot_rules: SLOT_RULES_VERSION }
+            : {}),
           kind,
           straight,
           bets: blackjackBets.map((b) => ({ ...b })),

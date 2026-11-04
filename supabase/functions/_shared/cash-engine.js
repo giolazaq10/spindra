@@ -649,7 +649,7 @@ setups.push(
     "right",
     2,
     "Aurora clockwork",
-    "Sixteen reverse clockwork paths with wins from two matches. No scatter awards.",
+    "Sixteen reverse clockwork paths with wins from two matches and scatter awards anywhere.",
     "aurora",
     "clock,wind,snowflake,moon,key,gem,crown"
   ],
@@ -700,25 +700,44 @@ function paths(reels, rows, count, seed) {
   }
   return result2.slice(0, count);
 }
-function binomial2(n, k, p) {
-  let coefficient = 1;
-  for (let i = 1; i <= k; i++) coefficient = coefficient * (n - i + 1) / i;
-  return coefficient * p ** k * (1 - p) ** (n - k);
+var SLOT_RULES_VERSION = "center-wild-scatter-v2";
+function reelWeightTotal(spec, col) {
+  return spec.weights.reduce((a, b) => a + b, 0) - (spec.wild && spec.wild.reel !== col ? spec.weights[spec.wild.symbol] : 0);
 }
 function scatterExpectation(spec) {
   if (!spec.scatter) return 0;
-  const p = spec.scatter.weight / spec.weights.reduce((a, b) => a + b, 0), n = spec.reels * spec.rows;
-  return Array.from(
-    { length: n + 1 },
-    (_, count) => binomial2(n, count, p) * (spec.scatter.awards[count] || 0)
-  ).reduce((a, b) => a + b, 0);
+  const symbol = spec.scatter.symbol ?? spec.pays.length;
+  let distribution = [1];
+  for (let col = 0; col < spec.reels; col++)
+    for (let row = 0; row < spec.rows; row++) {
+      const p = spec.weights[symbol] / reelWeightTotal(spec, col), next = Array(distribution.length + 1).fill(0);
+      distribution.forEach((chance, count) => {
+        next[count] += chance * (1 - p);
+        next[count + 1] += chance * p;
+      });
+      distribution = next;
+    }
+  return distribution.reduce(
+    (sum, chance, count) => sum + chance * (spec.scatter.awards[count] || 0),
+    0
+  );
 }
 function symbolExpectation(spec, symbol, awards) {
-  const p = spec.weights[symbol] / spec.weights.reduce((a, b) => a + b, 0);
+  const order = Array.from(
+    { length: spec.reels },
+    (_, i) => spec.direction === "left" ? i : spec.reels - 1 - i
+  );
+  const probabilities = order.map(
+    (col) => (spec.weights[symbol] + (spec.wild?.reel === col ? spec.weights[spec.wild.symbol] : 0)) / reelWeightTotal(spec, col)
+  );
   return awards.reduce((sum, pay, index) => {
     const count = index + spec.minimum;
-    const probability = spec.mode === "ways" ? (spec.rows * p) ** count * (count === spec.reels ? 1 : (1 - p) ** spec.rows) : p ** count * (count === spec.reels ? 1 : 1 - p) * spec.lines.length;
-    return sum + probability * pay / 100;
+    const prefix = probabilities.slice(0, count).reduce(
+      (p, chance) => p * (spec.mode === "ways" ? spec.rows * chance : chance),
+      1
+    );
+    const stop = count === spec.reels ? 1 : spec.mode === "ways" ? (1 - probabilities[count]) ** spec.rows : 1 - probabilities[count];
+    return sum + prefix * stop * pay / 100 * (spec.mode === "lines" ? spec.lines.length : 1);
   }, 0);
 }
 function makeSlotSpec(index, math) {
@@ -753,11 +772,12 @@ function makeSlotSpec(index, math) {
     icons: icons.split(","),
     symbolNames: icons.split(",").map((name) => name[0].toUpperCase() + name.slice(1))
   };
-  if (scatterName) {
+  {
     const weight = 2 + index % 2;
     spec.weights.push(weight);
     spec.scatter = {
-      name: scatterName,
+      name: scatterName || "Scatter orb",
+      symbol: spec.weights.length - 1,
       weight,
       awards: Array.from(
         { length: reels * rows + 1 },
@@ -765,6 +785,13 @@ function makeSlotSpec(index, math) {
       )
     };
   }
+  const wildWeight = 3 + index % 2;
+  spec.wild = {
+    symbol: spec.weights.length,
+    weight: wildWeight,
+    reel: Math.floor(reels / 2)
+  };
+  spec.weights.push(wildWeight);
   const raw = math.pays.map(
     (pay, symbol) => Array.from(
       { length: reels - minimum + 1 },
@@ -784,8 +811,8 @@ function makeSlotSpec(index, math) {
 function modelEvaluate(grid, spec) {
   if (spec.premium) return premiumEvaluate(grid, spec);
   if (grid.length !== spec.reels || grid.some(
-    (col) => col.length !== spec.rows || col.some(
-      (s) => !Number.isInteger(s) || s < 0 || s >= spec.weights.length
+    (col, c) => col.length !== spec.rows || col.some(
+      (s) => !Number.isInteger(s) || s < 0 || s >= spec.weights.length || s === spec.wild?.symbol && c !== spec.wild.reel
     )
   ))
     throw new Error("Invalid slot grid");
@@ -798,7 +825,7 @@ function modelEvaluate(grid, spec) {
       const symbol = grid[order[0]][rows[order[0]]];
       if (symbol >= spec.pays.length) return;
       let count = 1;
-      while (count < spec.reels && grid[order[count]][rows[order[count]]] === symbol)
+      while (count < spec.reels && (grid[order[count]][rows[order[count]]] === symbol || grid[order[count]][rows[order[count]]] === spec.wild?.symbol))
         count++;
       if (count >= spec.minimum)
         wins.push({
@@ -815,7 +842,7 @@ function modelEvaluate(grid, spec) {
       const cells = [];
       for (const col of order) {
         const matches = grid[col].flatMap(
-          (s, row) => s === symbol ? [row] : []
+          (s, row) => s === symbol || s === spec.wild?.symbol ? [row] : []
         );
         if (!matches.length) break;
         count++;
@@ -832,7 +859,7 @@ function modelEvaluate(grid, spec) {
         });
     });
   if (spec.scatter) {
-    const symbol = spec.weights.length - 1, cells = [];
+    const symbol = spec.scatter.symbol ?? spec.pays.length, cells = [];
     grid.forEach(
       (col, c) => col.forEach((s, r) => {
         if (s === symbol) cells.push([c, r]);
@@ -852,12 +879,12 @@ function modelEvaluate(grid, spec) {
 }
 function modelSpin(spec, rng = randomInt) {
   if (spec.premium) return premiumSpin(spec, rng);
-  const total = spec.weights.reduce((a, b) => a + b, 0);
   const grid = Array.from(
     { length: spec.reels },
-    () => Array.from({ length: spec.rows }, () => {
-      let ticket = rng(total);
+    (_, col) => Array.from({ length: spec.rows }, () => {
+      let ticket = rng(reelWeightTotal(spec, col));
       for (let i = 0; i < spec.weights.length; i++) {
+        if (i === spec.wild?.symbol && col !== spec.wild.reel) continue;
         ticket -= spec.weights[i];
         if (ticket < 0) return i;
       }
@@ -865,7 +892,12 @@ function modelSpin(spec, rng = randomInt) {
     })
   );
   const wins = modelEvaluate(grid, spec);
-  return { grid, wins, rate: wins.reduce((sum, w) => sum + w.rate, 0) };
+  return {
+    grid,
+    wins,
+    rate: wins.reduce((sum, w) => sum + w.rate, 0),
+    rules_version: SLOT_RULES_VERSION
+  };
 }
 
 // src/lib/catalog.ts

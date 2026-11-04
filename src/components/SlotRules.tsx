@@ -37,8 +37,21 @@ export default function SlotRules({ game }: { game: Original }) {
           regular awards add together.
         </p>
       ) : (
-        <p>No scatters or wild symbols in this game.</p>
+        <p>No scatter symbols in this game.</p>
       )}
+      {s.wild && (
+        <p>
+          <b>WILD:</b> appears only on reel {s.wild.reel + 1} (counted from the
+          left), and substitutes for regular symbols only. It never substitutes
+          for a scatter and has no separate payout. Line wins pay their longest
+          match once; ways count each distinct row combination once. The outer
+          reels never contain wilds, so an all-wild combination cannot occur.
+        </p>
+      )}
+      <p>
+        Big, Mega and Epic win celebrations start at 10×, 25× and 50× the stake
+        returned. Celebrations do not add a payout or place another bet.
+      </p>
       <p>
         No progressive jackpot, bonus purchase or free-spin feature. Every spin
         is independent; past results do not affect the next spin. Theoretical
@@ -61,18 +74,23 @@ export default function SlotRules({ game }: { game: Original }) {
             {awards.map((pay, i) => (
               <span key={i}>{(pay / 100).toFixed(2)}×</span>
             ))}
-            <small>
-              {s.weights[symbol]}/{s.weights.reduce((a, b) => a + b, 0)}
-            </small>
+            <small>{s.weights[symbol]}</small>
           </div>
         ))}
         {s.scatter && (
           <p>
-            {s.scatter.name} weight: {s.scatter.weight}/
-            {s.weights.reduce((a, b) => a + b, 0)}
+            {s.scatter.name} weight: {s.scatter.weight}.
           </p>
         )}
       </div>
+      {s.wild && (
+        <p>
+          Wild weight on reel {s.wild.reel + 1}: {s.wild.weight}. Total weight
+          on that reel: {s.weights.reduce((a, b) => a + b, 0)}; other reels:{" "}
+          {s.weights.reduce((a, b) => a + b, 0) - s.wild.weight}. Each cell is
+          drawn independently.
+        </p>
+      )}
       {s.mode === "lines" && (
         <div className="payline-guide">
           {s.lines.map((rows, i) => (

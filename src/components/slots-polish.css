@@ -634,3 +634,207 @@
 .spindra-extension .slot-polished .reel-stopped .reel-strip {
   animation-duration: 240ms;
 }
+
+.spindra-extension .slot-polished .slot-specials {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 9px 0 2px;
+}
+.spindra-extension .slot-polished .slot-specials span {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  border: 1px solid #ffe09377;
+  border-radius: 20px;
+  padding: 5px 10px;
+  background: #1b203dcc;
+  color: #ffedbd;
+}
+.spindra-extension .slot-polished .wild-symbol .symbol-name {
+  color: #17213a;
+  background: linear-gradient(90deg, #ffd25d, #fff1bb);
+  border: 1px solid #bd8d2a;
+  border-radius: 10px;
+  padding: 2px;
+  bottom: 1px;
+}
+.spindra-extension .slot-polished .slot-win-overlay {
+  animation: none;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 12px;
+  pointer-events: none;
+  overflow: hidden;
+  border: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse, #0a112bd9, transparent 80%);
+}
+.spindra-extension .slot-polished .slot-win-card {
+  position: relative;
+  z-index: 2;
+  max-width: 95%;
+  width: fit-content;
+  padding: 18px 28px;
+  text-align: center;
+  border: 1px solid #ffe49d;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #3e2c3def, #101c37f5);
+  box-shadow:
+    0 0 30px #ffd16e44,
+    inset 0 1px #fff6;
+  animation: slot-award-arrive 450ms cubic-bezier(0.16, 0.8, 0.25, 1) both;
+}
+.spindra-extension .slot-polished .slot-win-card > small {
+  display: block;
+  color: #ffdf95;
+  font-size: 8px;
+  letter-spacing: 2px;
+}
+.spindra-extension .slot-polished .slot-win-card > strong {
+  display: block;
+  font-size: clamp(23px, 4vw, 47px);
+  font-weight: 950;
+  letter-spacing: 1px;
+  line-height: 1.1;
+  margin: 7px 0;
+  color: #fff0ad;
+  text-shadow: 0 3px #6d3929;
+}
+.spindra-extension .slot-polished .slot-win-amount {
+  color: #fff;
+  font-size: clamp(29px, 5vw, 60px);
+  font-weight: 900;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.spindra-extension .slot-polished .slot-win-card > span {
+  display: block;
+  color: #eddbad;
+  font-size: 10px;
+  margin-top: 7px;
+}
+.spindra-extension .slot-polished .slot-win-card > button {
+  pointer-events: auto;
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: transparent;
+  color: white;
+  border: 0;
+  font-size: 23px;
+  line-height: 1;
+}
+.spindra-extension .slot-polished .tier-big .slot-win-card,
+.spindra-extension .slot-polished .tier-mega .slot-win-card,
+.spindra-extension .slot-polished .tier-epic .slot-win-card {
+  padding: 24px 32px;
+  border-width: 2px;
+  box-shadow:
+    0 0 0 5px #ffe68b1c,
+    0 0 60px #ffc85c77;
+}
+.spindra-extension .slot-polished .tier-mega .slot-win-card {
+  background: linear-gradient(135deg, #593b30, #412453, #15213e);
+  border-color: #ffdb84;
+}
+.spindra-extension .slot-polished .tier-epic .slot-win-card {
+  background: linear-gradient(135deg, #645524, #562b65, #182d48);
+  border-color: #fff3b3;
+  box-shadow:
+    0 0 0 6px #ffe68b30,
+    0 0 80px #ffd77e88;
+}
+.spindra-extension .slot-polished .slot-win-rays {
+  position: absolute;
+  inset: -50%;
+  background: repeating-conic-gradient(
+    from 10deg,
+    #ffdd8130 0 12deg,
+    transparent 12deg 29deg
+  );
+  animation: slot-award-rays 14s linear infinite;
+  opacity: 0.6;
+}
+.spindra-extension .slot-polished .tier-normal .slot-win-rays {
+  display: none;
+}
+.spindra-extension .slot-polished .slot-win-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.spindra-extension .slot-polished .slot-win-particles i {
+  position: absolute;
+  left: calc(var(--lane) * 1%);
+  top: -28px;
+  color: #ffe895;
+  font-style: normal;
+  font-size: clamp(14px, 2vw, 24px);
+  animation: slot-award-particle 3100ms ease-in both;
+  animation-delay: calc(var(--piece) * 50ms);
+}
+@keyframes slot-award-arrive {
+  from {
+    opacity: 0;
+    transform: scale(0.82) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes slot-award-rays {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes slot-award-particle {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) rotate(0);
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate(calc(var(--drift) * 1px), 480px) rotate(230deg);
+  }
+}
+@media (max-width: 650px) {
+  .spindra-extension .slot-polished .slot-specials span {
+    font-size: 7px;
+    padding: 4px 7px;
+  }
+  .spindra-extension .slot-polished .slot-win-card,
+  .spindra-extension .slot-polished .tier-big .slot-win-card,
+  .spindra-extension .slot-polished .tier-mega .slot-win-card,
+  .spindra-extension .slot-polished .tier-epic .slot-win-card {
+    padding: 18px 21px;
+  }
+  .spindra-extension .slot-polished .slot-win-card > strong {
+    font-size: clamp(20px, 5vw, 32px);
+  }
+  .spindra-extension .slot-polished .slot-win-amount {
+    font-size: clamp(26px, 7vw, 40px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .slot-polished .slot-win-rays,
+  .spindra-extension .slot-polished .slot-win-particles {
+    display: none;
+  }
+  .spindra-extension .slot-polished .slot-win-card {
+    animation: none;
+  }
+}

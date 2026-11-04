@@ -120,7 +120,9 @@ export default function PremiumSlotRules({ game }: { game: Original }) {
         to a USD cent. Theoretical RTP is computed from the exact rules and
         weights before cent rounding; small stakes can have a lower effective
         RTP. Outcomes and all included stages are determined on the server and
-        settled once. Skipping animations changes no outcome.
+        settled once. Skipping animations changes no outcome. Big, Mega and Epic
+        win celebrations begin at 10×, 25× and 50× the stake returned and do not
+        add a payout.
       </p>
     </div>
   );

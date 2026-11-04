@@ -103,6 +103,7 @@ for (const delay of [0, 1500])
         t.mock.timers.tick(delay);
       });
       assert.equal(finished, 0);
+      assert.equal(app.container.querySelector(".slot-win-overlay"), null);
       await act(async () => {
         resolve({ ...result, returned_minor: state.returned_minor });
       });
@@ -111,6 +112,11 @@ for (const delay of [0, 1500])
         t.mock.timers.tick(delay ? 0 : 550);
       });
       assert.equal(finished, 1);
+      assert.ok(app.container.querySelector(".slot-win-overlay"));
+      fireEvent.click(screen.getByRole("button", { name: "Dismiss win celebration" }));
+      assert.equal(app.container.querySelector(".slot-win-overlay"), null);
+      assert.equal(finished, 1);
+      assert.equal(starts, 1);
       assert.equal(app.container.querySelectorAll(".reel-moving").length, 0);
       assert.equal(
         (

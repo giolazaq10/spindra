@@ -17,6 +17,8 @@ import {
   CASH_MODEL,
 } from "../_shared/cash-engine.js";
 
+import { newCashRound as legacyCashRound } from "../_shared/cash-engine-v1.js";
+
 const geoReady = () => env("CASH_GEO_SECRET").length >= 32;
 
 async function resolveCountry(
@@ -231,7 +233,16 @@ Deno.serve(async (req: Request) => {
     if (body.action === "start") {
       if (location.error) throw location.error;
       const geoCountry = location.country;
-      const state = newCashRound(String(body.game), body.input || {});
+      let state = newCashRound(String(body.game), body.input || {});
+      if (state.kind === "slots" && "rules_version" in state.data) {
+        if (body.input?.slot_rules === undefined) {
+          state = legacyCashRound(String(body.game), body.input || {});
+          state.data.rules_version = "legacy-v1";
+        } else if (body.input.slot_rules !== state.data.rules_version)
+          throw new Error(
+            "Stake must use current game rules. Refresh this game before spinning.",
+          );
+      }
       return reply(
         await commit(
           user.id,

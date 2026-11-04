@@ -144,23 +144,31 @@ const jewelColors = [
 ];
 export function SlotSymbol({ spec, index }: { spec: SlotSpec; index: number }) {
   const id = useId().replace(/:/g, ""),
-    scatter = index === 7;
-  const Icon = icons[spec.icons[scatter ? 0 : index]] || Gem;
-  const name = scatter ? spec.scatter!.name : spec.symbolNames[index];
+    scatter =
+      !!spec.scatter && index === (spec.scatter.symbol ?? spec.pays.length),
+    wild = index === spec.wild?.symbol;
+  const Icon = wild ? Star : icons[spec.icons[scatter ? 0 : index]] || Gem;
+  const name = wild
+    ? "Wild"
+    : scatter
+      ? spec.scatter!.name
+      : spec.symbolNames[index];
   const look = slotLook(spec.scene);
-  const color = scatter
-    ? "#ffcd42"
-    : index === 6
-      ? look.primary
-      : index === 5
-        ? look.secondary
-        : jewelColors[(index + (sceneTints[spec.scene] || 0)) % 7];
+  const color =
+    scatter || wild
+      ? "#ffcd42"
+      : index === 6
+        ? look.primary
+        : index === 5
+          ? look.secondary
+          : jewelColors[(index + (sceneTints[spec.scene] || 0)) % 7];
   return (
     <div
       className={
         "themed-symbol illustrated-symbol symbol-tier-" +
         index +
-        (scatter ? " scatter-symbol" : "")
+        (scatter ? " scatter-symbol" : "") +
+        (wild ? " wild-symbol" : "")
       }
       role="img"
       aria-label={name}
@@ -251,10 +259,37 @@ export function SlotSymbol({ spec, index }: { spec: SlotSpec; index: number }) {
           fill="#fff9d9"
           opacity=".85"
         />
+        {(wild || scatter) && (
+          <>
+            <rect
+              x={wild ? 15 : 8}
+              y="41"
+              width={wild ? 70 : 84}
+              height="24"
+              rx="7"
+              fill="#19213e"
+              stroke={color}
+              strokeWidth="1.5"
+            />
+            <text
+              x="50"
+              y="57"
+              textAnchor="middle"
+              fill="#fff3af"
+              fontFamily="Arial,sans-serif"
+              fontSize={wild ? 17 : 11}
+              fontWeight="900"
+            >
+              {wild ? "WILD" : "SCATTER"}
+            </text>
+          </>
+        )}
         <circle cx="78" cy="17" r="3" fill="#fff" />
         <circle cx="85" cy="71" r="2" fill={color} />
       </svg>
-      <small className="symbol-name">{scatter ? "SCATTER" : name}</small>
+      <small className="symbol-name">
+        {wild ? "WILD" : scatter ? "SCATTER" : name}
+      </small>
     </div>
   );
 }
