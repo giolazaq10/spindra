@@ -1,0 +1,506 @@
+/* Shared, readable controls. Theme artwork stays in the game cabinet. */
+.site-header {
+  padding: 8px 0;
+}
+.site-header nav a {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+}
+.site-header .mobile-header-actions {
+  align-items: center;
+  gap: 8px;
+}
+.mobile-wallet-link {
+  display: grid;
+  gap: 2px;
+  padding: 6px 9px;
+  border: 1px solid #ffffff20;
+  border-radius: 10px;
+  background: #141729c9;
+  min-width: 84px;
+}
+.mobile-wallet-link small {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: #c2cbe1;
+}
+.mobile-wallet-link strong {
+  font-size: 13px;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.mobile-deposit-button {
+  width: 36px;
+  height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #ffd26f, #ff9a58);
+  color: #251c28;
+}
+.home-hero {
+  min-height: 0;
+  padding-top: 112px;
+  padding-bottom: 38px;
+}
+.home-hero h1 {
+  font-size: clamp(34px, 4.6vw, 58px);
+  margin-bottom: 16px;
+}
+.home-hero p {
+  font-size: 16px;
+  margin-bottom: 18px;
+  color: #c0c7d9;
+}
+.home-hero .perspective-1000 > div {
+  max-width: 340px;
+}
+.home-catalog-shortcuts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 20px 0 24px;
+}
+.home-catalog-shortcuts a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 7px 11px;
+  background: #17182cbd;
+  border: 1px solid #ffffff25;
+  border-radius: 10px;
+  color: #e7e9f2;
+  font-size: 13px;
+}
+.home-catalog-shortcuts strong {
+  color: #ffdb83;
+  font-variant-numeric: tabular-nums;
+}
+.site-stats {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+.home-categories,
+.home-games-section {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+.home-categories a {
+  padding: 16px 12px;
+}
+.casino-page {
+  padding-top: 96px;
+}
+.casino-breadcrumb {
+  margin-bottom: 16px;
+  color: #acb7ca;
+  font-size: 12px;
+}
+.casino-heading {
+  margin-bottom: 18px;
+}
+.casino-heading h1 {
+  font-size: clamp(25px, 3vw, 34px);
+}
+.casino-heading p {
+  font-size: 13px;
+  color: #b5bfd2;
+}
+.casino-category-tabs {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 16px;
+  scrollbar-width: thin;
+}
+.casino-category-tabs a {
+  flex-shrink: 0;
+  white-space: nowrap;
+  min-height: 38px;
+  padding: 9px 13px;
+  color: #d4dbea;
+}
+.casino-search-toolbar {
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.casino-search-toolbar label,
+.casino-search-toolbar select {
+  padding: 10px 13px;
+  min-height: 44px;
+  font-size: 14px;
+}
+.catalog-grid {
+  gap: 12px;
+}
+.catalog-card {
+  border-radius: 14px;
+}
+.catalog-card .catalog-card-art {
+  aspect-ratio: 5 / 4;
+}
+.catalog-card .catalog-card-info {
+  padding: 11px 12px;
+}
+.catalog-card .catalog-card-info h3 {
+  font-size: 14px;
+  line-height: 1.35;
+  min-height: 38px;
+  margin-bottom: 4px;
+  overflow-wrap: anywhere;
+}
+.catalog-card .catalog-card-info > div {
+  font-size: 10px;
+  gap: 4px;
+  color: #c0cadb;
+  flex-wrap: wrap;
+}
+.catalog-card .catalog-card-info > div:last-child {
+  margin-top: 6px;
+  color: #aebbd0;
+}
+.catalog-card:focus-visible,
+.home-catalog-shortcuts a:focus-visible,
+.mobile-wallet-link:focus-visible {
+  outline: 2px solid #ffd27d;
+  outline-offset: 3px;
+}
+.spindra-extension .compact-slot-page {
+  padding-top: 88px;
+  max-width: 1120px;
+}
+.spindra-extension .compact-slot-page > .text-link {
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+.spindra-extension .compact-slot-page .game-surface {
+  padding: 14px;
+}
+.spindra-extension .compact-slot-page .game-top {
+  margin-bottom: 10px;
+  font-size: 11px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.spindra-extension .compact-slot-page .game-top .pill {
+  font-size: 9px;
+  padding: 5px 8px;
+}
+.spindra-extension .compact-slot-page .distinct-slot,
+.spindra-extension .compact-slot-page .premium-slot {
+  padding: 18px;
+  border-radius: 20px;
+}
+.spindra-extension .compact-slot-page .cabinet-heading {
+  min-height: 66px;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+.spindra-extension .compact-slot-page .cabinet-heading h2,
+.spindra-extension .compact-slot-page .premium-heading h2 {
+  font-size: clamp(24px, 3.5vw, 36px);
+}
+.spindra-extension .compact-slot-page .mechanic-banner {
+  padding: 7px 10px;
+  margin-bottom: 6px;
+}
+.spindra-extension .compact-slot-page .slot-specials {
+  margin: 5px 0;
+}
+.spindra-extension .compact-slot-page .slot-bonus-bar {
+  min-height: 56px;
+  padding: 6px 10px;
+}
+.spindra-extension .compact-slot-page .slot-marquee {
+  margin: 6px 0;
+}
+.spindra-extension .slot-polished .slot-control-deck {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 16px;
+  min-height: 0;
+  margin-top: 10px;
+  padding: 12px 14px 8px;
+  border: 1px solid #b6c9ed38;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #202a40f5, #101a2df5);
+  box-shadow:
+    inset 0 1px #ffffff12,
+    0 6px 20px #0002;
+}
+.spindra-extension .slot-polished .slot-control-deck .slot-deck-metrics {
+  display: flex;
+  gap: 20px;
+  text-align: left;
+  min-width: 0;
+}
+.spindra-extension .slot-polished .slot-deck-metrics > div {
+  min-width: 0;
+}
+.spindra-extension .slot-polished .slot-deck-metrics small {
+  display: block;
+  font-size: 9px;
+  color: #becbe2;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  line-height: 1.4;
+}
+.spindra-extension .slot-polished .slot-deck-metrics small span {
+  font-size: 8px;
+  color: #95a9c8;
+  margin-left: 3px;
+}
+.spindra-extension .slot-polished .slot-deck-metrics strong {
+  display: block;
+  font-size: clamp(15px, 2.3vw, 21px);
+  color: #fff;
+  line-height: 1.4;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.2px;
+}
+.spindra-extension .slot-polished .slot-deck-metrics .has-return strong {
+  color: #ffe49e;
+}
+.spindra-extension .slot-polished .slot-control-deck .slot-wager-action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.spindra-extension .slot-polished .slot-stake-control {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  text-align: left;
+}
+.spindra-extension .slot-polished .slot-stake-control label {
+  font-size: 9px;
+  letter-spacing: 0.8px;
+  color: #cbd7eb;
+  font-weight: 800;
+}
+.spindra-extension .slot-polished .slot-stake-control label span {
+  color: #93a7c5;
+  margin-left: 4px;
+}
+.spindra-extension .slot-polished .slot-stake-stepper {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #8fa5ca70;
+  border-radius: 11px;
+  background: #0b1425;
+  overflow: hidden;
+  height: 42px;
+}
+.spindra-extension .slot-polished .slot-stake-stepper button {
+  display: grid;
+  place-items: center;
+  width: 33px;
+  min-width: 33px;
+  color: #e5edfa;
+  background: #263249;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+}
+.spindra-extension .slot-polished .slot-stake-stepper select {
+  width: 88px;
+  min-width: 0;
+  color: #fff0be;
+  font-size: 17px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  background: #101c30;
+  border: 0;
+  border-radius: 0;
+  padding: 4px 6px;
+}
+.spindra-extension .slot-polished .slot-stake-stepper button:disabled,
+.spindra-extension .slot-polished .slot-stake-stepper select:disabled {
+  opacity: 0.45;
+}
+.spindra-extension .slot-polished .slot-stake-stepper button:focus-visible,
+.spindra-extension .slot-polished .slot-stake-stepper select:focus-visible {
+  outline: 2px solid #ffe29b;
+  outline-offset: -3px;
+}
+.spindra-extension .slot-polished .slot-control-deck .spin-control {
+  width: 76px;
+  height: 76px;
+  min-width: 76px;
+  min-height: 76px;
+  border-radius: 23px;
+  box-shadow:
+    inset 0 1px #fff9,
+    0 4px 0 #0004;
+  border: 1px solid #fff2ae80;
+}
+.spindra-extension .slot-polished .slot-control-deck .spin-control svg {
+  animation: none;
+}
+.spindra-extension .slot-polished .slot-control-deck .spin-control span {
+  font-size: 10px;
+  letter-spacing: 0.7px;
+}
+.spindra-extension .slot-polished .slot-control-deck .spin-can-stop {
+  background: linear-gradient(145deg, #ffd795, #ffa96b);
+  color: #362333;
+}
+.spindra-extension .slot-polished .slot-control-deck .slot-deck-footer {
+  grid-column: 1/-1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 6px;
+  border-top: 1px solid #ffffff13;
+  text-align: left;
+}
+.spindra-extension .slot-polished .slot-deck-rules {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  color: #d6e2f6;
+  border: 0;
+  border-radius: 8px;
+  padding: 5px 0;
+  min-height: 28px;
+  background: transparent;
+  font-size: 11px;
+}
+.spindra-extension .slot-polished .slot-deck-status {
+  font-size: 10px;
+  line-height: 1.4;
+  color: #b3c2dc;
+  overflow-wrap: anywhere;
+}
+.spindra-extension .compact-slot-page .slot-playback-controls {
+  margin: 8px 0 0;
+  padding: 9px 11px;
+  border-radius: 12px;
+}
+.spindra-extension .compact-slot-page .slot-playback-controls button {
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 11px;
+}
+.spindra-extension .compact-slot-page .slot-repeat-controls,
+.spindra-extension .compact-slot-page .slot-audio-controls {
+  gap: 8px;
+}
+.spindra-extension .compact-slot-page .slot-audio-controls {
+  padding-top: 8px;
+  margin-top: 8px;
+}
+.spindra-extension .compact-slot-page .slot-playback-controls p {
+  margin-top: 6px;
+  font-size: 10px;
+}
+.spindra-extension .compact-slot-page .line-results {
+  font-size: 10px;
+  gap: 5px;
+}
+@media (max-width: 1023px) {
+  .site-header .mobile-header-actions {
+    display: flex;
+  }
+}
+@media (max-width: 640px) {
+  .home-hero {
+    padding-top: 92px;
+    padding-bottom: 28px;
+  }
+  .home-hero .grid {
+    gap: 20px;
+  }
+  .home-hero p {
+    font-size: 14px;
+  }
+  .home-hero .home-catalog-shortcuts {
+    justify-content: center;
+  }
+  .casino-page {
+    padding-top: 88px;
+    padding-inline: 12px;
+  }
+  .catalog-grid {
+    gap: 10px;
+  }
+  .catalog-card .catalog-card-info {
+    padding: 9px 10px;
+  }
+  .catalog-card .catalog-card-info h3 {
+    font-size: 13px;
+    min-height: 36px;
+  }
+  .catalog-card .catalog-card-info > div {
+    font-size: 9px;
+  }
+  .casino-search-toolbar {
+    flex-direction: row;
+  }
+  .casino-search-toolbar label {
+    min-width: 0;
+  }
+  .casino-search-toolbar select {
+    width: 100px;
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+  .spindra-extension .compact-slot-page {
+    padding: 80px 8px 28px;
+  }
+  .spindra-extension .compact-slot-page .game-surface {
+    padding: 7px;
+    border-radius: 17px;
+  }
+  .spindra-extension .compact-slot-page .distinct-slot,
+  .spindra-extension .compact-slot-page .premium-slot {
+    padding: 11px;
+  }
+  .spindra-extension .slot-polished .slot-control-deck {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 10px 12px 6px;
+  }
+  .spindra-extension .slot-polished .slot-control-deck .slot-deck-metrics {
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .spindra-extension .slot-polished .slot-deck-metrics strong {
+    font-size: 18px;
+  }
+  .spindra-extension .slot-polished .slot-control-deck .slot-wager-action {
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .spindra-extension .slot-polished .slot-stake-control {
+    flex: 1;
+    max-width: 215px;
+  }
+  .spindra-extension .slot-polished .slot-stake-stepper {
+    height: 44px;
+  }
+  .spindra-extension .slot-polished .slot-stake-stepper button {
+    width: 37px;
+    min-width: 37px;
+  }
+  .spindra-extension .slot-polished .slot-stake-stepper select {
+    width: 100%;
+  }
+  .spindra-extension .slot-polished .slot-control-deck .spin-control {
+    width: 72px;
+    height: 72px;
+    min-width: 72px;
+    min-height: 72px;
+  }
+  .spindra-extension .slot-polished .slot-deck-footer {
+    gap: 9px;
+  }
+}

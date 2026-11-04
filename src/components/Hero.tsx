@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Play, ChevronRight, Sparkles, TrendingUp } from "lucide-react";
+import { Play, ChevronRight, Sparkles } from "lucide-react";
+import { originals } from "../lib/catalog";
 
 const heroImages = [
   "https://images.pexels.com/photos/14213317/pexels-photo-14213317.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
@@ -9,24 +10,20 @@ const heroImages = [
 ];
 
 export default function Hero() {
-  const [jackpot, setJackpot] = useState(1287450);
+  const slotCount = originals.filter((game) => game.slot).length;
   const [imgIndex, setImgIndex] = useState(0);
 
   useEffect(() => {
-    const jInt = setInterval(() => {
-      setJackpot((j) => j + Math.floor(Math.random() * 50 + 10));
-    }, 1500);
     const iInt = setInterval(() => {
       setImgIndex((i) => (i + 1) % heroImages.length);
     }, 5000);
     return () => {
-      clearInterval(jInt);
       clearInterval(iInt);
     };
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden">
+    <section className="home-hero relative flex items-center pt-24 pb-12 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         {heroImages.map((img, i) => (
@@ -73,21 +70,15 @@ export default function Hero() {
             </h1>
 
             <p className="text-lg text-gray-400 mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-              Explore 16 original slots, blackjack, poker, and roulette on
+              Explore {slotCount} original slots, minigames, blackjack, poker, and roulette on
               Spindra — playable with your real USD wallet.
             </p>
 
-            {/* Jackpot counter */}
-            <div className="glass-strong rounded-2xl p-6 mb-8 max-w-md mx-auto lg:mx-0 glow-gold">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-4 h-4 text-amber-400" />
-                <span className="text-xs font-semibold text-amber-400 tracking-widest uppercase">
-                  Jackpot
-                </span>
-              </div>
-              <div className="text-4xl sm:text-5xl font-extrabold text-gradient-gold tabular-nums tracking-tight">
-                ${jackpot.toLocaleString()}
-              </div>
+            <div className="home-catalog-shortcuts" aria-label="Explore games">
+              <Link to="/games/slots"><strong>{slotCount}</strong> Slots</Link>
+              <Link to="/games/instant"><strong>{originals.filter((game) => game.mini).length}</strong> Minigames</Link>
+              <Link to="/games/blackjack">Blackjack</Link>
+              <Link to="/games/poker">Poker</Link>
             </div>
 
             {/* CTAs */}
@@ -131,7 +122,7 @@ export default function Hero() {
                 <div className="glass-strong rounded-3xl p-8 w-72 glow-pink animate-float">
                   <div className="text-center">
                     <div className="text-5xl font-extrabold text-gradient-gold mb-2">
-                      19
+                      {originals.length}
                     </div>
                     <div className="text-sm text-gray-400 mb-4">
                       Original games to explore

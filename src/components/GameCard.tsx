@@ -13,13 +13,15 @@ export default function GameCard({
   return (
     <Link
       to={"/game/" + g.slug}
-      className="group relative rounded-2xl overflow-hidden glass hover:border-amber-400/40 transition-all duration-300 hover:scale-[1.03] animate-[count-up_0.5s_ease_backwards]"
+      className="catalog-card group relative rounded-2xl overflow-hidden glass hover:border-amber-400/40 transition-all duration-300 hover:scale-[1.03] animate-[count-up_0.5s_ease_backwards]"
       style={{ animationDelay: index * 0.04 + "s" }}
     >
-      <div className="relative aspect-[4/3] overflow-hidden">
+      <div className="catalog-card-art relative aspect-[4/3] overflow-hidden">
         <img
           src={g.image_url!}
           alt={g.title}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a14] via-transparent to-transparent" />
@@ -32,7 +34,7 @@ export default function GameCard({
           </div>
         </div>
       </div>
-      <div className="p-4">
+      <div className="catalog-card-info p-4">
         <h3 className="font-bold text-white text-base mb-1 group-hover:text-amber-400 transition-colors">
           {g.title}
         </h3>

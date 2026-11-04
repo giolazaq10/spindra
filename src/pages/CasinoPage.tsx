@@ -20,9 +20,9 @@ export default function CasinoPage() {
     )
     .sort((a, b) => (sort === "az" ? a.name.localeCompare(b.name) : 0));
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8">
+    <div className="casino-page min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+        <div className="casino-breadcrumb flex items-center gap-2 text-sm text-gray-500 mb-6">
           <Link to="/" className="hover:text-amber-400 transition-colors">
             Home
           </Link>
@@ -35,7 +35,7 @@ export default function CasinoPage() {
             </>
           )}
         </div>
-        <div className="mb-8">
+        <div className="casino-heading mb-8">
           <h1 className="text-4xl font-extrabold mb-2">
             {category ? (
               <>
@@ -48,15 +48,16 @@ export default function CasinoPage() {
               </>
             )}
           </h1>
-          <p className="text-gray-400">
-            {games.length} original games available
+          <p className="text-gray-400" role="status" aria-live="polite">
+            {games.length} {games.length === 1 ? "game" : "games"} available
           </p>
         </div>
-        <nav className="flex flex-wrap gap-2 mb-8" aria-label="Game categories">
+        <nav className="casino-category-tabs flex gap-2 mb-8" aria-label="Game categories">
           {[{ slug: "", name: "All Games" }, ...categories].map((c) => (
             <Link
               key={c.slug}
               to={"/games" + (c.slug ? "/" + c.slug : "")}
+              aria-current={(categorySlug || "") === c.slug ? "page" : undefined}
               className={
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all " +
                 ((categorySlug || "") === c.slug
@@ -68,7 +69,7 @@ export default function CasinoPage() {
             </Link>
           ))}
         </nav>
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+        <div className="casino-search-toolbar flex flex-col sm:flex-row gap-4 mb-8">
           <label className="flex items-center gap-3 glass rounded-xl px-4 py-3 flex-1">
             <Search className="w-5 h-5 text-amber-400" />
             <input
@@ -99,7 +100,7 @@ export default function CasinoPage() {
           </select>
         </div>
         {games.length ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div className="catalog-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {games.map((g) => (
               <GameCard game={g} index={originals.indexOf(g)} key={g.slug} />
             ))}

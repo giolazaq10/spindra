@@ -409,7 +409,7 @@ export default function CashGame({ game }: { game: Original }) {
       <p
         className={
           initialized &&
-          ["blackjack", "poker", "roulette"].includes(game.kind) &&
+          ["blackjack", "poker", "roulette", "slots"].includes(game.kind) &&
           /^(Server-authorized|Round settled|Round is open)/.test(message)
             ? "sr-only"
             : ""
@@ -418,7 +418,7 @@ export default function CashGame({ game }: { game: Original }) {
       >
         {initialized ? message : "Checking cash session…"}
       </p>
-      <p>
+      <p className={game.kind === "slots" ? "sr-only" : ""}>
         Cash balance <strong>{money(wallet.realBalance)}</strong>
       </p>
       {pending && uncertain && (

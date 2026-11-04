@@ -108,9 +108,7 @@ for (const { delay, reduced } of [
         app.container.querySelectorAll(".symbol-cell").length,
         symbolCount,
       );
-      fireEvent.click(
-        screen.getByRole("button", { name: "Spinning reels", exact: true }),
-      );
+      assert.ok(screen.getByRole("button", { name: "Stop spin", exact: true }));
       assert.equal(starts, 1);
       await act(async () => {
         now = delay;
@@ -155,11 +153,11 @@ for (const { delay, reduced } of [
         assert.equal(
           (
             screen.getByRole("button", {
-              name: "Spinning reels",
+              name: "Stop spin",
               exact: true,
             }) as HTMLButtonElement
           ).disabled,
-          true,
+          false,
         );
         await act(async () => {
           now += 110;

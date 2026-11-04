@@ -92,13 +92,10 @@ for (const [slug, cells, label] of [
       assert.equal(
         (
           screen.getByRole("button", {
-            name: "Skip confirmed animation",
+            name: "Stop spin",
           }) as HTMLButtonElement
         ).disabled,
-        true,
-      );
-      fireEvent.click(
-        screen.getByRole("button", { name: "Spinning reels", exact: true }),
+        false,
       );
       assert.equal(starts, 1);
       await act(async () => {
@@ -108,7 +105,7 @@ for (const [slug, cells, label] of [
         t.mock.timers.tick(210);
       });
       const skip = screen.getByRole("button", {
-        name: "Skip confirmed animation",
+        name: "Stop spin",
       });
       assert.equal((skip as HTMLButtonElement).disabled, false);
       fireEvent.click(skip);

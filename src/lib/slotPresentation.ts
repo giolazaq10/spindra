@@ -1,3 +1,4 @@
+import { slotStageVars } from "./slotStages";
 export type SlotLook = {
   primary: string;
   secondary: string;
@@ -277,6 +278,7 @@ export function slotLook(scene: string): SlotLook {
 export function slotThemeVars(scene: string) {
   const v = slotLook(scene);
   return {
+    ...slotStageVars(scene),
     "--slot-primary": v.primary,
     "--slot-secondary": v.secondary,
     "--slot-deep": v.deep,
