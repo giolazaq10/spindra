@@ -20,6 +20,7 @@ import SlotWinCelebration from "./SlotWinCelebration";
 import { useSlotPlayback } from "./useSlotPlayback";
 import { useSlotAudio } from "./useSlotAudio";
 import SlotPlaybackControls from "./SlotPlaybackControls";
+import SlotAtmosphere from "./SlotAtmosphere";
 export type PremiumResult = {
   grid: number[][];
   wins: SlotWin[];
@@ -232,6 +233,9 @@ export default function PremiumSlots({
       style={slotThemeVars(s.scene) as CSSProperties}
     >
       <PremiumBackdrop kind={kind} />
+      <SlotAtmosphere
+        phase={playing ? "spin" : paid && returned > lastStake ? "win" : "idle"}
+      />
       <header className="premium-heading">
         <div>
           <span>

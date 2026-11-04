@@ -23,10 +23,15 @@ Object.defineProperty(globalThis, "navigator", {
 const { render, screen, fireEvent, act, cleanup } =
   await import("@testing-library/react");
 
-for (const skip of [false, true])
+for (const { skip, retrigger } of [
+  { skip: false, retrigger: false },
+  { skip: true, retrigger: false },
+  { skip: true, retrigger: true },
+])
   test(
     "confirmed free spins " +
       (skip ? "skip safely" : "play every saved frame") +
+      (retrigger ? " after retrigger effects" : "") +
       " without another wallet request",
     async (t) => {
       t.mock.timers.enable({ apis: ["setTimeout"] });
@@ -38,7 +43,8 @@ for (const skip of [false, true])
         finishes = 0,
         paid = 0;
       const state = newCashRound(game.slug, { bet: 20 }, () =>
-        cell++ < 3
+        cell++ % (game.slot!.reels * game.slot!.rows) < 3 &&
+        cell <= (retrigger ? 2 : 1) * game.slot!.reels * game.slot!.rows
           ? game
               .slot!.weights.slice(0, game.slot!.scatter!.symbol)
               .reduce((a, b) => a + b, 0)
@@ -105,6 +111,19 @@ for (const skip of [false, true])
           t.mock.timers.tick(550);
         });
         assert.ok(screen.getByText("10 FREE SPINS AWARDED"));
+        assert.ok(
+          screen.getByRole("region", {
+            name: "Scatter free-spins celebration",
+          }),
+        );
+        assert.equal(
+          app.container.querySelectorAll(".scatter-cell-orbit").length,
+          3,
+        );
+        assert.equal(
+          screen.getAllByRole("button", { name: "Start free spins" }).length,
+          1,
+        );
         assert.equal(finishes, 0);
         assert.equal(
           (screen.getByLabelText("Total stake") as HTMLSelectElement).disabled,
@@ -116,7 +135,21 @@ for (const skip of [false, true])
         await act(async () => {
           t.mock.timers.tick(530);
         });
-        assert.ok(screen.getByText("FREE SPINS · 9 LEFT"));
+        assert.ok(
+          screen.getByText(
+            retrigger ? "FREE SPINS · 14 LEFT" : "FREE SPINS · 9 LEFT",
+          ),
+        );
+        assert.equal(
+          screen.queryByRole("region", {
+            name: "Scatter free-spins celebration",
+          }),
+          null,
+        );
+        assert.equal(
+          app.container.querySelectorAll(".scatter-retrigger-ribbon").length,
+          retrigger ? 1 : 0,
+        );
         if (skip)
           fireEvent.click(
             screen.getByRole("button", { name: "Skip bonus animations" }),
