@@ -53,12 +53,21 @@ export default function SlotRules({ game }: { game: Original }) {
         returned. Celebrations do not add a payout or place another bet.
       </p>
       <p>
-        No progressive jackpot, bonus purchase or free-spin feature. Every spin
-        is independent; past results do not affect the next spin. Theoretical
-        RTP is computed from these exact symbol weights and payouts before cash
-        rounding. Cash returns are rounded down once to a USD cent after adding
-        all awards. This can reduce the effective RTP at smaller stakes. Minimum
-        stake: $0.20, in $0.10 increments.
+        Three or more scatters anywhere award 10 free spins at the triggering
+        stake, with no additional charge. During free spins, three or more
+        scatters award five extra spins, limited to 50 awarded spins per bonus.
+        The same reels, wilds and paytable apply. No bonus multiplier applies.
+        Base and bonus awards add together and are settled once; leaving or
+        skipping animations does not forfeit the confirmed return.
+      </p>
+      <p>
+        No progressive jackpot or bonus purchase. Every spin is independent;
+        past results do not affect the next spin. Theoretical RTP includes the
+        base game, free spins and capped retriggers, computed from these exact
+        symbol weights and payouts before cash rounding. Cash returns are
+        rounded down once to a USD cent after adding all awards. This can reduce
+        the effective RTP at smaller stakes. Minimum stake: $0.20, in $0.10
+        increments.
       </p>
       <div className="slot-paytable">
         <div>

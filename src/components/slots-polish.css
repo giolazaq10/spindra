@@ -661,6 +661,46 @@
   padding: 2px;
   bottom: 1px;
 }
+.spindra-extension .slot-polished .slot-bonus-bar {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 12px;
+  color: #cbd4eb;
+  text-align: center;
+  font-size: 11px;
+  border: 1px solid #ffffff12;
+  border-radius: 14px;
+  background: #0d153744;
+  flex-wrap: wrap;
+}
+.spindra-extension .slot-polished .slot-bonus-bar.bonus-visible {
+  background: linear-gradient(110deg, #452173, #143b5b);
+  border-color: #ebcc73;
+}
+.spindra-extension .slot-polished .slot-bonus-bar strong,
+.spindra-extension .slot-polished .slot-bonus-bar span {
+  display: block;
+}
+.spindra-extension .slot-polished .slot-bonus-bar strong {
+  color: #ffe09a;
+  letter-spacing: 1px;
+  font-size: 14px;
+}
+.spindra-extension .slot-polished .slot-bonus-bar button {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ffe6ae88;
+  background: #ffe1a0;
+  color: #211c39;
+  font-weight: 800;
+}
+.spindra-extension .slot-polished .slot-bonus-bar button:last-child {
+  color: #f1e7ff;
+  background: #ffffff14;
+}
 .spindra-extension .slot-polished .slot-win-overlay {
   animation: none;
   position: absolute;

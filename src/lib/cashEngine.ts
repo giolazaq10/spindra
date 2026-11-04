@@ -1,6 +1,6 @@
 import { originals } from "./catalog";
 import { miniPlay } from "./minigames";
-import { modelSpin } from "./slotModels";
+import { modelRound, SLOT_RULES_VERSION } from "./slotModels";
 import {
   randomInt,
   rouletteReturn,
@@ -31,6 +31,10 @@ import {
   type PokerAction,
 } from "./holdem";
 export const CASH_MODEL = "spindra-cash-v1";
+export function slotRulesVersion(game: string) {
+  const g = originals.find((entry) => entry.slug === game);
+  return g?.slot && !g.slot.premium ? SLOT_RULES_VERSION : null;
+}
 export type CashState = {
   model: string;
   game: string;
@@ -100,7 +104,7 @@ export function newCashRound(
     data = result;
     returned = result.returned_minor;
   } else if (g.kind === "slots") {
-    const result = modelSpin(g.slot!, rng);
+    const result = modelRound(g.slot!, rng);
     returned = Math.floor((stake * result.rate) / 100);
     data = result;
   } else if (g.kind === "roulette") {

@@ -209,7 +209,12 @@ for (const [slug, label] of [
   );
 }
 
-for (const slug of ["solar-vault", "astra-cascade", "copper-lock", "nitro-sevens"])
+for (const slug of [
+  "solar-vault",
+  "astra-cascade",
+  "copper-lock",
+  "nitro-sevens",
+])
   test(
     slug +
       " launches through the authenticated cash endpoint with one twenty-cent stake for every included stage",
@@ -282,7 +287,7 @@ for (const slug of ["solar-vault", "astra-cascade", "copper-lock", "nitro-sevens
         assert.equal(starts[0].input.bet, 20);
         assert.equal(
           starts[0].input.slot_rules,
-          slug === "solar-vault" ? "center-wild-scatter-v2" : undefined,
+          slug === "solar-vault" ? "scatter-free-spins-v3" : undefined,
         );
         assert.equal(starts[0].input.returned_minor, undefined);
         assert.equal(sessionStorage.length, 0);

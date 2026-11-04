@@ -9,7 +9,11 @@ import { redNumbers } from "@/lib/engine";
 import CashPokerSeat from "./CashPokerSeat";
 import RouletteBets from "./RouletteBets";
 import { pokerMotion } from "./pokerMotion";
-import { SLOT_RULES_VERSION, type SlotWin } from "@/lib/slotModels";
+import {
+  SLOT_RULES_VERSION,
+  type SlotWin,
+  type SlotBonus,
+} from "@/lib/slotModels";
 import type { Controls } from "./OriginalGame";
 import AdvancedSlots from "./AdvancedSlots";
 import PremiumSlots from "./PremiumSlots";
@@ -58,6 +62,8 @@ type Table = {
   log?: string[];
 };
 type Result = {
+  bonus?: SlotBonus;
+  base_rate?: number;
   frames?: PremiumFrame[];
   grid: number[][];
   wins: SlotWin[];
@@ -463,22 +469,30 @@ export default function CashGame({ game }: { game: Original }) {
           }}
         />
       ) : game.kind === "slots" ? (
-        <SlotCabinet
-          game={game}
-          controls={c}
-          initialResult={
-            round?.view.result?.grid
-              ? {
-                  ...round.view.result,
-                  returned_minor: round.view.returned_minor,
-                }
-              : undefined
-          }
-          serverSpin={async () => {
-            const r = await start();
-            return { ...r.view.result!, returned_minor: r.view.returned_minor };
-          }}
-        />
+        !initialized ? (
+          <p>Loading slot session…</p>
+        ) : (
+          <SlotCabinet
+            game={game}
+            controls={c}
+            initialResult={
+              round?.view.result?.grid
+                ? {
+                    ...round.view.result,
+                    returned_minor: round.view.returned_minor,
+                    stake_minor: round.view.stake_minor,
+                  }
+                : undefined
+            }
+            serverSpin={async () => {
+              const r = await start();
+              return {
+                ...r.view.result!,
+                returned_minor: r.view.returned_minor,
+              };
+            }}
+          />
+        )
       ) : (
         <>
           <div className={"cash-table cash-" + game.kind}>

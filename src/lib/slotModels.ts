@@ -18,6 +18,12 @@ export type SlotSpec = {
   pays: number[][];
   scatter?: { name: string; weight: number; awards: number[]; symbol?: number };
   wild?: { symbol: number; weight: number; reel: number };
+  freeSpins?: {
+    trigger: number;
+    initial: number;
+    retrigger: number;
+    maximum: number;
+  };
   feature: string;
   description: string;
   scene: string;
@@ -347,15 +353,15 @@ function paths(reels: number, rows: number, count: number, seed: number) {
   }
   return result.slice(0, count);
 }
-export const SLOT_RULES_VERSION = "center-wild-scatter-v2";
+export const SLOT_RULES_VERSION = "scatter-free-spins-v3";
 export function reelWeightTotal(spec: SlotSpec, col: number) {
   return (
     spec.weights.reduce((a, b) => a + b, 0) -
     (spec.wild && spec.wild.reel !== col ? spec.weights[spec.wild.symbol] : 0)
   );
 }
-function scatterExpectation(spec: SlotSpec) {
-  if (!spec.scatter) return 0;
+function scatterDistribution(spec: SlotSpec) {
+  if (!spec.scatter) return [1];
   const symbol = spec.scatter.symbol ?? spec.pays.length;
   let distribution = [1];
   for (let col = 0; col < spec.reels; col++)
@@ -368,9 +374,48 @@ function scatterExpectation(spec: SlotSpec) {
       });
       distribution = next;
     }
-  return distribution.reduce(
+  return distribution;
+}
+function scatterExpectation(spec: SlotSpec) {
+  if (!spec.scatter) return 0;
+  return scatterDistribution(spec).reduce(
     (sum, chance, count) => sum + chance * (spec.scatter!.awards[count] || 0),
     0,
+  );
+}
+export function expectedBonusSpins(
+  probability: number,
+  initial: number,
+  retrigger: number,
+  maximum: number,
+) {
+  const memo = new Map<string, number>();
+  function expected(pending: number, granted: number): number {
+    if (!pending) return 0;
+    const key = pending + ":" + granted,
+      saved = memo.get(key);
+    if (saved !== undefined) return saved;
+    const extra = Math.min(retrigger, maximum - granted);
+    const value =
+      1 +
+      (1 - probability) * expected(pending - 1, granted) +
+      probability * expected(pending - 1 + extra, granted + extra);
+    memo.set(key, value);
+    return value;
+  }
+  return expected(initial, initial);
+}
+export function freeSpinFactor(spec: SlotSpec) {
+  if (!spec.freeSpins || !spec.scatter) return 1;
+  const f = spec.freeSpins;
+  const probability = scatterDistribution(spec).reduce(
+    (sum, chance, count) => sum + (count >= f.trigger ? chance : 0),
+    0,
+  );
+  return (
+    1 +
+    probability *
+      expectedBonusSpins(probability, f.initial, f.retrigger, f.maximum)
   );
 }
 function symbolExpectation(spec: SlotSpec, symbol: number, awards: number[]) {
@@ -416,7 +461,6 @@ export function makeSlotSpec(index: number, math: SlotMath): SlotSpec {
     scene,
     icons,
     scatterName,
-    threshold,
   ] = setups[index];
   const weights = math.weights.map((w, i) =>
     Math.max(1, w + ((index % 3) - 1) * (i % 2 ? 1 : -1)),
@@ -431,7 +475,14 @@ export function makeSlotSpec(index: number, math: SlotMath): SlotSpec {
     weights,
     pays: [],
     feature,
-    description,
+    description: description
+      .replace(/four pearls/i, "three pearls")
+      .replace(/four-lantern/i, "three-lantern")
+      .replace(/five energy cells/i, "three energy cells")
+      .replace(/four compasses/i, "three compasses")
+      .replace(/four parade tickets/i, "three parade tickets")
+      .replace(/four black pearls/i, "three black pearls")
+      .replace(/five dragon seals/i, "three dragon seals"),
     scene,
     icons: icons.split(","),
     symbolNames: icons
@@ -446,13 +497,7 @@ export function makeSlotSpec(index: number, math: SlotMath): SlotSpec {
       symbol: spec.weights.length - 1,
       weight,
       awards: Array.from({ length: reels * rows + 1 }, (_, count) =>
-        count < (threshold || 3)
-          ? 0
-          : count === (threshold || 3)
-            ? 2
-            : count === (threshold || 3) + 1
-              ? 5
-              : 15,
+        count < 3 ? 0 : count === 3 ? 2 : count === 4 ? 5 : 15,
       ),
     };
   }
@@ -463,6 +508,7 @@ export function makeSlotSpec(index: number, math: SlotMath): SlotSpec {
     reel: Math.floor(reels / 2),
   };
   spec.weights.push(wildWeight);
+  spec.freeSpins = { trigger: 3, initial: 10, retrigger: 5, maximum: 50 };
   // Awards are hundredths of TOTAL stake. Cash settlement multiplies integer
   // minor stakes and floors the combined return once to a USD cent.
   const raw = math.pays.map((pay, symbol) =>
@@ -478,7 +524,9 @@ export function makeSlotSpec(index: number, math: SlotMath): SlotSpec {
     (sum, awards, symbol) => sum + symbolExpectation(spec, symbol, awards),
     0,
   );
-  const target = 0.94 + (index % 4) * 0.005 - scatterExpectation(spec);
+  const target =
+    (0.94 + (index % 4) * 0.005) / freeSpinFactor(spec) -
+    scatterExpectation(spec);
   spec.pays = raw.map((awards) =>
     awards.map((pay) => Math.max(1, Math.round((pay * target) / expected))),
   );
@@ -487,10 +535,12 @@ export function makeSlotSpec(index: number, math: SlotMath): SlotSpec {
 export function modelRtp(spec: SlotSpec) {
   if (spec.premium) return premiumRtp(spec.premium);
   return (
-    spec.pays.reduce(
+    (spec.pays.reduce(
       (sum, awards, symbol) => sum + symbolExpectation(spec, symbol, awards),
       0,
-    ) + scatterExpectation(spec)
+    ) +
+      scatterExpectation(spec)) *
+    freeSpinFactor(spec)
   );
 }
 export type SlotWin = {
@@ -605,5 +655,53 @@ export function modelSpin(spec: SlotSpec, rng: RandomInt = randomInt) {
     wins,
     rate: wins.reduce((sum, w) => sum + w.rate, 0),
     rules_version: SLOT_RULES_VERSION,
+  };
+}
+export type ClassicSpin = {
+  grid: number[][];
+  wins: SlotWin[];
+  rate: number;
+};
+export type FreeSpinFrame = ClassicSpin & { added: number; remaining: number };
+export type SlotBonus = {
+  initial: number;
+  awarded: number;
+  frames: FreeSpinFrame[];
+};
+/** Resolve the complete paid round once. Bonus presentation never places a bet. */
+export function modelRound(spec: SlotSpec, rng: RandomInt = randomInt) {
+  const base = modelSpin(spec, rng);
+  if (spec.premium || !spec.freeSpins || !spec.scatter) return base;
+  const scatterCount = (spin: ClassicSpin) =>
+    spin.grid.flat().filter((s) => s === spec.scatter!.symbol).length;
+  const f = spec.freeSpins;
+  if (scatterCount(base) < f.trigger) return base;
+  let pending = f.initial,
+    awarded = f.initial,
+    rate = base.rate;
+  const frames: FreeSpinFrame[] = [];
+  while (pending > 0) {
+    const spin = modelSpin(spec, rng);
+    pending--;
+    const added =
+      scatterCount(spin) >= f.trigger
+        ? Math.min(f.retrigger, f.maximum - awarded)
+        : 0;
+    pending += added;
+    awarded += added;
+    rate += spin.rate;
+    frames.push({
+      grid: spin.grid,
+      wins: spin.wins,
+      rate: spin.rate,
+      added,
+      remaining: pending,
+    });
+  }
+  return {
+    ...base,
+    base_rate: base.rate,
+    rate,
+    bonus: { initial: f.initial, awarded, frames },
   };
 }

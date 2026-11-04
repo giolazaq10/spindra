@@ -2,7 +2,7 @@ import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
 import { flushSync } from "react-dom";
 import { RotateCw, Trophy } from "lucide-react";
 import type { Original } from "../lib/catalog";
-import { type SlotWin } from "../lib/slotModels";
+import { type SlotWin, type SlotBonus } from "../lib/slotModels";
 import AnimatedCredits from "./AnimatedCredits";
 import SlotWinCelebration from "./SlotWinCelebration";
 import { credits } from "../lib/money";
@@ -24,22 +24,63 @@ export default function AdvancedSlots({
     wins: SlotWin[];
     rate: number;
     returned_minor: number;
+    base_rate?: number;
+    bonus?: SlotBonus;
   }>;
-  initialResult?: { grid: number[][]; wins: SlotWin[]; returned_minor: number };
+  initialResult?: {
+    grid: number[][];
+    wins: SlotWin[];
+    returned_minor: number;
+    stake_minor?: number;
+    base_rate?: number;
+    bonus?: SlotBonus;
+  };
 }) {
   const s = game.slot!;
   const [grid, setGrid] = useState(
     () =>
+      initialResult?.bonus?.frames[initialResult.bonus.frames.length - 1]
+        ?.grid ||
       initialResult?.grid ||
       Array.from({ length: s.reels }, (_, col) =>
         Array.from({ length: s.rows }, (_, row) => (col + row) % 7),
       ),
   );
   const [moving, setMoving] = useState<boolean[]>(Array(s.reels).fill(false)),
-    [wins, setWins] = useState<SlotWin[]>(initialResult?.wins || []),
+    [wins, setWins] = useState<SlotWin[]>(
+      initialResult?.bonus?.frames[initialResult.bonus.frames.length - 1]
+        ?.wins ||
+        initialResult?.wins ||
+        [],
+    ),
     [returned, setReturned] = useState(initialResult?.returned_minor || 0),
     [round, setRound] = useState(0),
-    [lastStake, setLastStake] = useState(c.bet);
+    [lastStake, setLastStake] = useState(initialResult?.stake_minor || c.bet);
+  const [bonus, setBonus] = useState<{
+    phase: "intro" | "playing" | "complete";
+    played: number;
+    remaining: number;
+    added: number;
+    won: number;
+  } | null>(() =>
+    initialResult?.bonus
+      ? {
+          phase: "complete",
+          played: initialResult.bonus.frames.length,
+          remaining: 0,
+          added: 0,
+          won:
+            initialResult.returned_minor -
+            Math.floor(
+              ((initialResult.stake_minor || c.bet) *
+                (initialResult.base_rate || 0)) /
+                100,
+            ),
+        }
+      : null,
+  );
+  const confirmed = useRef<Awaited<ReturnType<typeof serverSpin>> | null>(null);
+  const bonusStarted = useRef(false);
   const lock = useRef(false),
     mounted = useRef(true),
     timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -59,6 +100,9 @@ export default function AdvancedSlots({
     timers.current.forEach(clearTimeout);
     timers.current.length = 0;
     flushSync(() => {
+      setBonus(null);
+      confirmed.current = null;
+      bonusStarted.current = false;
       setWins([]);
       setReturned(0);
       setMoving(Array(s.reels).fill(true));
@@ -82,6 +126,7 @@ export default function AdvancedSlots({
       return;
     }
     if (!mounted.current) return;
+    confirmed.current = result;
     // Network settlement and reel motion run together, not one after another.
     const elapsed = performance.now() - startedAt;
     result.grid.forEach((column, col) =>
@@ -91,11 +136,23 @@ export default function AdvancedSlots({
             setGrid((g) => g.map((old, i) => (i === col ? column : old)));
             setMoving((m) => m.map((old, i) => (i === col ? false : old)));
             if (col === s.reels - 1) {
-              const payout = result.returned_minor;
+              const payout = result.bonus
+                ? Math.floor((stake * (result.base_rate || 0)) / 100)
+                : result.returned_minor;
               setWins(result.wins);
               setReturned(payout);
-              lock.current = false;
-              c.finish(payout);
+              if (result.bonus) {
+                setBonus({
+                  phase: "intro",
+                  played: 0,
+                  remaining: result.bonus.initial,
+                  added: 0,
+                  won: 0,
+                });
+              } else {
+                lock.current = false;
+                c.finish(payout);
+              }
             }
           },
           Math.max(0, 300 + col * 45 - elapsed),
@@ -103,6 +160,72 @@ export default function AdvancedSlots({
       ),
     );
   }
+  function completeBonus() {
+    const result = confirmed.current;
+    if (!result?.bonus || !mounted.current || !lock.current) return;
+    timers.current.forEach(clearTimeout);
+    timers.current.length = 0;
+    const last = result.bonus.frames[result.bonus.frames.length - 1];
+    setGrid(last.grid);
+    setMoving(Array(s.reels).fill(false));
+    setWins(last.wins);
+    setReturned(result.returned_minor);
+    setRound((n) => n + 1);
+    setBonus({
+      phase: "complete",
+      played: result.bonus.frames.length,
+      remaining: 0,
+      added: 0,
+      won:
+        result.returned_minor -
+        Math.floor((lastStake * (result.base_rate || 0)) / 100),
+    });
+    lock.current = false;
+    c.finish(result.returned_minor);
+  }
+  function playBonus(index = 0, accumulatedRate = 0) {
+    const result = confirmed.current;
+    if (!result?.bonus || !mounted.current || !lock.current) return;
+    const frame = result.bonus.frames[index];
+    if (!frame) {
+      completeBonus();
+      return;
+    }
+    setMoving(Array(s.reels).fill(true));
+    setWins([]);
+    setBonus({
+      phase: "playing",
+      played: index,
+      remaining: index
+        ? result.bonus.frames[index - 1].remaining
+        : result.bonus.initial,
+      added: 0,
+      won: Math.floor((lastStake * accumulatedRate) / 100),
+    });
+    const nextRate = accumulatedRate + frame.rate;
+    timers.current.push(
+      setTimeout(() => {
+        if (!mounted.current || !lock.current) return;
+        setGrid(frame.grid);
+        setMoving(Array(s.reels).fill(false));
+        setWins(frame.wins);
+        setReturned(
+          Math.floor((lastStake * ((result.base_rate || 0) + nextRate)) / 100),
+        );
+        setBonus({
+          phase: "playing",
+          played: index + 1,
+          remaining: frame.remaining,
+          added: frame.added,
+          won: Math.floor((lastStake * nextRate) / 100),
+        });
+        timers.current.push(
+          setTimeout(() => playBonus(index + 1, nextRate), 650),
+        );
+      }, 450),
+    );
+  }
+  const bonusActive = bonus?.phase === "intro" || bonus?.phase === "playing";
   const pattern =
     s.mode === "ways" ? s.rows ** s.reels + " WAYS" : s.lines.length + " LINES";
   return (
@@ -150,9 +273,49 @@ export default function AdvancedSlots({
       </div>
       <div className="slot-specials">
         <span>WILD · REEL {(s.wild?.reel ?? 0) + 1}</span>
-        <span>
-          {s.scatter?.awards.findIndex(Boolean)}+ SCATTERS · PAY ANYWHERE
-        </span>
+        <span>3+ SCATTERS · 10 FREE SPINS</span>
+      </div>
+      <div
+        className={"slot-bonus-bar " + (bonus ? "bonus-visible" : "")}
+        aria-live="polite"
+      >
+        {bonus ? (
+          <>
+            <div>
+              <strong>
+                {bonus.phase === "intro"
+                  ? "10 FREE SPINS AWARDED"
+                  : bonus.phase === "complete"
+                    ? "FREE SPINS COMPLETE"
+                    : "FREE SPINS · " + bonus.remaining + " LEFT"}
+              </strong>
+              <span>
+                {bonus.added > 0 ? "+" + bonus.added + " EXTRA SPINS · " : ""}
+                {bonus.phase === "intro"
+                  ? "Same stake · no additional charge"
+                  : "Bonus return " + credits(bonus.won)}
+              </span>
+            </div>
+            {bonus.phase === "intro" && (
+              <button
+                onClick={() => {
+                  if (bonusStarted.current) return;
+                  bonusStarted.current = true;
+                  playBonus();
+                }}
+              >
+                Start free spins
+              </button>
+            )}
+            {bonusActive && (
+              <button onClick={completeBonus}>Skip bonus animations</button>
+            )}
+          </>
+        ) : (
+          <span>
+            Three scatters unlock 10 free spins · retrigger +5 · maximum 50
+          </span>
+        )}
       </div>
       <div className="slot-marquee" role="status">
         {spinning
@@ -234,7 +397,7 @@ export default function AdvancedSlots({
               ))}
           </svg>
         </div>
-        {wins.length > 0 && (
+        {!bonusActive && returned > 0 && (
           <SlotWinCelebration
             key={round}
             returned={returned}
@@ -259,14 +422,18 @@ export default function AdvancedSlots({
         <button
           className="spin-control"
           onClick={spin}
-          disabled={spinning || c.busy || c.canStart === false}
+          disabled={spinning || bonusActive || c.busy || c.canStart === false}
           aria-label={spinning ? "Spinning reels" : "Spin reels"}
         >
           <RotateCw size={30} />
-          <span>{spinning ? "SPINNING" : "SPIN"}</span>
+          <span>
+            {bonusActive ? "FREE SPINS" : spinning ? "SPINNING" : "SPIN"}
+          </span>
         </button>
       </div>
-      <GameControls controls={c} />
+      <GameControls
+        controls={{ ...c, busy: c.busy || spinning || !!bonusActive }}
+      />
       <div className="line-results" aria-live="polite">
         {wins.length ? (
           wins.map((w, i) => (
