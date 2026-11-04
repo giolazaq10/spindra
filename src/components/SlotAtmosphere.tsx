@@ -1,12 +1,20 @@
 import { memo, type CSSProperties } from "react";
+import LivingWorld from "./LivingWorld";
 /** A fixed number of decorative nodes; motion stays in CSS, outside reel updates. */
 export default memo(function SlotAtmosphere({
   phase,
+  scene,
 }: {
   phase: "idle" | "spin" | "win" | "bonus";
+  scene: string;
 }) {
   return (
-    <div className={"slot-atmosphere atmosphere-" + phase} aria-hidden="true">
+    <div
+      className={"slot-atmosphere atmosphere-" + phase}
+      data-ambient-scene={scene}
+      aria-hidden="true"
+    >
+      <LivingWorld scene={scene} phase={phase} />
       <i className="slot-aura-orb orb-one" />
       <i className="slot-aura-orb orb-two" />
       <div className="slot-stage-lights">
