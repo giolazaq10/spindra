@@ -114,7 +114,7 @@ for (const skip of [false, true])
           screen.getByRole("button", { name: "Start free spins" }),
         );
         await act(async () => {
-          t.mock.timers.tick(450);
+          t.mock.timers.tick(530);
         });
         assert.ok(screen.getByText("FREE SPINS · 9 LEFT"));
         if (skip)
@@ -124,11 +124,11 @@ for (const skip of [false, true])
         else
           for (let i = 0; i < 10; i++) {
             await act(async () => {
-              t.mock.timers.tick(650);
+              t.mock.timers.tick(500);
             });
             if (i < 9)
               await act(async () => {
-                t.mock.timers.tick(450);
+                t.mock.timers.tick(530);
               });
           }
         assert.ok(screen.getByText("FREE SPINS COMPLETE"));

@@ -10,6 +10,7 @@ import type { Controls } from "./OriginalGame";
 import GameControls from "./GameControls";
 import { slotLook, slotThemeVars } from "../lib/slotPresentation";
 import { SlotScenery, SlotSymbol } from "./SlotArt";
+import { reelMotion } from "./reelMotion";
 const ReelSymbol = memo(SlotSymbol);
 export default function AdvancedSlots({
   game,
@@ -47,6 +48,7 @@ export default function AdvancedSlots({
       ),
   );
   const [moving, setMoving] = useState<boolean[]>(Array(s.reels).fill(false)),
+    [landing, setLanding] = useState<boolean[]>(Array(s.reels).fill(false)),
     [wins, setWins] = useState<SlotWin[]>(
       initialResult?.bonus?.frames[initialResult.bonus.frames.length - 1]
         ?.wins ||
@@ -92,7 +94,33 @@ export default function AdvancedSlots({
       scheduled.forEach(clearTimeout);
     };
   }, []);
-  const spinning = moving.some(Boolean);
+  const spinning = moving.some(Boolean) || landing.some(Boolean);
+  function revealReels(
+    target: number[][],
+    elapsed: number,
+    finish: () => void,
+  ) {
+    const reduced =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches || false;
+    const plan = reelMotion(s.reels, elapsed, reduced);
+    target.forEach((column, col) => {
+      timers.current.push(
+        setTimeout(() => {
+          if (!mounted.current || !lock.current) return;
+          setGrid((g) => g.map((old, i) => (i === col ? column : old)));
+          setMoving((m) => m.map((old, i) => (i === col ? false : old)));
+          setLanding((m) => m.map((old, i) => (i === col ? true : old)));
+        }, plan[col].stop),
+      );
+      timers.current.push(
+        setTimeout(() => {
+          if (!mounted.current || !lock.current) return;
+          setLanding((m) => m.map((old, i) => (i === col ? false : old)));
+          if (col === s.reels - 1) finish();
+        }, plan[col].stop + plan[col].land),
+      );
+    });
+  }
   async function spin() {
     if (lock.current || !c.start()) return;
     lock.current = true;
@@ -106,6 +134,7 @@ export default function AdvancedSlots({
       setWins([]);
       setReturned(0);
       setMoving(Array(s.reels).fill(true));
+      setLanding(Array(s.reels).fill(false));
       setRound((n) => n + 1);
       setLastStake(c.bet);
     });
@@ -117,6 +146,7 @@ export default function AdvancedSlots({
       if (!mounted.current) return;
       lock.current = false;
       setMoving(Array(s.reels).fill(false));
+      setLanding(Array(s.reels).fill(false));
       c.finish(0);
       c.setMessage(
         e instanceof Error
@@ -129,36 +159,25 @@ export default function AdvancedSlots({
     confirmed.current = result;
     // Network settlement and reel motion run together, not one after another.
     const elapsed = performance.now() - startedAt;
-    result.grid.forEach((column, col) =>
-      timers.current.push(
-        setTimeout(
-          () => {
-            setGrid((g) => g.map((old, i) => (i === col ? column : old)));
-            setMoving((m) => m.map((old, i) => (i === col ? false : old)));
-            if (col === s.reels - 1) {
-              const payout = result.bonus
-                ? Math.floor((stake * (result.base_rate || 0)) / 100)
-                : result.returned_minor;
-              setWins(result.wins);
-              setReturned(payout);
-              if (result.bonus) {
-                setBonus({
-                  phase: "intro",
-                  played: 0,
-                  remaining: result.bonus.initial,
-                  added: 0,
-                  won: 0,
-                });
-              } else {
-                lock.current = false;
-                c.finish(payout);
-              }
-            }
-          },
-          Math.max(0, 300 + col * 45 - elapsed),
-        ),
-      ),
-    );
+    revealReels(result.grid, elapsed, () => {
+      const payout = result.bonus
+        ? Math.floor((stake * (result.base_rate || 0)) / 100)
+        : result.returned_minor;
+      setWins(result.wins);
+      setReturned(payout);
+      if (result.bonus) {
+        setBonus({
+          phase: "intro",
+          played: 0,
+          remaining: result.bonus.initial,
+          added: 0,
+          won: 0,
+        });
+      } else {
+        lock.current = false;
+        c.finish(payout);
+      }
+    });
   }
   function completeBonus() {
     const result = confirmed.current;
@@ -168,6 +187,7 @@ export default function AdvancedSlots({
     const last = result.bonus.frames[result.bonus.frames.length - 1];
     setGrid(last.grid);
     setMoving(Array(s.reels).fill(false));
+    setLanding(Array(s.reels).fill(false));
     setWins(last.wins);
     setReturned(result.returned_minor);
     setRound((n) => n + 1);
@@ -192,6 +212,7 @@ export default function AdvancedSlots({
       return;
     }
     setMoving(Array(s.reels).fill(true));
+    setLanding(Array(s.reels).fill(false));
     setWins([]);
     setBonus({
       phase: "playing",
@@ -203,27 +224,22 @@ export default function AdvancedSlots({
       won: Math.floor((lastStake * accumulatedRate) / 100),
     });
     const nextRate = accumulatedRate + frame.rate;
-    timers.current.push(
-      setTimeout(() => {
-        if (!mounted.current || !lock.current) return;
-        setGrid(frame.grid);
-        setMoving(Array(s.reels).fill(false));
-        setWins(frame.wins);
-        setReturned(
-          Math.floor((lastStake * ((result.base_rate || 0) + nextRate)) / 100),
-        );
-        setBonus({
-          phase: "playing",
-          played: index + 1,
-          remaining: frame.remaining,
-          added: frame.added,
-          won: Math.floor((lastStake * nextRate) / 100),
-        });
-        timers.current.push(
-          setTimeout(() => playBonus(index + 1, nextRate), 650),
-        );
-      }, 450),
-    );
+    revealReels(frame.grid, 0, () => {
+      setWins(frame.wins);
+      setReturned(
+        Math.floor((lastStake * ((result.base_rate || 0) + nextRate)) / 100),
+      );
+      setBonus({
+        phase: "playing",
+        played: index + 1,
+        remaining: frame.remaining,
+        added: frame.added,
+        won: Math.floor((lastStake * nextRate) / 100),
+      });
+      timers.current.push(
+        setTimeout(() => playBonus(index + 1, nextRate), 500),
+      );
+    });
   }
   const bonusActive = bonus?.phase === "intro" || bonus?.phase === "playing";
   const pattern =
@@ -335,9 +351,14 @@ export default function AdvancedSlots({
             <div
               className={
                 "advanced-reel " +
-                (moving[col] ? "reel-moving" : "reel-stopped")
+                (moving[col]
+                  ? "reel-moving"
+                  : landing[col]
+                    ? "reel-landing"
+                    : "reel-stopped")
               }
               key={col}
+              data-reel={col + 1}
             >
               <div
                 className={
