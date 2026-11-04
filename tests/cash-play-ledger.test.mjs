@@ -49,6 +49,17 @@ test("All 31 real-balance games reserve and settle their actual engine results t
       return seed % n;
     };
     for (const g of originals) {
+      // Force an actual retriggering bonus through the atomic ledger and replay path.
+      let bonusCell = 0;
+      const bonusRng = () => {
+        const cell = bonusCell++;
+        return cell % (g.slot.reels * g.slot.rows) < 3 &&
+          cell < 2 * g.slot.reels * g.slot.rows
+          ? g.slot.weights
+              .slice(0, g.slot.scatter.symbol)
+              .reduce((a, b) => a + b, 0)
+          : 0;
+      };
       let state = newCashRound(
         g.slug,
         {
@@ -63,8 +74,12 @@ test("All 31 real-balance games reserve and settle their actual engine results t
           ],
           kind: "red",
         },
-        rng,
+        g.slug === "solar-vault" ? bonusRng : rng,
       );
+      if (g.slug === "solar-vault") {
+        assert.equal(state.stake_minor, 20);
+        assert.equal(state.data.bonus.frames.length, 15);
+      }
       const id = crypto.randomUUID();
       let revision = -1;
       const commit = async (s, key, request) => {
