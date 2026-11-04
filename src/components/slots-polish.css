@@ -640,6 +640,103 @@
   animation: polished-reel-roll calc(var(--slot-rows) * 52ms) linear infinite;
   will-change: transform;
 }
+.spindra-extension .slot-polished.slot-quick .strip-running {
+  animation-duration: calc(var(--slot-rows) * 32ms);
+}
+.spindra-extension .slot-polished.slot-quick .reel-landing .reel-strip {
+  animation-duration: 55ms;
+}
+.spindra-extension .slot-playback-controls {
+  position: relative;
+  z-index: 1;
+  margin: 8px 0;
+  padding: 12px;
+  border: 1px solid #ffffff20;
+  border-radius: 14px;
+  background: #0b1129d9;
+  color: #dbe5f5;
+  font-size: 12px;
+}
+.spindra-extension .slot-repeat-controls,
+.spindra-extension .slot-audio-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.spindra-extension .slot-audio-controls {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #ffffff14;
+}
+.spindra-extension .slot-playback-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #dbe5f5;
+  white-space: nowrap;
+}
+.spindra-extension .slot-playback-controls input[type="number"] {
+  width: 70px;
+  background: #141d36;
+  color: #fff;
+  padding: 7px;
+  border: 1px solid #7282ac80;
+  border-radius: 8px;
+}
+.spindra-extension .slot-playback-controls input[type="range"] {
+  width: 100px;
+}
+.spindra-extension .slot-playback-controls input {
+  accent-color: var(--slot-primary, #ffd46b);
+}
+.spindra-extension .slot-playback-controls button {
+  padding: 8px 12px;
+  min-height: 36px;
+  border-radius: 9px;
+  border: 1px solid #9caed65c;
+  background: #273655;
+  color: #f5f7ff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.spindra-extension .slot-playback-controls button[aria-pressed="true"] {
+  border-color: var(--slot-primary, #ffd46b);
+  color: #ffe6a8;
+}
+.spindra-extension .slot-playback-controls .slot-stop-repeat:not(:disabled) {
+  background: #713241;
+  border-color: #f49ba4;
+}
+.spindra-extension .slot-playback-controls button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.spindra-extension .slot-playback-controls p {
+  color: #adbcd6;
+  font-size: 11px;
+  min-height: 16px;
+  margin: 8px 0 0;
+}
+.spindra-extension .slot-repeat-controls > span {
+  color: #b9c9e3;
+  font-size: 11px;
+}
+@media (max-width: 520px) {
+  .spindra-extension .slot-playback-controls {
+    padding: 9px;
+  }
+  .spindra-extension .slot-repeat-controls {
+    gap: 8px;
+  }
+  .spindra-extension .slot-audio-controls label {
+    flex: 1;
+  }
+  .spindra-extension .slot-audio-controls input[type="range"] {
+    flex: 1;
+    min-width: 70px;
+  }
+}
 .spindra-extension .slot-polished .reel-moving .reel-strip {
   /* A light blur belongs to one composited strip, rather than every SVG. */
   filter: blur(0.6px);

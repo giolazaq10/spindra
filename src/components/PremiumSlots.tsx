@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { flushSync } from "react-dom";
 import { RotateCw, FastForward, LockKeyhole } from "lucide-react";
 import type { Original } from "@/lib/catalog";
@@ -11,6 +17,9 @@ import GameControls from "./GameControls";
 import { slotThemeVars } from "../lib/slotPresentation";
 import { credits } from "@/lib/money";
 import SlotWinCelebration from "./SlotWinCelebration";
+import { useSlotPlayback } from "./useSlotPlayback";
+import { useSlotAudio } from "./useSlotAudio";
+import SlotPlaybackControls from "./SlotPlaybackControls";
 export type PremiumResult = {
   grid: number[][];
   wins: SlotWin[];
@@ -60,6 +69,19 @@ export default function PremiumSlots({
     alive = useRef(true),
     timers = useRef(new Set<ReturnType<typeof setTimeout>>()),
     confirmed = useRef<PremiumResult | null>(null);
+  const sound = useSlotAudio(game.slug);
+  const roundStake = useRef(c.bet);
+  const cabinet = useRef<HTMLDivElement>(null);
+  const spinHandler = useRef<(fast: boolean) => Promise<boolean>>(
+    async () => false,
+  );
+  const playback = useSlotPlayback({
+    busy: playing || c.busy,
+    canStart: c.canStart !== false && c.balance >= c.bet,
+    spin: spinHandler,
+    root: cabinet,
+    unlock: () => sound.audio.unlock(),
+  });
   useEffect(() => {
     alive.current = true;
     const scheduled = timers.current;
@@ -98,10 +120,22 @@ export default function PremiumSlots({
     setPlaying(false);
     locked.current = false;
     c.finish(result.returned_minor);
+    playback.completed();
+    sound.audio.play(
+      result.returned_minor > roundStake.current
+        ? "win"
+        : result.returned_minor < roundStake.current
+          ? "loss"
+          : "reel",
+      result.returned_minor / roundStake.current,
+    );
   }
-  async function spin() {
-    if (locked.current || !c.start()) return;
+  async function spin(quick = false) {
+    if (locked.current || !c.start()) return false;
     locked.current = true;
+    roundStake.current = c.bet;
+    playback.accepted();
+    sound.audio.play("spin");
     confirmed.current = null;
     clear();
     flushSync(() => {
@@ -123,7 +157,7 @@ export default function PremiumSlots({
     const began = performance.now();
     try {
       const result = await serverSpin(c.bet);
-      if (!alive.current) return;
+      if (!alive.current) return false;
       confirmed.current = result;
       const frames = result.frames || [],
         elapsed = performance.now() - began;
@@ -131,40 +165,64 @@ export default function PremiumSlots({
         after(
           Math.max(
             0,
-            200 +
-              i * (kind === "cascade" ? 240 : kind === "vault" ? 160 : 200) -
+            (quick ? 70 : 200) +
+              i *
+                (quick
+                  ? 45
+                  : kind === "cascade"
+                    ? 240
+                    : kind === "vault"
+                      ? 160
+                      : 200) -
               elapsed,
           ),
           () => {
             setFrame(f);
             setStage(i + 1);
+            sound.audio.play("reel", i);
           },
         ),
       );
       after(
         Math.max(
           0,
-          350 +
+          (quick ? 110 : 350) +
             Math.max(0, frames.length - 1) *
-              (kind === "cascade" ? 240 : kind === "vault" ? 160 : 200) -
+              (quick
+                ? 45
+                : kind === "cascade"
+                  ? 240
+                  : kind === "vault"
+                    ? 160
+                    : 200) -
             elapsed,
         ),
         () => finish(result),
       );
+      return true;
     } catch (e) {
-      if (!alive.current) return;
+      if (!alive.current) return false;
       locked.current = false;
       setPlaying(false);
       c.finish(0);
       c.setMessage(e instanceof Error ? e.message : "Unable to confirm spin");
+      playback.completed();
+      playback.stop(
+        "Stopped: spin could not be confirmed. Recover the pending request before continuing.",
+      );
+      return false;
     }
   }
+  useLayoutEffect(() => {
+    spinHandler.current = spin;
+  });
   const cells = frame.grid
       .flatMap((col, x) => col.map((symbol, y) => ({ symbol, x, y })))
       .sort((a, b) => a.y - b.y || a.x - b.x),
     lockedCount = cells.filter((cell) => cell.symbol > 0).length;
   return (
     <div
+      ref={cabinet}
       className={
         "premium-slot slot-polished premium-" +
         kind +
@@ -344,13 +402,23 @@ export default function PremiumSlots({
           className="spin-control"
           aria-label={playing ? "Spinning reels" : "Spin reels"}
           disabled={playing || c.busy || c.canStart === false}
-          onClick={() => void spin()}
+          onClick={playback.manual}
         >
           <RotateCw size={28} />
           <span>{playing ? "SPINNING" : "SPIN"}</span>
         </button>
       </div>
-      <GameControls controls={{ ...c, busy: c.busy || playing }} />
+      <SlotPlaybackControls
+        {...playback}
+        busy={playing || c.busy}
+        canStart={c.canStart !== false && c.balance >= c.bet}
+        stake={c.bet}
+        preferences={sound.preferences}
+        configure={sound.configure}
+      />
+      <GameControls
+        controls={{ ...c, busy: c.busy || playing || playback.mode !== "idle" }}
+      />
     </div>
   );
 }

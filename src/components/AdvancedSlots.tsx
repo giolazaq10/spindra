@@ -1,4 +1,11 @@
-import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  memo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { flushSync } from "react-dom";
 import { RotateCw, Trophy } from "lucide-react";
 import type { Original } from "../lib/catalog";
@@ -11,6 +18,9 @@ import GameControls from "./GameControls";
 import { slotLook, slotThemeVars } from "../lib/slotPresentation";
 import { SlotScenery, SlotSymbol } from "./SlotArt";
 import { reelMotion } from "./reelMotion";
+import { useSlotPlayback } from "./useSlotPlayback";
+import { useSlotAudio } from "./useSlotAudio";
+import SlotPlaybackControls from "./SlotPlaybackControls";
 const ReelSymbol = memo(SlotSymbol);
 export default function AdvancedSlots({
   game,
@@ -82,6 +92,12 @@ export default function AdvancedSlots({
       : null,
   );
   const confirmed = useRef<Awaited<ReturnType<typeof serverSpin>> | null>(null);
+  const sound = useSlotAudio(game.slug);
+  const cabinet = useRef<HTMLDivElement>(null);
+  const spinHandler = useRef<(fast: boolean) => Promise<boolean>>(
+    async () => false,
+  );
+  const [quick, setQuick] = useState(false);
   const bonusStarted = useRef(false);
   const lock = useRef(false),
     mounted = useRef(true),
@@ -95,14 +111,23 @@ export default function AdvancedSlots({
     };
   }, []);
   const spinning = moving.some(Boolean) || landing.some(Boolean);
+  const bonusActive = bonus?.phase === "intro" || bonus?.phase === "playing";
+  const playback = useSlotPlayback({
+    busy: spinning || !!bonusActive || c.busy,
+    canStart: !bonusActive && c.canStart !== false && c.balance >= c.bet,
+    spin: spinHandler,
+    root: cabinet,
+    unlock: () => sound.audio.unlock(),
+  });
   function revealReels(
     target: number[][],
     elapsed: number,
     finish: () => void,
+    fast = false,
   ) {
     const reduced =
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches || false;
-    const plan = reelMotion(s.reels, elapsed, reduced);
+    const plan = reelMotion(s.reels, elapsed, reduced, fast);
     target.forEach((column, col) => {
       timers.current.push(
         setTimeout(() => {
@@ -110,6 +135,7 @@ export default function AdvancedSlots({
           setGrid((g) => g.map((old, i) => (i === col ? column : old)));
           setMoving((m) => m.map((old, i) => (i === col ? false : old)));
           setLanding((m) => m.map((old, i) => (i === col ? true : old)));
+          sound.audio.play("reel", col);
         }, plan[col].stop),
       );
       timers.current.push(
@@ -121,13 +147,16 @@ export default function AdvancedSlots({
       );
     });
   }
-  async function spin() {
-    if (lock.current || !c.start()) return;
+  async function spin(fast = false) {
+    if (lock.current || !c.start()) return false;
     lock.current = true;
+    playback.accepted();
+    sound.audio.play("spin");
     const startedAt = performance.now();
     timers.current.forEach(clearTimeout);
     timers.current.length = 0;
     flushSync(() => {
+      setQuick(fast);
       setBonus(null);
       confirmed.current = null;
       bonusStarted.current = false;
@@ -143,41 +172,58 @@ export default function AdvancedSlots({
     try {
       result = await serverSpin(stake);
     } catch (e) {
-      if (!mounted.current) return;
+      if (!mounted.current) return false;
       lock.current = false;
       setMoving(Array(s.reels).fill(false));
       setLanding(Array(s.reels).fill(false));
       c.finish(0);
+      playback.completed();
+      playback.stop(
+        "Stopped: spin could not be confirmed. Recover the pending request before continuing.",
+      );
       c.setMessage(
         e instanceof Error
           ? e.message
           : "Unable to confirm spin. Recover the pending request before playing again.",
       );
-      return;
+      return false;
     }
-    if (!mounted.current) return;
+    if (!mounted.current) return false;
     confirmed.current = result;
     // Network settlement and reel motion run together, not one after another.
     const elapsed = performance.now() - startedAt;
-    revealReels(result.grid, elapsed, () => {
-      const payout = result.bonus
-        ? Math.floor((stake * (result.base_rate || 0)) / 100)
-        : result.returned_minor;
-      setWins(result.wins);
-      setReturned(payout);
-      if (result.bonus) {
-        setBonus({
-          phase: "intro",
-          played: 0,
-          remaining: result.bonus.initial,
-          added: 0,
-          won: 0,
-        });
-      } else {
-        lock.current = false;
-        c.finish(payout);
-      }
-    });
+    revealReels(
+      result.grid,
+      elapsed,
+      () => {
+        const payout = result.bonus
+          ? Math.floor((stake * (result.base_rate || 0)) / 100)
+          : result.returned_minor;
+        setWins(result.wins);
+        setReturned(payout);
+        if (result.bonus) {
+          playback.stop("Free spins awarded. Repeated paid spins stopped.");
+          sound.audio.play("bonus");
+          setBonus({
+            phase: "intro",
+            played: 0,
+            remaining: result.bonus.initial,
+            added: 0,
+            won: 0,
+          });
+        } else {
+          lock.current = false;
+          c.finish(payout);
+          playback.completed();
+          sound.audio.play(
+            payout > stake ? "win" : payout < stake ? "loss" : "reel",
+            payout / stake,
+          );
+        }
+      },
+      fast,
+    );
+    return true;
   }
   function completeBonus() {
     const result = confirmed.current;
@@ -202,6 +248,8 @@ export default function AdvancedSlots({
     });
     lock.current = false;
     c.finish(result.returned_minor);
+    playback.completed();
+    sound.audio.play("win", result.returned_minor / lastStake);
   }
   function playBonus(index = 0, accumulatedRate = 0) {
     const result = confirmed.current;
@@ -241,7 +289,9 @@ export default function AdvancedSlots({
       );
     });
   }
-  const bonusActive = bonus?.phase === "intro" || bonus?.phase === "playing";
+  useLayoutEffect(() => {
+    spinHandler.current = spin;
+  });
   const pattern =
     s.mode === "ways" ? s.rows ** s.reels + " WAYS" : s.lines.length + " LINES";
   return (
@@ -251,8 +301,10 @@ export default function AdvancedSlots({
         slotLook(s.scene).family +
         " scene-" +
         s.scene +
-        (spinning ? " slot-in-motion" : "")
+        (spinning ? " slot-in-motion" : "") +
+        (quick ? " slot-quick" : "")
       }
+      ref={cabinet}
       style={
         {
           ...slotThemeVars(s.scene),
@@ -442,7 +494,7 @@ export default function AdvancedSlots({
         </div>
         <button
           className="spin-control"
-          onClick={spin}
+          onClick={playback.manual}
           disabled={spinning || bonusActive || c.busy || c.canStart === false}
           aria-label={spinning ? "Spinning reels" : "Spin reels"}
         >
@@ -452,8 +504,19 @@ export default function AdvancedSlots({
           </span>
         </button>
       </div>
+      <SlotPlaybackControls
+        {...playback}
+        busy={spinning || !!bonusActive || c.busy}
+        canStart={c.canStart !== false && c.balance >= c.bet}
+        stake={c.bet}
+        preferences={sound.preferences}
+        configure={sound.configure}
+      />
       <GameControls
-        controls={{ ...c, busy: c.busy || spinning || !!bonusActive }}
+        controls={{
+          ...c,
+          busy: c.busy || spinning || !!bonusActive || playback.mode !== "idle",
+        }}
       />
       <div className="line-results" aria-live="polite">
         {wins.length ? (
