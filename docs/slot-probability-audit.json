@@ -1,0 +1,1184 @@
+{
+  "generated_at": "2026-11-04T14:56:28.583Z",
+  "rounds_per_game": 500000,
+  "total_paid_rounds": 12500000,
+  "rtp_review_limit": 0.96,
+  "methodology": "Exact model RTP before cent rounding; seeded offline Monte Carlo estimates for complete paid-round profit frequency, including all bonus spins. Wilson 95% intervals are per-game and per-stake, not simultaneous. Return > stake means profit; return = stake means break-even. Observed RTP is diagnostic, not a substitute for the exact expectation; rare payouts may be missed. Realized operator results also depend on volume, variance, fees, bonuses and costs.",
+  "games": [
+    {
+      "slug": "astra-cascade",
+      "name": "Astra Cascade",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9479869444049426,
+      "theoretical_house_edge": 0.05201305559505742,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0,
+      "at_least_10x_estimate": 0.00067,
+      "at_least_25x_estimate": 0,
+      "at_least_50x_estimate": 0,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.338848,
+          "profit_probability_95pct_interval": [
+            0.33753729580705943, 0.3401611804090035
+          ],
+          "break_even_probability_estimate": 0.011598,
+          "loss_probability_estimate": 0.649554,
+          "zero_return_probability_estimate": 0.322212,
+          "observed_rtp_after_cent_rounding": 0.9336192
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.348034,
+          "profit_probability_95pct_interval": [
+            0.346714830208022, 0.3493555048585624
+          ],
+          "break_even_probability_estimate": 0.002412,
+          "loss_probability_estimate": 0.649554,
+          "zero_return_probability_estimate": 0.291286,
+          "observed_rtp_after_cent_rounding": 0.94856606
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.348034,
+          "profit_probability_95pct_interval": [
+            0.346714830208022, 0.3493555048585624
+          ],
+          "break_even_probability_estimate": 0.002412,
+          "loss_probability_estimate": 0.649554,
+          "zero_return_probability_estimate": 0.291286,
+          "observed_rtp_after_cent_rounding": 0.94856606
+        }
+      ]
+    },
+    {
+      "slug": "copper-lock",
+      "name": "Copper Lock",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9383040343346153,
+      "theoretical_house_edge": 0.06169596566538471,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0,
+      "at_least_10x_estimate": 0,
+      "at_least_25x_estimate": 0,
+      "at_least_50x_estimate": 0,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.355808,
+          "profit_probability_95pct_interval": [
+            0.354482088963595, 0.3571361266499038
+          ],
+          "break_even_probability_estimate": 0.000418,
+          "loss_probability_estimate": 0.643774,
+          "zero_return_probability_estimate": 0.002586,
+          "observed_rtp_after_cent_rounding": 0.9184041
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.356126,
+          "profit_probability_95pct_interval": [
+            0.35479982137256794, 0.3574543893546327
+          ],
+          "break_even_probability_estimate": 0.0001,
+          "loss_probability_estimate": 0.643774,
+          "zero_return_probability_estimate": 0.000426,
+          "observed_rtp_after_cent_rounding": 0.93841906
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.356126,
+          "profit_probability_95pct_interval": [
+            0.35479982137256794, 0.3574543893546327
+          ],
+          "break_even_probability_estimate": 0.0001,
+          "loss_probability_estimate": 0.643774,
+          "zero_return_probability_estimate": 0.000426,
+          "observed_rtp_after_cent_rounding": 0.93841906
+        }
+      ]
+    },
+    {
+      "slug": "nitro-sevens",
+      "name": "Nitro Sevens",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9501581179999994,
+      "theoretical_house_edge": 0.049841882000000615,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0,
+      "at_least_10x_estimate": 0.020838,
+      "at_least_25x_estimate": 0.0095,
+      "at_least_50x_estimate": 0.002776,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.059192,
+          "profit_probability_95pct_interval": [
+            0.05854127898349021, 0.05984949434759018
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.940808,
+          "zero_return_probability_estimate": 0.940808,
+          "observed_rtp_after_cent_rounding": 0.9771641
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.059192,
+          "profit_probability_95pct_interval": [
+            0.05854127898349021, 0.05984949434759018
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.940808,
+          "zero_return_probability_estimate": 0.940808,
+          "observed_rtp_after_cent_rounding": 0.97798778
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.059192,
+          "profit_probability_95pct_interval": [
+            0.05854127898349021, 0.05984949434759018
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.940808,
+          "zero_return_probability_estimate": 0.940808,
+          "observed_rtp_after_cent_rounding": 0.97798778
+        }
+      ]
+    },
+    {
+      "slug": "solar-vault",
+      "name": "Solar Vault",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9407669649431246,
+      "theoretical_house_edge": 0.05923303505687538,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.002872,
+      "at_least_10x_estimate": 0.01443,
+      "at_least_25x_estimate": 0.001478,
+      "at_least_50x_estimate": 0.000596,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.222528,
+          "profit_probability_95pct_interval": [
+            0.2213772178817334, 0.22368304567455763
+          ],
+          "break_even_probability_estimate": 0.078804,
+          "loss_probability_estimate": 0.698668,
+          "zero_return_probability_estimate": 0.594588,
+          "observed_rtp_after_cent_rounding": 0.952653
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.301332,
+          "profit_probability_95pct_interval": [
+            0.30006172350959426, 0.30260532916671623
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.698668,
+          "zero_return_probability_estimate": 0.594588,
+          "observed_rtp_after_cent_rounding": 0.95906456
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.301332,
+          "profit_probability_95pct_interval": [
+            0.30006172350959426, 0.30260532916671623
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.698668,
+          "zero_return_probability_estimate": 0.594588,
+          "observed_rtp_after_cent_rounding": 0.95906456
+        }
+      ]
+    },
+    {
+      "slug": "neon-drift",
+      "name": "Neon Drift",
+      "rounds": 500000,
+      "theoretical_rtp": 0.945883098594439,
+      "theoretical_house_edge": 0.054116901405561024,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.008342,
+      "at_least_10x_estimate": 0.014078,
+      "at_least_25x_estimate": 0.001498,
+      "at_least_50x_estimate": 0.000366,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.219666,
+          "profit_probability_95pct_interval": [
+            0.21852057138685813, 0.22081573614611558
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.780334,
+          "zero_return_probability_estimate": 0.591792,
+          "observed_rtp_after_cent_rounding": 0.9388614
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.219666,
+          "profit_probability_95pct_interval": [
+            0.21852057138685813, 0.22081573614611558
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.780334,
+          "zero_return_probability_estimate": 0.591792,
+          "observed_rtp_after_cent_rounding": 0.9474534
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.219666,
+          "profit_probability_95pct_interval": [
+            0.21852057138685813, 0.22081573614611558
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.780334,
+          "zero_return_probability_estimate": 0.591792,
+          "observed_rtp_after_cent_rounding": 0.9474534
+        }
+      ]
+    },
+    {
+      "slug": "jade-temple",
+      "name": "Jade Temple",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9455396983291419,
+      "theoretical_house_edge": 0.054460301670858136,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.006806,
+      "at_least_10x_estimate": 0.007186,
+      "at_least_25x_estimate": 0.00033,
+      "at_least_50x_estimate": 0.00003,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.26767,
+          "profit_probability_95pct_interval": [
+            0.26644458553640876, 0.2688989843806751
+          ],
+          "break_even_probability_estimate": 0.012454,
+          "loss_probability_estimate": 0.719876,
+          "zero_return_probability_estimate": 0.249998,
+          "observed_rtp_after_cent_rounding": 0.9283497
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.276518,
+          "profit_probability_95pct_interval": [
+            0.2752799575921645, 0.2777594763690533
+          ],
+          "break_even_probability_estimate": 0.003606,
+          "loss_probability_estimate": 0.719876,
+          "zero_return_probability_estimate": 0.194088,
+          "observed_rtp_after_cent_rounding": 0.94643564
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.276518,
+          "profit_probability_95pct_interval": [
+            0.2752799575921645, 0.2777594763690533
+          ],
+          "break_even_probability_estimate": 0.003606,
+          "loss_probability_estimate": 0.719876,
+          "zero_return_probability_estimate": 0.194088,
+          "observed_rtp_after_cent_rounding": 0.94643564
+        }
+      ]
+    },
+    {
+      "slug": "lunar-tides",
+      "name": "Lunar Tides",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9503104493986473,
+      "theoretical_house_edge": 0.04968955060135272,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.008426,
+      "at_least_10x_estimate": 0.014784,
+      "at_least_25x_estimate": 0.001248,
+      "at_least_50x_estimate": 0.00009,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.215318,
+          "profit_probability_95pct_interval": [
+            0.21418085795467776, 0.2164595163884345
+          ],
+          "break_even_probability_estimate": 0.007552,
+          "loss_probability_estimate": 0.77713,
+          "zero_return_probability_estimate": 0.454588,
+          "observed_rtp_after_cent_rounding": 0.9438492
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.221692,
+          "profit_probability_95pct_interval": [
+            0.22054277345542542, 0.22284550294660518
+          ],
+          "break_even_probability_estimate": 0.001178,
+          "loss_probability_estimate": 0.77713,
+          "zero_return_probability_estimate": 0.435404,
+          "observed_rtp_after_cent_rounding": 0.95610788
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.221692,
+          "profit_probability_95pct_interval": [
+            0.22054277345542542, 0.22284550294660518
+          ],
+          "break_even_probability_estimate": 0.001178,
+          "loss_probability_estimate": 0.77713,
+          "zero_return_probability_estimate": 0.435404,
+          "observed_rtp_after_cent_rounding": 0.95610788
+        }
+      ]
+    },
+    {
+      "slug": "ember-crown",
+      "name": "Ember Crown",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9427894594169982,
+      "theoretical_house_edge": 0.05721054058300179,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.002774,
+      "at_least_10x_estimate": 0.008074,
+      "at_least_25x_estimate": 0.000726,
+      "at_least_50x_estimate": 0.00014,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.266274,
+          "profit_probability_95pct_interval": [
+            0.26505063451753264, 0.26750095685009256
+          ],
+          "break_even_probability_estimate": 0.015916,
+          "loss_probability_estimate": 0.71781,
+          "zero_return_probability_estimate": 0.480852,
+          "observed_rtp_after_cent_rounding": 0.9292582
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.28219,
+          "profit_probability_95pct_interval": [
+            0.2809441825410279, 0.28343916426584187
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.71781,
+          "zero_return_probability_estimate": 0.480852,
+          "observed_rtp_after_cent_rounding": 0.93975704
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.28219,
+          "profit_probability_95pct_interval": [
+            0.2809441825410279, 0.28343916426584187
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.71781,
+          "zero_return_probability_estimate": 0.480852,
+          "observed_rtp_after_cent_rounding": 0.93975704
+        }
+      ]
+    },
+    {
+      "slug": "velvet-orbit",
+      "name": "Velvet Orbit",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9444527457646651,
+      "theoretical_house_edge": 0.05554725423533491,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.004588,
+      "at_least_10x_estimate": 0.01475,
+      "at_least_25x_estimate": 0.00261,
+      "at_least_50x_estimate": 0.000154,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.207008,
+          "profit_probability_95pct_interval": [
+            0.20588722385336258, 0.20813327817885982
+          ],
+          "break_even_probability_estimate": 0.068404,
+          "loss_probability_estimate": 0.724588,
+          "zero_return_probability_estimate": 0.644274,
+          "observed_rtp_after_cent_rounding": 0.9385287
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.275412,
+          "profit_probability_95pct_interval": [
+            0.2741755025530784, 0.2766519484026227
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.724588,
+          "zero_return_probability_estimate": 0.644274,
+          "observed_rtp_after_cent_rounding": 0.9471085
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.275412,
+          "profit_probability_95pct_interval": [
+            0.2741755025530784, 0.2766519484026227
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.724588,
+          "zero_return_probability_estimate": 0.644274,
+          "observed_rtp_after_cent_rounding": 0.9471085
+        }
+      ]
+    },
+    {
+      "slug": "coral-cove",
+      "name": "Coral Cove",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9517205990416392,
+      "theoretical_house_edge": 0.04827940095836081,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.002764,
+      "at_least_10x_estimate": 0.00966,
+      "at_least_25x_estimate": 0.002178,
+      "at_least_50x_estimate": 0.000768,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.224872,
+          "profit_probability_95pct_interval": [
+            0.22371689212272458, 0.22603133541632522
+          ],
+          "break_even_probability_estimate": 0.00039,
+          "loss_probability_estimate": 0.774738,
+          "zero_return_probability_estimate": 0.516872,
+          "observed_rtp_after_cent_rounding": 0.9310311
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.225262,
+          "profit_probability_95pct_interval": [
+            0.22410617748548065, 0.22642204406093944
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.774738,
+          "zero_return_probability_estimate": 0.516872,
+          "observed_rtp_after_cent_rounding": 0.94135784
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.225262,
+          "profit_probability_95pct_interval": [
+            0.22410617748548065, 0.22642204406093944
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.774738,
+          "zero_return_probability_estimate": 0.516872,
+          "observed_rtp_after_cent_rounding": 0.94135784
+        }
+      ]
+    },
+    {
+      "slug": "midnight-express",
+      "name": "Midnight Express",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9557427658143237,
+      "theoretical_house_edge": 0.044257234185676286,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.001752,
+      "at_least_10x_estimate": 0.010906,
+      "at_least_25x_estimate": 0.005916,
+      "at_least_50x_estimate": 0.00032,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.213434,
+          "profit_probability_95pct_interval": [
+            0.2123005068826827, 0.2145718964094408
+          ],
+          "break_even_probability_estimate": 0.00442,
+          "loss_probability_estimate": 0.782146,
+          "zero_return_probability_estimate": 0.304724,
+          "observed_rtp_after_cent_rounding": 0.9418496
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.213434,
+          "profit_probability_95pct_interval": [
+            0.2123005068826827, 0.2145718964094408
+          ],
+          "break_even_probability_estimate": 0.00442,
+          "loss_probability_estimate": 0.782146,
+          "zero_return_probability_estimate": 0.304724,
+          "observed_rtp_after_cent_rounding": 0.95477624
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.213434,
+          "profit_probability_95pct_interval": [
+            0.2123005068826827, 0.2145718964094408
+          ],
+          "break_even_probability_estimate": 0.00442,
+          "loss_probability_estimate": 0.782146,
+          "zero_return_probability_estimate": 0.304724,
+          "observed_rtp_after_cent_rounding": 0.95477624
+        }
+      ]
+    },
+    {
+      "slug": "saffron-sky",
+      "name": "Saffron Sky",
+      "rounds": 500000,
+      "theoretical_rtp": 0.939579652594784,
+      "theoretical_house_edge": 0.06042034740521596,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.003432,
+      "at_least_10x_estimate": 0.003868,
+      "at_least_25x_estimate": 0.000074,
+      "at_least_50x_estimate": 0.000002,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.29074,
+          "profit_probability_95pct_interval": [
+            0.28948292316403523, 0.29200029226595214
+          ],
+          "break_even_probability_estimate": 0.006022,
+          "loss_probability_estimate": 0.703238,
+          "zero_return_probability_estimate": 0.22025,
+          "observed_rtp_after_cent_rounding": 0.9207984
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.2959,
+          "profit_probability_95pct_interval": [
+            0.2946363907198689, 0.2971667454230176
+          ],
+          "break_even_probability_estimate": 0.000862,
+          "loss_probability_estimate": 0.703238,
+          "zero_return_probability_estimate": 0.214518,
+          "observed_rtp_after_cent_rounding": 0.9384752
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.2959,
+          "profit_probability_95pct_interval": [
+            0.2946363907198689, 0.2971667454230176
+          ],
+          "break_even_probability_estimate": 0.000862,
+          "loss_probability_estimate": 0.703238,
+          "zero_return_probability_estimate": 0.214518,
+          "observed_rtp_after_cent_rounding": 0.9384752
+        }
+      ]
+    },
+    {
+      "slug": "frost-bloom",
+      "name": "Frost Bloom",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9457412545491012,
+      "theoretical_house_edge": 0.054258745450898815,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.018502,
+      "at_least_10x_estimate": 0.013678,
+      "at_least_25x_estimate": 0.001822,
+      "at_least_50x_estimate": 0.00032,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.240996,
+          "profit_probability_95pct_interval": [
+            0.23981252422075852, 0.24218345556146667
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.759004,
+          "zero_return_probability_estimate": 0.453212,
+          "observed_rtp_after_cent_rounding": 0.9398076
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.240996,
+          "profit_probability_95pct_interval": [
+            0.23981252422075852, 0.24218345556146667
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.759004,
+          "zero_return_probability_estimate": 0.453212,
+          "observed_rtp_after_cent_rounding": 0.94991238
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.240996,
+          "profit_probability_95pct_interval": [
+            0.23981252422075852, 0.24218345556146667
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.759004,
+          "zero_return_probability_estimate": 0.453212,
+          "observed_rtp_after_cent_rounding": 0.94991238
+        }
+      ]
+    },
+    {
+      "slug": "obsidian-echo",
+      "name": "Obsidian Echo",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9537044513684579,
+      "theoretical_house_edge": 0.04629554863154206,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.001454,
+      "at_least_10x_estimate": 0.00851,
+      "at_least_25x_estimate": 0.001386,
+      "at_least_50x_estimate": 0.000208,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.290254,
+          "profit_probability_95pct_interval": [
+            0.2889975485342172, 0.29151367436350883
+          ],
+          "break_even_probability_estimate": 0.002968,
+          "loss_probability_estimate": 0.706778,
+          "zero_return_probability_estimate": 0.404908,
+          "observed_rtp_after_cent_rounding": 0.948403
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.29086,
+          "profit_probability_95pct_interval": [
+            0.28960276902080867, 0.2921204445652927
+          ],
+          "break_even_probability_estimate": 0.002362,
+          "loss_probability_estimate": 0.706778,
+          "zero_return_probability_estimate": 0.404908,
+          "observed_rtp_after_cent_rounding": 0.9604909
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.29086,
+          "profit_probability_95pct_interval": [
+            0.28960276902080867, 0.2921204445652927
+          ],
+          "break_even_probability_estimate": 0.002362,
+          "loss_probability_estimate": 0.706778,
+          "zero_return_probability_estimate": 0.404908,
+          "observed_rtp_after_cent_rounding": 0.9604909
+        }
+      ]
+    },
+    {
+      "slug": "electric-garden",
+      "name": "Electric Garden",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9543208038659137,
+      "theoretical_house_edge": 0.04567919613408633,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.008924,
+      "at_least_10x_estimate": 0.012084,
+      "at_least_25x_estimate": 0.001212,
+      "at_least_50x_estimate": 0.000176,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.250548,
+          "profit_probability_95pct_interval": [
+            0.24934881598438335, 0.2517510170245109
+          ],
+          "break_even_probability_estimate": 0.001716,
+          "loss_probability_estimate": 0.747736,
+          "zero_return_probability_estimate": 0.472242,
+          "observed_rtp_after_cent_rounding": 0.9477456
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.252226,
+          "profit_probability_95pct_interval": [
+            0.2510241376193743, 0.25343166960584645
+          ],
+          "break_even_probability_estimate": 0.000038,
+          "loss_probability_estimate": 0.747736,
+          "zero_return_probability_estimate": 0.472242,
+          "observed_rtp_after_cent_rounding": 0.95925032
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.252226,
+          "profit_probability_95pct_interval": [
+            0.2510241376193743, 0.25343166960584645
+          ],
+          "break_even_probability_estimate": 0.000038,
+          "loss_probability_estimate": 0.747736,
+          "zero_return_probability_estimate": 0.472242,
+          "observed_rtp_after_cent_rounding": 0.95925032
+        }
+      ]
+    },
+    {
+      "slug": "ruby-rebellion",
+      "name": "Ruby Rebellion",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9398703794320565,
+      "theoretical_house_edge": 0.060129620567943465,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.000494,
+      "at_least_10x_estimate": 0.009908,
+      "at_least_25x_estimate": 0.003442,
+      "at_least_50x_estimate": 0.000616,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.161256,
+          "profit_probability_95pct_interval": [
+            0.16023922397293236, 0.16227798107158473
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.838744,
+          "zero_return_probability_estimate": 0.838744,
+          "observed_rtp_after_cent_rounding": 0.9473463
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.161256,
+          "profit_probability_95pct_interval": [
+            0.16023922397293236, 0.16227798107158473
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.838744,
+          "zero_return_probability_estimate": 0.838744,
+          "observed_rtp_after_cent_rounding": 0.9485911
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.161256,
+          "profit_probability_95pct_interval": [
+            0.16023922397293236, 0.16227798107158473
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.838744,
+          "zero_return_probability_estimate": 0.838744,
+          "observed_rtp_after_cent_rounding": 0.9485911
+        }
+      ]
+    },
+    {
+      "slug": "copper-canyon",
+      "name": "Copper Canyon",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9444864373577646,
+      "theoretical_house_edge": 0.05551356264223539,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.002494,
+      "at_least_10x_estimate": 0.012776,
+      "at_least_25x_estimate": 0.002276,
+      "at_least_50x_estimate": 0.000454,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.179084,
+          "profit_probability_95pct_interval": [
+            0.17802369296835832, 0.18014923813615194
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.820916,
+          "zero_return_probability_estimate": 0.743104,
+          "observed_rtp_after_cent_rounding": 0.939584
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.179084,
+          "profit_probability_95pct_interval": [
+            0.17802369296835832, 0.18014923813615194
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.820916,
+          "zero_return_probability_estimate": 0.743104,
+          "observed_rtp_after_cent_rounding": 0.94624644
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.179084,
+          "profit_probability_95pct_interval": [
+            0.17802369296835832, 0.18014923813615194
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.820916,
+          "zero_return_probability_estimate": 0.743104,
+          "observed_rtp_after_cent_rounding": 0.94624644
+        }
+      ]
+    },
+    {
+      "slug": "aurora-arcade",
+      "name": "Aurora Arcade",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9482778427209901,
+      "theoretical_house_edge": 0.05172215727900986,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.001446,
+      "at_least_10x_estimate": 0.011584,
+      "at_least_25x_estimate": 0.002288,
+      "at_least_50x_estimate": 0.00016,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.187694,
+          "profit_probability_95pct_interval": [
+            0.1866140997647294, 0.18877869904095554
+          ],
+          "break_even_probability_estimate": 0.008654,
+          "loss_probability_estimate": 0.803652,
+          "zero_return_probability_estimate": 0.174228,
+          "observed_rtp_after_cent_rounding": 0.9240214
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.194232,
+          "profit_probability_95pct_interval": [
+            0.1931378007454287, 0.19533089759919697
+          ],
+          "break_even_probability_estimate": 0.002116,
+          "loss_probability_estimate": 0.803652,
+          "zero_return_probability_estimate": 0.1448,
+          "observed_rtp_after_cent_rounding": 0.94218792
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.194232,
+          "profit_probability_95pct_interval": [
+            0.1931378007454287, 0.19533089759919697
+          ],
+          "break_even_probability_estimate": 0.002116,
+          "loss_probability_estimate": 0.803652,
+          "zero_return_probability_estimate": 0.1448,
+          "observed_rtp_after_cent_rounding": 0.94218792
+        }
+      ]
+    },
+    {
+      "slug": "atlas-of-gold",
+      "name": "Atlas of Gold",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9537728142514551,
+      "theoretical_house_edge": 0.0462271857485449,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.018376,
+      "at_least_10x_estimate": 0.01332,
+      "at_least_25x_estimate": 0.001486,
+      "at_least_50x_estimate": 0.000176,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.22732,
+          "profit_probability_95pct_interval": [
+            0.22616043027913066, 0.22848375964464337
+          ],
+          "break_even_probability_estimate": 0.005148,
+          "loss_probability_estimate": 0.767532,
+          "zero_return_probability_estimate": 0.31214,
+          "observed_rtp_after_cent_rounding": 0.9395378
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.232468,
+          "profit_probability_95pct_interval": [
+            0.231299230578108, 0.23364088024295374
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.767532,
+          "zero_return_probability_estimate": 0.31214,
+          "observed_rtp_after_cent_rounding": 0.9536094
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.232468,
+          "profit_probability_95pct_interval": [
+            0.231299230578108, 0.23364088024295374
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.767532,
+          "zero_return_probability_estimate": 0.31214,
+          "observed_rtp_after_cent_rounding": 0.9536094
+        }
+      ]
+    },
+    {
+      "slug": "thunder-aerie",
+      "name": "Thunder Aerie",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9424700465804317,
+      "theoretical_house_edge": 0.05752995341956835,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.002758,
+      "at_least_10x_estimate": 0.008478,
+      "at_least_25x_estimate": 0.000916,
+      "at_least_50x_estimate": 0.000186,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.252108,
+          "profit_probability_95pct_interval": [
+            0.25090632518637584, 0.25331348385199953
+          ],
+          "break_even_probability_estimate": 0.022292,
+          "loss_probability_estimate": 0.7256,
+          "zero_return_probability_estimate": 0.49702,
+          "observed_rtp_after_cent_rounding": 0.9395502
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.267944,
+          "profit_probability_95pct_interval": [
+            0.2667181852016586, 0.2691733805052188
+          ],
+          "break_even_probability_estimate": 0.006456,
+          "loss_probability_estimate": 0.7256,
+          "zero_return_probability_estimate": 0.49702,
+          "observed_rtp_after_cent_rounding": 0.94850498
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.267944,
+          "profit_probability_95pct_interval": [
+            0.2667181852016586, 0.2691733805052188
+          ],
+          "break_even_probability_estimate": 0.006456,
+          "loss_probability_estimate": 0.7256,
+          "zero_return_probability_estimate": 0.49702,
+          "observed_rtp_after_cent_rounding": 0.94850498
+        }
+      ]
+    },
+    {
+      "slug": "sugar-parade",
+      "name": "Sugar Parade",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9424570918352377,
+      "theoretical_house_edge": 0.05754290816476226,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.019328,
+      "at_least_10x_estimate": 0.01202,
+      "at_least_25x_estimate": 0.000662,
+      "at_least_50x_estimate": 0.000008,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.230304,
+          "profit_probability_95pct_interval": [
+            0.22913906772517623, 0.23147307634729758
+          ],
+          "break_even_probability_estimate": 0.009458,
+          "loss_probability_estimate": 0.760238,
+          "zero_return_probability_estimate": 0.26278,
+          "observed_rtp_after_cent_rounding": 0.9243609
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.234164,
+          "profit_probability_95pct_interval": [
+            0.23299225339244675, 0.2353398313683586
+          ],
+          "break_even_probability_estimate": 0.005598,
+          "loss_probability_estimate": 0.760238,
+          "zero_return_probability_estimate": 0.230566,
+          "observed_rtp_after_cent_rounding": 0.93650688
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.234164,
+          "profit_probability_95pct_interval": [
+            0.23299225339244675, 0.2353398313683586
+          ],
+          "break_even_probability_estimate": 0.005598,
+          "loss_probability_estimate": 0.760238,
+          "zero_return_probability_estimate": 0.230566,
+          "observed_rtp_after_cent_rounding": 0.93650688
+        }
+      ]
+    },
+    {
+      "slug": "corsair-pearls",
+      "name": "Corsair Pearls",
+      "rounds": 500000,
+      "theoretical_rtp": 0.951862637513358,
+      "theoretical_house_edge": 0.04813736248664202,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.002674,
+      "at_least_10x_estimate": 0.01064,
+      "at_least_25x_estimate": 0.00202,
+      "at_least_50x_estimate": 0.001088,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.217348,
+          "profit_probability_95pct_interval": [
+            0.21620696588402782, 0.21849337726667845
+          ],
+          "break_even_probability_estimate": 0.00216,
+          "loss_probability_estimate": 0.780492,
+          "zero_return_probability_estimate": 0.510798,
+          "observed_rtp_after_cent_rounding": 0.9365383
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.219508,
+          "profit_probability_95pct_interval": [
+            0.2183628692525583, 0.22065744070819873
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.780492,
+          "zero_return_probability_estimate": 0.510798,
+          "observed_rtp_after_cent_rounding": 0.94786124
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.219508,
+          "profit_probability_95pct_interval": [
+            0.2183628692525583, 0.22065744070819873
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.780492,
+          "zero_return_probability_estimate": 0.510798,
+          "observed_rtp_after_cent_rounding": 0.94786124
+        }
+      ]
+    },
+    {
+      "slug": "amber-apiary",
+      "name": "Amber Apiary",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9494370487891769,
+      "theoretical_house_edge": 0.050562951210823104,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.008496,
+      "at_least_10x_estimate": 0.011818,
+      "at_least_25x_estimate": 0.001506,
+      "at_least_50x_estimate": 0.000322,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.237428,
+          "profit_probability_95pct_interval": [
+            0.23625059740594526, 0.23860943720115904
+          ],
+          "break_even_probability_estimate": 0.002304,
+          "loss_probability_estimate": 0.760268,
+          "zero_return_probability_estimate": 0.453226,
+          "observed_rtp_after_cent_rounding": 0.9398274
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.239732,
+          "profit_probability_95pct_interval": [
+            0.23855066272091185, 0.24091733648357994
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.760268,
+          "zero_return_probability_estimate": 0.453226,
+          "observed_rtp_after_cent_rounding": 0.9520803
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.239732,
+          "profit_probability_95pct_interval": [
+            0.23855066272091185, 0.24091733648357994
+          ],
+          "break_even_probability_estimate": 0,
+          "loss_probability_estimate": 0.760268,
+          "zero_return_probability_estimate": 0.453226,
+          "observed_rtp_after_cent_rounding": 0.9520803
+        }
+      ]
+    },
+    {
+      "slug": "clockwork-aurora",
+      "name": "Clockwork Aurora",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9365401669571756,
+      "theoretical_house_edge": 0.06345983304282443,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.00354,
+      "at_least_10x_estimate": 0.008022,
+      "at_least_25x_estimate": 0.00033,
+      "at_least_50x_estimate": 0.000004,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.230444,
+          "profit_probability_95pct_interval": [
+            0.22927881817004667, 0.23161332375122676
+          ],
+          "break_even_probability_estimate": 0.013704,
+          "loss_probability_estimate": 0.755852,
+          "zero_return_probability_estimate": 0.10188,
+          "observed_rtp_after_cent_rounding": 0.9170759
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.242448,
+          "profit_probability_95pct_interval": [
+            0.24126208511355257, 0.24363787235765122
+          ],
+          "break_even_probability_estimate": 0.0017,
+          "loss_probability_estimate": 0.755852,
+          "zero_return_probability_estimate": 0.076124,
+          "observed_rtp_after_cent_rounding": 0.93681788
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.242448,
+          "profit_probability_95pct_interval": [
+            0.24126208511355257, 0.24363787235765122
+          ],
+          "break_even_probability_estimate": 0.0017,
+          "loss_probability_estimate": 0.755852,
+          "zero_return_probability_estimate": 0.076124,
+          "observed_rtp_after_cent_rounding": 0.93681788
+        }
+      ]
+    },
+    {
+      "slug": "dragon-atelier",
+      "name": "Dragon Atelier",
+      "rounds": 500000,
+      "theoretical_rtp": 0.9428343534990126,
+      "theoretical_house_edge": 0.05716564650098743,
+      "rtp_above_review_limit": false,
+      "bonus_probability_estimate": 0.014356,
+      "at_least_10x_estimate": 0.01627,
+      "at_least_25x_estimate": 0.001906,
+      "at_least_50x_estimate": 0.000234,
+      "stakes": [
+        {
+          "stake_minor": 20,
+          "profit_probability_estimate": 0.20786,
+          "profit_probability_95pct_interval": [
+            0.20673751333209622, 0.20898697560853507
+          ],
+          "break_even_probability_estimate": 0.000894,
+          "loss_probability_estimate": 0.791246,
+          "zero_return_probability_estimate": 0.490314,
+          "observed_rtp_after_cent_rounding": 0.9407218
+        },
+        {
+          "stake_minor": 100,
+          "profit_probability_estimate": 0.208654,
+          "profit_probability_95pct_interval": [
+            0.20752992603278567, 0.20978255070746618
+          ],
+          "break_even_probability_estimate": 0.0001,
+          "loss_probability_estimate": 0.791246,
+          "zero_return_probability_estimate": 0.490314,
+          "observed_rtp_after_cent_rounding": 0.95075792
+        },
+        {
+          "stake_minor": 10000,
+          "profit_probability_estimate": 0.208654,
+          "profit_probability_95pct_interval": [
+            0.20752992603278567, 0.20978255070746618
+          ],
+          "break_even_probability_estimate": 0.0001,
+          "loss_probability_estimate": 0.791246,
+          "zero_return_probability_estimate": 0.490314,
+          "observed_rtp_after_cent_rounding": 0.95075792
+        }
+      ]
+    }
+  ]
+}

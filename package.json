@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "test": "node --import ./scripts/register-typescript.mjs --test tests/*.test.mjs tests/*.test.tsx",
+    "audit:slots": "node --import ./scripts/register-typescript.mjs scripts/audit-slots.mjs",
     "build": "npm run artwork && npm run cash:bundle && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
