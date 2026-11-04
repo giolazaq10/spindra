@@ -9,6 +9,11 @@ export default memo(function SlotAtmosphere({
     <div className={"slot-atmosphere atmosphere-" + phase} aria-hidden="true">
       <i className="slot-aura-orb orb-one" />
       <i className="slot-aura-orb orb-two" />
+      <div className="slot-stage-lights">
+        <i />
+        <i />
+      </div>
+      <div className="slot-perspective-floor" />
       <div className="slot-light-trails">
         {Array.from({ length: 12 }, (_, i) => (
           <i

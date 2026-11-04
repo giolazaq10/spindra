@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import CinematicEffects from "./CinematicEffects";
 export default function ScatterCelebration({
   onStart,
   onSkip,
@@ -11,6 +12,13 @@ export default function ScatterCelebration({
       className="scatter-celebration"
       aria-label="Scatter free-spins celebration"
     >
+      <CinematicEffects cue="bonus" />
+      <div className="scatter-energy-gate" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <i />
+      </div>
       <div className="scatter-portal-art" aria-hidden="true">
         <i className="scatter-portal-ring portal-outer" />
         <i className="scatter-portal-ring portal-inner" />

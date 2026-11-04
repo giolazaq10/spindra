@@ -18,6 +18,7 @@ import "./components/minigames.css";
 import './components/premium-slots.css';
 import './components/slots-polish.css';
 import './components/slot-spectacle.css';
+import './components/slot-cinema.css';
 import RouteBoundary from "@/components/RouteBoundary";
 import CasinoPage from "@/pages/CasinoPage";
 import AuthPage from "@/pages/AuthPage";

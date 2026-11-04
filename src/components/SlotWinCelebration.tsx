@@ -1,6 +1,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { slotWinTier } from "../lib/slotWinTier";
 import AnimatedCredits from "./AnimatedCredits";
+import CinematicEffects from "./CinematicEffects";
 export default function SlotWinCelebration({
   returned,
   stake,
@@ -45,6 +46,9 @@ export default function SlotWinCelebration({
       }
       data-win-tier={tier}
     >
+      {(big || returned > stake || bonus) && (
+        <CinematicEffects cue={big ? tier : "win"} />
+      )}
       <div className="slot-win-rays" aria-hidden="true" />
       {(big || returned > stake || bonus) && (
         <div className="slot-win-particles" aria-hidden="true">

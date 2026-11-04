@@ -1,0 +1,421 @@
+.spindra-extension .slot-polished .cinematic-effects {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+  contain: paint;
+}
+.spindra-extension .slot-polished .cinematic-effects canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.spindra-extension .slot-polished .cinema-spin {
+  opacity: 0.48;
+}
+.spindra-extension .slot-polished .cinema-lens-flare {
+  position: absolute;
+  width: 65%;
+  height: 2px;
+  left: 0;
+  top: 45%;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #b5f9ff,
+    #fff6c0,
+    transparent
+  );
+  box-shadow:
+    0 0 12px 3px #b1ebff5c,
+    0 0 30px 5px #ffcc6640;
+  animation: cinema-flare-sweep 1.2s cubic-bezier(0.2, 0.65, 0.25, 1) both;
+}
+.spindra-extension .slot-polished .cinema-letterbox {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 7%;
+  background: linear-gradient(#060815f2, #070c19ad);
+  animation: cinema-letterbox-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.spindra-extension .slot-polished .letterbox-top {
+  top: 0;
+  transform-origin: top;
+}
+.spindra-extension .slot-polished .letterbox-bottom {
+  bottom: 0;
+  transform-origin: bottom;
+}
+.spindra-extension .slot-polished .camera-spin {
+  animation: cinema-spin-focus 0.24s ease-out both;
+}
+.spindra-extension .slot-polished.slot-quick .camera-spin {
+  animation-duration: 0.12s;
+}
+.spindra-extension .slot-polished .camera-bonus {
+  animation: cinema-camera-dolly 1.1s cubic-bezier(0.17, 0.8, 0.25, 1) both;
+}
+.spindra-extension .slot-polished .camera-win {
+  animation: cinema-win-impact 0.65s ease-out both;
+}
+.spindra-extension .slot-polished .scatter-celebration {
+  perspective: 900px;
+  background:
+    radial-gradient(ellipse at 50% 30%, #803a9ed9, transparent 63%),
+    radial-gradient(ellipse at 50% 100%, #326f8e9c, transparent 70%), #0a0b23f2;
+}
+.spindra-extension .slot-polished .scatter-energy-gate {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.spindra-extension .slot-polished .scatter-energy-gate i {
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  width: 3px;
+  height: 150%;
+  background: linear-gradient(
+    transparent,
+    #e9d6ff,
+    #fff9d3,
+    #a4fff1,
+    transparent
+  );
+  box-shadow: 0 0 20px 5px #f4c47a55;
+  transform-origin: center;
+  animation: cinema-energy-gate 1.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.spindra-extension .slot-polished .scatter-energy-gate i:nth-child(2) {
+  animation-delay: 0.12s;
+  rotate: 45deg;
+}
+.spindra-extension .slot-polished .scatter-energy-gate i:nth-child(3) {
+  animation-delay: 0.24s;
+  rotate: 90deg;
+}
+.spindra-extension .slot-polished .scatter-energy-gate i:nth-child(4) {
+  animation-delay: 0.36s;
+  rotate: -45deg;
+}
+.spindra-extension .slot-polished .scatter-bonus-card {
+  animation: cinema-bonus-reveal 1s cubic-bezier(0.17, 0.85, 0.25, 1) both;
+  background: linear-gradient(150deg, #5c2d72f0, #172444f5 55%, #7b4628f2);
+  box-shadow:
+    0 0 0 6px #ffe19e13,
+    0 20px 50px #0008,
+    0 0 70px #f2b95850;
+}
+.spindra-extension .slot-polished .scatter-token-trio span {
+  animation: cinema-token-flight 1s cubic-bezier(0.16, 0.85, 0.25, 1) both;
+  animation-delay: calc(var(--token) * 110ms);
+  backface-visibility: hidden;
+}
+.spindra-extension .slot-polished .scatter-portal-ring {
+  width: min(94%, 490px);
+}
+.spindra-extension .slot-polished .portal-inner {
+  width: min(78%, 390px);
+}
+.spindra-extension .slot-polished .scatter-award-number {
+  text-shadow:
+    0 1px #fff5cf,
+    0 3px #d58b36,
+    0 6px #975022,
+    0 9px 10px #0007;
+}
+.spindra-extension .slot-polished .scatter-retrigger-ribbon {
+  animation: cinema-retrigger-impact 0.48s cubic-bezier(0.12, 0.9, 0.22, 1) both;
+}
+.spindra-extension .slot-polished .tier-big .slot-win-card,
+.spindra-extension .slot-polished .tier-mega .slot-win-card,
+.spindra-extension .slot-polished .tier-epic .slot-win-card {
+  animation: cinema-award-impact 0.8s cubic-bezier(0.15, 0.85, 0.25, 1) both;
+  background: linear-gradient(135deg, #542771f2, #18345af5 55%, #694327f5);
+}
+.spindra-extension .slot-polished .tier-epic .slot-win-card {
+  box-shadow:
+    0 0 0 6px #ffe99524,
+    0 0 75px #ffb34e70,
+    0 18px 45px #0009;
+  border-color: #fff5c8;
+}
+.spindra-extension .slot-polished .tier-big .slot-win-card > strong,
+.spindra-extension .slot-polished .tier-mega .slot-win-card > strong,
+.spindra-extension .slot-polished .tier-epic .slot-win-card > strong {
+  background: linear-gradient(#fffde1, #ffe16f 45%, #ffa85c);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 4px 0 #92532966;
+  letter-spacing: 2px;
+  font-size: clamp(28px, 6vw, 62px);
+}
+.spindra-extension .slot-polished .tier-big .slot-win-amount,
+.spindra-extension .slot-polished .tier-mega .slot-win-amount,
+.spindra-extension .slot-polished .tier-epic .slot-win-amount {
+  font-size: clamp(36px, 7vw, 82px);
+}
+.spindra-extension .slot-polished .slot-stage-lights {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.spindra-extension .slot-polished .slot-stage-lights i {
+  position: absolute;
+  width: 55%;
+  height: 80%;
+  top: -12%;
+  left: -12%;
+  transform-origin: top center;
+  clip-path: polygon(48% 0, 52% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    color-mix(in srgb, var(--slot-primary) 35%, transparent),
+    transparent
+  );
+  animation: cinema-spotlight 9s ease-in-out infinite alternate;
+  opacity: 0.48;
+}
+.spindra-extension .slot-polished .slot-stage-lights i:nth-child(2) {
+  left: auto;
+  right: -12%;
+  background: linear-gradient(
+    color-mix(in srgb, var(--slot-secondary) 35%, transparent),
+    transparent
+  );
+  animation-delay: -4.5s;
+  animation-direction: alternate-reverse;
+}
+.spindra-extension .slot-polished .atmosphere-bonus .slot-stage-lights i {
+  opacity: 0.8;
+}
+.spindra-extension .slot-polished .slot-perspective-floor {
+  position: absolute;
+  inset: 50% -20% -20%;
+  opacity: 0.1;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--slot-secondary) 0 1px,
+      transparent 1px 65px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--slot-primary) 0 1px,
+      transparent 1px 65px
+    );
+  transform-origin: 50% 70%;
+  transform: perspective(600px) rotateX(65deg);
+  animation: cinema-floor-drift 15s linear infinite alternate;
+}
+@keyframes cinema-flare-sweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-120%) scaleX(0.2);
+  }
+  45% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(210%) scaleX(1.4);
+  }
+}
+@keyframes cinema-letterbox-in {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes cinema-spin-focus {
+  from {
+    transform: perspective(1100px) scale(0.985) rotateX(1deg);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes cinema-camera-dolly {
+  0% {
+    transform: perspective(1000px) scale(0.98) rotateX(3deg);
+  }
+  36% {
+    transform: perspective(1000px) scale(1.018) rotateX(-1deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes cinema-win-impact {
+  0% {
+    transform: scale(1.015) translateY(2px);
+  }
+  45% {
+    transform: scale(0.995) translateY(-2px);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes cinema-energy-gate {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.1) rotate(-35deg);
+  }
+  28% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(1.4) rotate(70deg);
+  }
+}
+@keyframes cinema-bonus-reveal {
+  0% {
+    opacity: 0.5;
+    transform: translateZ(-220px) translateY(25px) rotateX(30deg)
+      rotateY(-16deg) scale(0.66);
+  }
+  60% {
+    opacity: 1;
+    transform: translateZ(20px) rotateX(-4deg) rotateY(2deg) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes cinema-token-flight {
+  0% {
+    opacity: 0;
+    transform: translate(calc((var(--token) - 1) * 290px), 80px) rotateY(180deg)
+      rotate(-60deg) scale(0.2);
+  }
+  65% {
+    opacity: 1;
+    transform: translate(calc((var(--token) - 1) * 140px), -8px) rotateY(-15deg)
+      rotate(5deg) scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(calc((var(--token) - 1) * 150px));
+  }
+}
+@keyframes cinema-award-impact {
+  0% {
+    opacity: 0;
+    transform: perspective(850px) translateZ(-100px) rotateX(14deg)
+      rotateZ(-7deg) scale(0.55);
+  }
+  55% {
+    opacity: 1;
+    transform: perspective(850px) rotateX(-3deg) rotateZ(2deg) scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes cinema-retrigger-impact {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px) rotate(-8deg) scale(0.55);
+  }
+  65% {
+    opacity: 1;
+    transform: translate(-50%, -2px) rotate(2deg) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+@keyframes cinema-spotlight {
+  from {
+    transform: rotate(-20deg);
+  }
+  to {
+    transform: rotate(24deg);
+  }
+}
+@keyframes cinema-floor-drift {
+  to {
+    transform: perspective(600px) rotateX(65deg) translateY(35px);
+  }
+}
+@media (max-width: 600px) {
+  .spindra-extension .slot-polished .slot-perspective-floor {
+    display: none;
+  }
+  .spindra-extension .slot-polished .cinema-letterbox {
+    height: 4%;
+  }
+  .spindra-extension .slot-polished .camera-bonus {
+    animation-name: cinema-mobile-dolly;
+  }
+  .spindra-extension .slot-polished[data-slot-rows="2"] .scatter-bonus-card {
+    animation-name: cinema-mobile-award;
+  }
+  .spindra-extension .slot-polished[data-slot-rows="2"] .slot-win-card {
+    padding: 8px 16px;
+  }
+  .spindra-extension .slot-polished[data-slot-rows="2"] .slot-award-crown span {
+    font-size: 24px;
+  }
+  .spindra-extension
+    .slot-polished[data-slot-rows="2"]
+    .slot-win-card
+    > strong {
+    font-size: 22px;
+    margin: 3px 0;
+  }
+  .spindra-extension .slot-polished[data-slot-rows="2"] .slot-win-amount {
+    font-size: 28px;
+  }
+}
+@keyframes cinema-mobile-dolly {
+  0% {
+    transform: scale(0.99);
+  }
+  45% {
+    transform: scale(1.01);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes cinema-mobile-award {
+  from {
+    opacity: 0.65;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .slot-polished .cinematic-effects,
+  .spindra-extension .slot-polished .scatter-energy-gate,
+  .spindra-extension .slot-polished .slot-stage-lights,
+  .spindra-extension .slot-polished .slot-perspective-floor {
+    display: none;
+  }
+  .spindra-extension .slot-polished .camera-spin,
+  .spindra-extension .slot-polished .camera-bonus,
+  .spindra-extension .slot-polished .camera-win,
+  .spindra-extension .slot-polished .scatter-bonus-card,
+  .spindra-extension .slot-polished .scatter-token-trio span,
+  .spindra-extension .slot-polished .scatter-retrigger-ribbon,
+  .spindra-extension .slot-polished .slot-win-card {
+    animation: none;
+    transform: none;
+  }
+}
