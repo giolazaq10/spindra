@@ -308,6 +308,7 @@ export default function AdvancedSlots({
         (bonusActive ? " slot-in-bonus" : "")
       }
       ref={cabinet}
+      data-slot-rows={s.rows}
       style={
         {
           ...slotThemeVars(s.scene),

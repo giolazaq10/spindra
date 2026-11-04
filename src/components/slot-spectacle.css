@@ -555,6 +555,37 @@
     padding: 10px 14px;
   }
 }
+@media (max-width: 600px) {
+  .spindra-extension .slot-polished[data-slot-rows="2"] .scatter-bonus-card {
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 1px 8px;
+    padding: 7px 12px;
+  }
+  .spindra-extension .slot-polished[data-slot-rows="2"] .scatter-kicker,
+  .spindra-extension .slot-polished[data-slot-rows="2"] .scatter-skip {
+    grid-column: 1 / -1;
+  }
+  .spindra-extension .slot-polished[data-slot-rows="2"] .scatter-award-number {
+    grid-column: 1;
+    grid-row: 2 / 5;
+    align-self: center;
+    font-size: 48px;
+  }
+  .spindra-extension .slot-polished[data-slot-rows="2"] .scatter-bonus-card h3,
+  .spindra-extension .slot-polished[data-slot-rows="2"] .scatter-bonus-card p,
+  .spindra-extension .slot-polished[data-slot-rows="2"] .scatter-start {
+    grid-column: 2;
+  }
+  .spindra-extension .slot-polished[data-slot-rows="2"] .scatter-bonus-card h3 {
+    font-size: 17px;
+    letter-spacing: 2px;
+  }
+  .spindra-extension .slot-polished[data-slot-rows="2"] .scatter-start {
+    min-height: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .spindra-extension .slot-polished .slot-atmosphere,
   .spindra-extension .slot-polished .scatter-confetti,
