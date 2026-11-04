@@ -24,6 +24,8 @@ import SlotPlaybackControls from "./SlotPlaybackControls";
 import SlotAtmosphere from "./SlotAtmosphere";
 import ScatterCelebration from "./ScatterCelebration";
 import CinematicEffects from "./CinematicEffects";
+import WorldActor from "./WorldActor";
+import { livingWorld } from "../lib/livingWorlds";
 const ReelSymbol = memo(SlotSymbol);
 export default function AdvancedSlots({
   game,
@@ -321,6 +323,7 @@ export default function AdvancedSlots({
       <SlotScenery scene={s.scene} />
       <div className="scene-overlay" />
       <SlotAtmosphere
+        scene={s.scene}
         phase={
           bonusActive
             ? "bonus"
@@ -337,7 +340,9 @@ export default function AdvancedSlots({
         ))}
       </div>
       <div className="cabinet-heading">
-        <span className="cabinet-mark">{game.emblem}</span>
+        <span className="cabinet-mark world-badge-avatar" aria-hidden="true">
+          <WorldActor kind={livingWorld(s.scene).actors[0]} />
+        </span>
         <div>
           <small>SPINDRA ORIGINALS · {slotLook(s.scene).label}</small>
           <h2>{game.name}</h2>

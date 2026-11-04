@@ -19,6 +19,7 @@ import './components/premium-slots.css';
 import './components/slots-polish.css';
 import './components/slot-spectacle.css';
 import './components/slot-cinema.css';
+import './components/living-worlds.css';
 import RouteBoundary from "@/components/RouteBoundary";
 import CasinoPage from "@/pages/CasinoPage";
 import AuthPage from "@/pages/AuthPage";

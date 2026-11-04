@@ -22,6 +22,8 @@ import { useSlotAudio } from "./useSlotAudio";
 import SlotPlaybackControls from "./SlotPlaybackControls";
 import SlotAtmosphere from "./SlotAtmosphere";
 import CinematicEffects from "./CinematicEffects";
+import WorldActor from "./WorldActor";
+import { livingWorld } from "../lib/livingWorlds";
 export type PremiumResult = {
   grid: number[][];
   wins: SlotWin[];
@@ -235,6 +237,7 @@ export default function PremiumSlots({
     >
       <PremiumBackdrop kind={kind} />
       <SlotAtmosphere
+        scene={s.scene}
         phase={playing ? "spin" : paid && returned > lastStake ? "win" : "idle"}
       />
       <header className="premium-heading">
@@ -250,11 +253,16 @@ export default function PremiumSlots({
           <h2>{game.name}</h2>
         </div>
         <span className="signature-seal">
-          {kind === "cascade"
-            ? "6 × 5"
-            : kind === "vault"
-              ? "9 SOCKETS"
-              : "3 DRUMS"}
+          <span className="world-signature-avatar" aria-hidden="true">
+            <WorldActor kind={livingWorld(s.scene).actors[0]} />
+          </span>
+          <span>
+            {kind === "cascade"
+              ? "6 × 5"
+              : kind === "vault"
+                ? "9 SOCKETS"
+                : "3 DRUMS"}
+          </span>
         </span>
       </header>
       <div className="premium-feature-bar">
