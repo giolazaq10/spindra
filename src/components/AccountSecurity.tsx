@@ -18,8 +18,12 @@ export default function AccountSecurity() {
         setFactor(existing.id);
         setMessage("Enter your current authenticator code.");
       } else {
-        for (const f of list.data.totp.filter((f) => f.status === "unverified"))
-          await supabase.auth.mfa.unenroll({ factorId: f.id });
+        for (const f of list.data.all.filter(
+          (f) => f.factor_type === "totp" && f.status === "unverified",
+        )) {
+          const removed = await supabase.auth.mfa.unenroll({ factorId: f.id });
+          if (removed.error) throw removed.error;
+        }
         const enrolled = await supabase.auth.mfa.enroll({
           factorType: "totp",
           friendlyName: "Spindra wallet",
