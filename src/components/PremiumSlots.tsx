@@ -21,6 +21,7 @@ import { useSlotPlayback } from "./useSlotPlayback";
 import { useSlotAudio } from "./useSlotAudio";
 import SlotPlaybackControls from "./SlotPlaybackControls";
 import SlotAtmosphere from "./SlotAtmosphere";
+import CinematicEffects from "./CinematicEffects";
 export type PremiumResult = {
   grid: number[][];
   wins: SlotWin[];
@@ -282,6 +283,7 @@ export default function PremiumSlots({
           </aside>
         )}
         <div className="signature-cabinet">
+          {playing && stage === 0 && <CinematicEffects cue="spin" />}
           {kind === "vault" && (
             <div className="vault-counter">
               <span>

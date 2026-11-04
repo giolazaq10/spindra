@@ -23,6 +23,7 @@ import { useSlotAudio } from "./useSlotAudio";
 import SlotPlaybackControls from "./SlotPlaybackControls";
 import SlotAtmosphere from "./SlotAtmosphere";
 import ScatterCelebration from "./ScatterCelebration";
+import CinematicEffects from "./CinematicEffects";
 const ReelSymbol = memo(SlotSymbol);
 export default function AdvancedSlots({
   game,
@@ -402,7 +403,20 @@ export default function AdvancedSlots({
               : "RETURN · " + credits(returned)
             : s.description}
       </div>
-      <div className={"reel-cabinet " + (wins.length ? "cabinet-winner" : "")}>
+      <div
+        className={
+          "reel-cabinet " +
+          (wins.length ? "cabinet-winner " : "") +
+          (bonus?.phase === "intro"
+            ? "camera-bonus"
+            : spinning
+              ? "camera-spin"
+              : returned > lastStake
+                ? "camera-win"
+                : "")
+        }
+      >
+        {spinning && <CinematicEffects cue="spin" />}
         <div
           className="advanced-reels"
           aria-label={s.reels + " reels with " + s.rows + " rows"}
@@ -507,6 +521,9 @@ export default function AdvancedSlots({
             }}
             onSkip={completeBonus}
           />
+        )}
+        {bonus?.phase === "playing" && bonus.added > 0 && (
+          <CinematicEffects key={"retrigger-" + bonus.played} cue="retrigger" />
         )}
         {bonus?.phase === "playing" && bonus.added > 0 && (
           <div
