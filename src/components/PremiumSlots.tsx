@@ -10,7 +10,7 @@ import { PremiumBackdrop, PremiumSymbol } from "./PremiumSlotArt";
 import GameControls from "./GameControls";
 import { slotThemeVars } from "../lib/slotPresentation";
 import { credits } from "@/lib/money";
-import AnimatedCredits from "./AnimatedCredits";
+import SlotWinCelebration from "./SlotWinCelebration";
 export type PremiumResult = {
   grid: number[][];
   wins: SlotWin[];
@@ -54,7 +54,8 @@ export default function PremiumSlots({
     [stage, setStage] = useState(0),
     [returned, setReturned] = useState(initialResult?.returned_minor || 0),
     [spinCount, setSpinCount] = useState(0),
-    [paid, setPaid] = useState(false);
+    [paid, setPaid] = useState(false),
+    [lastStake, setLastStake] = useState(c.bet);
   const locked = useRef(false),
     alive = useRef(true),
     timers = useRef(new Set<ReturnType<typeof setTimeout>>()),
@@ -106,6 +107,7 @@ export default function PremiumSlots({
     flushSync(() => {
       setPlaying(true);
       setPaid(false);
+      setLastStake(c.bet);
       setStage(0);
       setSpinCount((n) => n + 1);
       setReturned(0);
@@ -291,18 +293,12 @@ export default function PremiumSlots({
             })}
           </div>
           {paid && returned > 0 && (
-            <div className="signature-award" key={spinCount}>
-              <small>
-                {kind === "vault" && lockedCount === 9
-                  ? "VAULT COMPLETE"
-                  : returned > c.bet
-                    ? "YOU WIN"
-                    : "RETURN"}
-              </small>
-              <strong>
-                <AnimatedCredits amount={returned} />
-              </strong>
-            </div>
+            <SlotWinCelebration
+              key={spinCount}
+              returned={returned}
+              stake={lastStake}
+              signature
+            />
           )}
         </div>
         {kind === "vault" && (

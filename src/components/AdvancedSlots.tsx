@@ -4,6 +4,7 @@ import { RotateCw, Trophy } from "lucide-react";
 import type { Original } from "../lib/catalog";
 import { type SlotWin } from "../lib/slotModels";
 import AnimatedCredits from "./AnimatedCredits";
+import SlotWinCelebration from "./SlotWinCelebration";
 import { credits } from "../lib/money";
 import type { Controls } from "./OriginalGame";
 import GameControls from "./GameControls";
@@ -147,6 +148,12 @@ export default function AdvancedSlots({
           {s.minimum}+ MATCH
         </span>
       </div>
+      <div className="slot-specials">
+        <span>WILD · REEL {(s.wild?.reel ?? 0) + 1}</span>
+        <span>
+          {s.scatter?.awards.findIndex(Boolean)}+ SCATTERS · PAY ANYWHERE
+        </span>
+      </div>
       <div className="slot-marquee" role="status">
         {spinning
           ? "REELS IN MOTION"
@@ -228,31 +235,12 @@ export default function AdvancedSlots({
           </svg>
         </div>
         {wins.length > 0 && (
-          <div
+          <SlotWinCelebration
             key={round}
-            className={
-              "win-celebration " + (returned >= lastStake * 5 ? "big-win" : "")
-            }
-            aria-hidden="true"
-          >
-            <strong>
-              {returned >= lastStake * 10
-                ? "SPECTACULAR WIN"
-                : returned >= lastStake * 5
-                  ? "BIG WIN"
-                  : returned > lastStake
-                    ? "YOU WIN"
-                    : "REEL RETURN"}
-            </strong>
-            <span>
-              <AnimatedCredits amount={returned} />
-            </span>
-            {Array.from({ length: 12 }, (_, i) => (
-              <i key={i} style={{ "--coin": i } as CSSProperties}>
-                ✦
-              </i>
-            ))}
-          </div>
+            returned={returned}
+            stake={lastStake}
+            scatter={wins.some((w) => w.scatter)}
+          />
         )}
       </div>
       <div className="slot-console">

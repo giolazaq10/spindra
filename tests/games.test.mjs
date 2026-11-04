@@ -43,7 +43,7 @@ test("all twenty-five slots have distinct artwork, mechanics, paytables and vali
       rtpLabel(game),
       "Up to " + (modelRtp(s) * 100).toFixed(2) + "% theoretical RTP",
     );
-    if(s.premium)continue;
+    if (s.premium) continue;
     assert.equal(new Set(s.lines.map((p) => p.join())).size, s.lines.length);
     assert.ok(
       s.lines.every(
@@ -52,7 +52,7 @@ test("all twenty-five slots have distinct artwork, mechanics, paytables and vali
       ),
     );
     for (const ticket of [0, s.weights.reduce((a, b) => a + b, 0) - 1]) {
-      const result = modelSpin(s, () => ticket);
+      const result = modelSpin(s, (max) => Math.min(ticket, max - 1));
       assert.ok(Number.isSafeInteger((100 / 100) * result.rate));
       assert.deepEqual(result.wins, modelEvaluate(result.grid, s));
     }
@@ -115,13 +115,21 @@ test("each slot's regular-symbol RTP matches complete single-pattern enumeration
         const symbol = ticket % s.weights.length;
         ticket = Math.floor(ticket / s.weights.length);
         sequence.push(symbol);
-        prob *= s.weights[symbol] / total;
+        prob *=
+          symbol === s.wild?.symbol && col !== s.wild.reel
+            ? 0
+            : s.weights[symbol] /
+              (total - (s.wild && col !== s.wild.reel ? s.wild.weight : 0));
       }
       if (s.direction === "right") sequence.reverse();
       const symbol = sequence[0];
       if (symbol >= 7) continue;
       let count = 1;
-      while (count < s.reels && sequence[count] === symbol) count++;
+      while (
+        count < s.reels &&
+        (sequence[count] === symbol || sequence[count] === s.wild?.symbol)
+      )
+        count++;
       if (count >= s.minimum)
         expected +=
           ((prob * s.pays[symbol][count - s.minimum]) / 100) * s.lines.length;
@@ -311,11 +319,15 @@ test("adjacent-reel ways RTP agrees with exhaustive per-symbol row-count distrib
       total = s.weights.reduce((a, b) => a + b, 0);
     let expected = 0;
     for (let symbol = 0; symbol < 7; symbol++) {
-      const p = s.weights[symbol] / total;
-      const distribution = Array.from({ length: s.rows + 1 }, (_, k) => {
-        let c = 1;
-        for (let j = 1; j <= k; j++) c = (c * (s.rows - j + 1)) / j;
-        return c * p ** k * (1 - p) ** (s.rows - k);
+      const distributions = Array.from({ length: s.reels }, (_, col) => {
+        const p =
+          (s.weights[symbol] + (s.wild?.reel === col ? s.wild.weight : 0)) /
+          (total - (s.wild && col !== s.wild.reel ? s.wild.weight : 0));
+        return Array.from({ length: s.rows + 1 }, (_, k) => {
+          let c = 1;
+          for (let j = 1; j <= k; j++) c = (c * (s.rows - j + 1)) / j;
+          return c * p ** k * (1 - p) ** (s.rows - k);
+        });
       });
       for (let n = 0; n < (s.rows + 1) ** s.reels; n++) {
         let ticket = n,
@@ -325,7 +337,7 @@ test("adjacent-reel ways RTP agrees with exhaustive per-symbol row-count distrib
           const count = ticket % (s.rows + 1);
           ticket = Math.floor(ticket / (s.rows + 1));
           counts.push(count);
-          probability *= distribution[count];
+          probability *= distributions[col][count];
         }
         if (s.direction === "right") counts.reverse();
         let count = 0,

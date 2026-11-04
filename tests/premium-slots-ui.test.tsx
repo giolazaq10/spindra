@@ -122,7 +122,7 @@ for (const [slug, cells, label] of [
         t.mock.timers.tick(10000);
       });
       assert.equal(finish, 1);
-      assert.ok(app.container.querySelector(".signature-award"));
+      assert.equal(app.container.querySelector(".signature-award"), null);
       cleanup();
     },
   );
