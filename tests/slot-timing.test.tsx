@@ -21,13 +21,27 @@ Object.defineProperty(globalThis, "navigator", {
 });
 const { render, screen, fireEvent, act, cleanup } =
   await import("@testing-library/react");
-for (const delay of [0, 1500])
+for (const { delay, reduced } of [
+  { delay: 0, reduced: false },
+  { delay: 1500, reduced: false },
+  { delay: 0, reduced: true },
+])
   test(
     "Slot reels start before a " +
       delay +
-      "ms response and never add network time to the spin schedule",
+      "ms response" +
+      (reduced
+        ? " and honor reduced motion"
+        : " and land separately even after a delayed confirmation"),
     async (t) => {
       t.mock.timers.enable({ apis: ["setTimeout"] });
+      Object.defineProperty(dom.window, "matchMedia", {
+        configurable: true,
+        value: () => ({ matches: reduced }),
+      });
+      t.after(() => {
+        delete (dom.window as unknown as { matchMedia?: unknown }).matchMedia;
+      });
       let now = 0,
         finished = 0,
         starts = 0;
@@ -107,13 +121,56 @@ for (const delay of [0, 1500])
       await act(async () => {
         resolve({ ...result, returned_minor: state.returned_minor });
       });
-      await act(async () => {
-        now = Math.max(delay, 550);
-        t.mock.timers.tick(delay ? 0 : 550);
-      });
+      if (reduced) {
+        await act(async () => {
+          t.mock.timers.tick(0);
+        });
+        assert.equal(
+          app.container.querySelectorAll(".reel-moving, .reel-landing").length,
+          0,
+        );
+      } else {
+        await act(async () => {
+          now += delay ? 0 : 180;
+          t.mock.timers.tick(delay ? 0 : 180);
+        });
+        assert.equal(app.container.querySelectorAll(".reel-moving").length, 5);
+        assert.equal(app.container.querySelectorAll(".reel-landing").length, 1);
+        for (let col = 1; col < 6; col++) {
+          await act(async () => {
+            now += 60;
+            t.mock.timers.tick(60);
+          });
+          assert.equal(
+            app.container.querySelectorAll(".reel-moving").length,
+            5 - col,
+          );
+          assert.ok(
+            app.container.querySelector(
+              '[data-reel="' + (col + 1) + '"].reel-landing',
+            ),
+          );
+          assert.equal(finished, 0, "result waits for the last reel to land");
+        }
+        assert.equal(
+          (
+            screen.getByRole("button", {
+              name: "Spinning reels",
+              exact: true,
+            }) as HTMLButtonElement
+          ).disabled,
+          true,
+        );
+        await act(async () => {
+          now += 110;
+          t.mock.timers.tick(110);
+        });
+      }
       assert.equal(finished, 1);
       assert.ok(app.container.querySelector(".slot-win-overlay"));
-      fireEvent.click(screen.getByRole("button", { name: "Dismiss win celebration" }));
+      fireEvent.click(
+        screen.getByRole("button", { name: "Dismiss win celebration" }),
+      );
       assert.equal(app.container.querySelector(".slot-win-overlay"), null);
       assert.equal(finished, 1);
       assert.equal(starts, 1);
