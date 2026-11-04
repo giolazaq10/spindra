@@ -1,0 +1,468 @@
+/* Open illustrated stages replace the shared token-machine treatment. */
+.spindra-extension .compact-slot-page .game-surface {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.spindra-extension .compact-slot-page .slot-polished {
+  background:
+    radial-gradient(ellipse at 30% 0%, #fff5, transparent 55%),
+    linear-gradient(155deg, var(--slot-sky), var(--slot-horizon));
+  border: 1px solid #ffffff45;
+  border-radius: 24px;
+  padding: 20px 28px 16px;
+  box-shadow: 0 20px 60px #0004;
+}
+.spindra-extension .slot-polished .slot-scenery {
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+}
+.spindra-extension .slot-polished .scene-overlay {
+  background: linear-gradient(transparent 50%, #15234538);
+}
+.spindra-extension .slot-polished .living-world {
+  height: 100%;
+  mask-image: none;
+}
+.spindra-extension .slot-polished .world-landscape {
+  opacity: 1;
+}
+.spindra-extension .slot-polished .world-scene-actor {
+  opacity: 0.95;
+}
+.spindra-extension .slot-polished .cabinet-heading,
+.spindra-extension .slot-polished .premium-heading {
+  min-height: 80px;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 12px;
+  gap: 16px;
+}
+.spindra-extension .slot-polished .cabinet-heading h2,
+.spindra-extension .slot-polished .premium-heading h2 {
+  color: #fff7c9;
+  font-size: clamp(28px, 4.5vw, 49px);
+  font-weight: 950;
+  letter-spacing: -1.5px;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--slot-horizon) 80%, #222);
+  paint-order: stroke fill;
+  text-shadow:
+    0 3px 0 var(--slot-horizon),
+    0 6px 12px #2225;
+  line-height: 1.1;
+}
+.spindra-extension .slot-polished .cabinet-heading small,
+.spindra-extension .slot-polished .premium-heading > div > span {
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-shadow: 0 1px 4px #0008;
+}
+.spindra-extension .slot-polished .cabinet-mark {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  width: 76px;
+  height: 76px;
+}
+.spindra-extension .slot-polished .cabinet-badge {
+  background: #15274780;
+  border: 1px solid #fff4;
+  padding: 7px 10px;
+  border-radius: 12px;
+}
+.spindra-extension .slot-polished .mechanic-banner,
+.spindra-extension .slot-polished .premium-feature-bar {
+  border: 0;
+  border-radius: 12px;
+  background: #172543b8;
+  color: #fff;
+  padding: 8px 12px;
+  box-shadow: none;
+}
+.spindra-extension .slot-polished .slot-specials {
+  justify-content: center;
+  gap: 12px;
+}
+.spindra-extension .slot-polished .slot-specials span {
+  background: #172543bc;
+  color: #fff5c9;
+  border-color: #fff4;
+  font-size: 10px;
+}
+.spindra-extension .slot-polished .slot-bonus-bar {
+  min-height: 48px;
+  background: #152747c9;
+  border: 1px solid #fff4;
+  border-radius: 12px;
+}
+.spindra-extension .slot-polished .slot-marquee {
+  min-height: 32px;
+  margin: 4px 0;
+  color: #fff;
+  font-size: 12px;
+}
+.spindra-extension .slot-polished .reel-cabinet,
+.spindra-extension .slot-polished .signature-cabinet {
+  padding: 5px;
+  border: 2px solid #fff9;
+  border-radius: 22px;
+  background: linear-gradient(
+    140deg,
+    #fff8,
+    var(--slot-primary),
+    var(--slot-secondary)
+  );
+  box-shadow:
+    0 9px 24px #16324b40,
+    inset 0 1px #fff;
+}
+.spindra-extension .slot-polished .advanced-reels {
+  gap: 0;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  box-shadow: none;
+}
+.spindra-extension .slot-polished .advanced-reel {
+  border-radius: 0;
+  background: linear-gradient(var(--slot-reel-top), var(--slot-reel-bottom));
+  border-right: 1px solid #52658620;
+  box-shadow: none;
+}
+.spindra-extension .slot-polished .advanced-reel:last-of-type {
+  border-right: 0;
+}
+.spindra-extension .slot-polished .advanced-reel::after {
+  background: linear-gradient(#263a4722, transparent 12% 88%, #263a4722);
+  opacity: 1;
+}
+.spindra-extension .slot-polished .symbol-cell {
+  border: 0;
+  background: transparent;
+}
+.spindra-extension .slot-polished .illustrated-symbol {
+  padding: 4px 6px 2px;
+}
+.spindra-extension .slot-polished .illustrated-symbol .symbol-frame {
+  height: 100%;
+  max-height: 108px;
+  width: 100%;
+  filter: drop-shadow(0 4px 1px #14263b30);
+}
+.spindra-extension .slot-polished .symbol-name {
+  display: none;
+}
+.spindra-extension .slot-polished .wild-symbol .symbol-frame,
+.spindra-extension .slot-polished .scatter-symbol .symbol-frame {
+  filter: drop-shadow(0 0 7px #ffde75a0) drop-shadow(0 3px 1px #15274760);
+}
+.spindra-extension .slot-polished .symbol-winning {
+  background: radial-gradient(ellipse, #fff6, transparent 70%);
+  box-shadow: inset 0 0 0 2px #fff8;
+  border-radius: 18px;
+}
+.spindra-extension .slot-polished .reel-stopped .symbol-tier-6 .slot-object {
+  animation: object-breathe 4s ease-in-out infinite;
+  transform-origin: 50px 70px;
+}
+.spindra-extension .slot-polished .reel-landing .slot-object {
+  animation: object-arrive 260ms ease-out both;
+  transform-origin: 50px 70px;
+}
+.spindra-extension .slot-polished .symbol-winning .slot-object {
+  animation: object-celebrate 650ms ease-in-out 3;
+  transform-origin: 50px 60px;
+}
+.spindra-extension .slot-polished .slot-control-deck {
+  background: linear-gradient(135deg, #142642ed, #20324ae8);
+  border-color: #fff4;
+  box-shadow: 0 8px 18px #15274730;
+}
+.spindra-extension .slot-polished .slot-control-deck .spin-control {
+  border-radius: 50%;
+  border: 3px solid #fff9;
+  color: #17323f;
+  background: linear-gradient(
+    155deg,
+    #fffbc9,
+    var(--slot-primary) 48%,
+    var(--slot-secondary)
+  );
+  box-shadow:
+    0 4px 0 var(--slot-horizon),
+    0 7px 20px #15274770;
+  transition:
+    filter 0.15s,
+    box-shadow 0.15s;
+}
+.spindra-extension .slot-polished .spin-control:hover:enabled {
+  filter: brightness(1.1);
+  box-shadow:
+    0 4px 0 var(--slot-horizon),
+    0 0 22px #fff6;
+}
+.spindra-extension .slot-polished .spin-control:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+}
+.spindra-extension .slot-polished .spin-control:active:enabled {
+  filter: brightness(0.95);
+}
+.spindra-extension .slot-polished .slot-playback-controls {
+  background: #162744e8;
+  border-color: #fff3;
+  border-radius: 16px;
+}
+.spindra-extension .slot-polished .line-results {
+  color: white;
+  text-shadow: 0 1px 3px #14263b;
+}
+/* Theme-specific silhouettes and treatments, rather than one cabinet recolored. */
+.spindra-extension .scene-candy .reel-cabinet {
+  border: 4px solid #fff7ee;
+  background: repeating-linear-gradient(
+    45deg,
+    #ff8cbe 0 10px,
+    #fff5db 10px 20px
+  );
+  padding: 4px;
+  border-radius: 30px;
+}
+.spindra-extension .scene-candy .cabinet-heading h2 {
+  color: #fff3a6;
+  text-shadow:
+    0 3px #e74d99,
+    3px 0 #e74d99,
+    -3px 0 #e74d99,
+    0 -3px #e74d99,
+    0 7px 12px #c13e9670;
+}
+.spindra-extension .scene-candy .slot-object {
+  stroke: #a9287840;
+  stroke-width: 1;
+}
+.spindra-extension .scene-reef .reel-cabinet,
+.spindra-extension .scene-pirate .reel-cabinet {
+  border-color: #a4fff2;
+  border-radius: 38px 16px;
+  background: linear-gradient(150deg, #d5fff0, #30a9c1);
+}
+.spindra-extension .scene-reef .advanced-reel,
+.spindra-extension .scene-pirate .advanced-reel {
+  border-right: 2px dotted #fff8;
+}
+.spindra-extension .scene-honey .reel-cabinet {
+  border-radius: 36px 36px 16px 16px;
+  background: linear-gradient(#ffe38f, #de9c31);
+  border-color: #fff2ac;
+}
+.spindra-extension .scene-temple .reel-cabinet,
+.spindra-extension .scene-garden .reel-cabinet {
+  border-radius: 40px 14px;
+  border-color: #c7ffc9;
+  background: linear-gradient(135deg, #ddffd3, #41a18a);
+}
+.spindra-extension .scene-city .reel-cabinet,
+.spindra-extension .scene-arcade .reel-cabinet {
+  border-radius: 10px;
+  padding: 3px;
+  border-color: #8cffff;
+  box-shadow:
+    0 0 20px #49e6ff50,
+    0 9px 24px #18204c60;
+}
+.spindra-extension .scene-ice .reel-cabinet,
+.spindra-extension .scene-aurora .reel-cabinet {
+  border-radius: 28px 8px;
+  border-color: #efffff;
+  background: linear-gradient(150deg, #fff, #91dcef, #cfa9f2);
+}
+.spindra-extension .scene-canyon .reel-cabinet,
+.spindra-extension .scene-map .reel-cabinet {
+  border-radius: 12px 30px;
+  border-color: #ffe5b3;
+  background: linear-gradient(130deg, #c98957, #f4d69c);
+}
+.spindra-extension .scene-castle .reel-cabinet,
+.spindra-extension .scene-dragon .reel-cabinet {
+  border-radius: 32px 32px 10px 10px;
+  background: linear-gradient(#ffd4a0, #c16b82);
+  border-color: #ffe0b4;
+}
+.spindra-extension .scene-royal .reel-cabinet {
+  border-radius: 40px 40px 18px 18px;
+  background: linear-gradient(135deg, #fff1b6, #ec99ca, #ffe29a);
+}
+.spindra-extension .scene-moon .reel-cabinet {
+  border-radius: 36px;
+  background: linear-gradient(135deg, #f1f8ff, #93b8ec, #d7b5fa);
+}
+.spindra-extension .scene-cosmos .reel-cabinet,
+.spindra-extension .scene-cave .reel-cabinet {
+  border-radius: 24px 8px 24px 8px;
+  border-color: #d6b5ff;
+  box-shadow: 0 0 24px #cda1ff50;
+}
+.spindra-extension .scene-solar .reel-cabinet {
+  border-radius: 30px;
+  border-color: #fff1be;
+  background: linear-gradient(130deg, #ffe7a1, #ffad68, #fff3bb);
+}
+.spindra-extension .scene-storm .reel-cabinet {
+  border-radius: 8px 28px;
+  border-color: #c4f4ff;
+  background: linear-gradient(120deg, #6fb7e7, #ebf9ff, #828cde);
+}
+.spindra-extension .scene-train .reel-cabinet {
+  border-radius: 28px 28px 12px 12px;
+  border-color: #ffe7b3;
+  background: linear-gradient(#e6c58d, #8f9eae);
+}
+.spindra-extension .slot-polished .premium-backdrop {
+  opacity: 0.3;
+  mix-blend-mode: soft-light;
+}
+.spindra-extension .slot-polished .signature-grid {
+  border: 0;
+  background: linear-gradient(var(--slot-reel-top), var(--slot-reel-bottom));
+  border-radius: 16px;
+  gap: 2px;
+}
+.spindra-extension .slot-polished .signature-cell {
+  background: #ffffff10;
+  border-color: #ffffff20;
+  box-shadow: none;
+}
+.spindra-extension .scene-astral .signature-cabinet {
+  border-radius: 30px;
+  border-color: #c9c4ff;
+  box-shadow: 0 0 24px #bdb4ff60;
+}
+.spindra-extension .scene-foundry .signature-cabinet {
+  border-radius: 20px;
+  border: 4px solid #ffe2af;
+  background: linear-gradient(130deg, #c88856, #fff3c3, #a66c4a);
+}
+.spindra-extension .scene-motor .signature-cabinet {
+  border-radius: 28px 8px;
+  border-color: #ffe7b1;
+  background: linear-gradient(135deg, #ff8eb4, #fff3b0, #80d6d8);
+}
+@keyframes object-arrive {
+  0% {
+    transform: translateY(-7px) scale(0.94, 1.07);
+  }
+  65% {
+    transform: translateY(3px) scale(1.06, 0.96);
+  }
+  100% {
+    transform: none;
+  }
+}
+.spindra-extension .scene-reef .reel-stopped .object-fish,
+.spindra-extension .scene-pirate .reel-stopped .object-ship,
+.spindra-extension .scene-moon .reel-stopped .object-moon {
+  animation: object-float 5s ease-in-out infinite;
+  transform-origin: 50px 60px;
+}
+.spindra-extension .scene-candy .reel-stopped .object-heart,
+.spindra-extension .scene-honey .reel-stopped .object-hexagon,
+.spindra-extension .scene-garden .reel-stopped .object-flower {
+  animation: object-breathe 4s ease-in-out infinite;
+  transform-origin: 50px 60px;
+}
+.spindra-extension .scene-dragon .reel-stopped .object-flame,
+.spindra-extension .scene-castle .reel-stopped .object-flame {
+  animation: object-flicker 2.2s ease-in-out infinite;
+  transform-origin: 50px 90px;
+}
+@keyframes object-float {
+  0%,
+  100% {
+    transform: translateY(2px) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(2deg);
+  }
+}
+@keyframes object-flicker {
+  0%,
+  100% {
+    transform: scale(1, 0.97);
+  }
+  50% {
+    transform: scale(0.96, 1.04);
+  }
+}
+@keyframes object-breathe {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(2deg);
+  }
+}
+@keyframes object-celebrate {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.12) rotate(-5deg);
+  }
+  70% {
+    transform: scale(1.08) rotate(5deg);
+  }
+}
+@media (max-width: 640px) {
+  .spindra-extension .compact-slot-page .slot-polished {
+    padding: 12px 8px;
+    border-radius: 18px;
+  }
+  .spindra-extension .slot-polished .cabinet-heading,
+  .spindra-extension .slot-polished .premium-heading {
+    gap: 7px;
+    min-height: 64px;
+  }
+  .spindra-extension .slot-polished .cabinet-mark {
+    width: 46px;
+    height: 46px;
+  }
+  .spindra-extension .slot-polished .cabinet-heading h2,
+  .spindra-extension .slot-polished .premium-heading h2 {
+    font-size: clamp(25px, 6.3vw, 36px);
+    letter-spacing: -1px;
+  }
+  .spindra-extension .slot-polished .cabinet-heading small {
+    font-size: 7px;
+    letter-spacing: 0.8px;
+  }
+  .spindra-extension .slot-polished .cabinet-badge {
+    padding: 5px;
+    font-size: 8px;
+  }
+  .spindra-extension .slot-polished .illustrated-symbol {
+    padding: 3px 1px;
+  }
+  .spindra-extension .slot-polished .mechanic-banner {
+    font-size: 10px;
+    gap: 6px;
+  }
+  .spindra-extension .slot-polished .slot-specials {
+    gap: 5px;
+  }
+  .spindra-extension .slot-polished .slot-specials span {
+    font-size: 8px;
+  }
+  .spindra-extension .slot-polished .reel-cabinet {
+    padding: 3px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spindra-extension .slot-polished .slot-object {
+    animation: none !important;
+  }
+}

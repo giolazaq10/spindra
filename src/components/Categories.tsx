@@ -35,7 +35,7 @@ type Props = {
 
 export default function Categories({ categories, games }: Props) {
   return (
-    <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+    <section className="home-categories relative py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <span className="text-xs font-bold tracking-widest text-amber-400 uppercase">

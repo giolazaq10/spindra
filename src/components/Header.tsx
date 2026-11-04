@@ -53,7 +53,7 @@ export default function Header() {
         onClick={(e) => {
           if ((e.target as Element).closest("a")) setMobileOpen(false);
         }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`site-header fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled || location.pathname !== "/"
             ? "glass-strong py-2 shadow-lg shadow-black/40"
             : "py-4"
@@ -77,12 +77,13 @@ export default function Header() {
           </Link>
 
           {/* Center: Nav + Balance (desktop) */}
-          <div className="hidden lg:flex items-center gap-8">
-            <nav className="flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-5">
+            <nav className="flex items-center gap-5" aria-label="Main navigation">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
+                  aria-current={isActive(link.to) ? "page" : undefined}
                   className={`text-sm font-medium transition-colors duration-200 relative group ${
                     isActive(link.to)
                       ? "text-amber-400"
@@ -152,10 +153,21 @@ export default function Header() {
           </div>
 
           {/* Mobile toggle */}
+          <div className="mobile-header-actions lg:hidden">
+            {user && <>
+              <Link className="mobile-wallet-link" to="/account" aria-label="Wallet balance and account">
+                <small>{currency} BALANCE</small>
+                <strong>{walletLoading ? "…" : walletError ? "Unavailable" : credits(balance)}</strong>
+              </Link>
+              <button className="mobile-deposit-button" onClick={() => setDepositOpen(true)} aria-label="Deposit crypto">
+                <Plus size={18} />
+              </button>
+            </>}
           <button
             className="lg:hidden w-10 h-10 rounded-xl glass flex items-center justify-center text-white"
             aria-label="Toggle navigation"
             aria-expanded={mobileOpen}
+            aria-controls="site-mobile-navigation"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? (
@@ -164,45 +176,13 @@ export default function Header() {
               <Menu className="w-5 h-5" />
             )}
           </button>
-        </div>
-
-        {/* Mobile balance bar when signed in */}
-        {user && mobileOpen && (
-          <div className="lg:hidden px-4 pt-3">
-            <div className="flex items-center justify-between px-4 py-3 rounded-xl glass">
-              <div className="flex items-center gap-2">
-                <WalletIcon className="w-4 h-4 text-amber-400" />
-                <div className="flex flex-col leading-none">
-                  <span className="text-[9px] text-gray-500 tracking-widest uppercase">
-                    Real balance
-                  </span>
-                  <span className="text-sm font-bold text-white tabular-nums">
-                    {walletLoading
-                      ? "…"
-                      : walletError
-                        ? "Unavailable"
-                        : credits(balance)}
-                    {` ${currency}`}
-                  </span>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  setDepositOpen(true);
-                  setMobileOpen(false);
-                }}
-                className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 text-black text-xs font-bold flex items-center gap-1"
-              >
-                <Plus className="w-3.5 h-3.5" /> Deposit
-              </button>
-            </div>
           </div>
-        )}
+        </div>
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="lg:hidden glass-strong border-t border-white/10 mt-2 animate-[count-up_0.3s_ease]">
-            <nav className="flex flex-col gap-1 px-4 py-4">
+          <div id="site-mobile-navigation" className="lg:hidden glass-strong border-t border-white/10 mt-2 animate-[count-up_0.3s_ease]">
+            <nav className="flex flex-col gap-1 px-4 py-4" aria-label="Mobile navigation">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}

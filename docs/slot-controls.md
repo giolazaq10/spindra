@@ -6,6 +6,7 @@ Available in all 25 slot cabinets.
 - **Quick spin** shortens visual presentation for manual and automatic play. Hold-Space always uses quick presentation.
 - **Autoplay** accepts 1–1,000 paid spins. The displayed stake total is the maximum planned sum of paid stakes; free-spin frames do not consume the selected count.
 - **Stop repeats** cancels the next spin. It cannot cancel a wager that the server has already accepted.
+- The total-stake selector and step buttons sit immediately beside the fixed primary Spin button. During a spin, that button becomes **Stop**: it stops repeated play and skips the remaining presentation of the confirmed result. If the server response is pending, it shows **Waiting** until confirmation. It never submits another wager, refunds an accepted bet, or discards a confirmed free-spin award.
 - Repeating play stops on insufficient confirmed balance, unavailable account, request failure or uncertain result, window blur, hidden tab, an open dialog, or leaving the cabinet. It never retries an uncertain wager automatically.
 - Classic-slot free-spin bonuses stop repeated paid play. Play or skip the already confirmed bonus before starting a new paid spin.
 - Inputs and unrelated buttons retain their normal Space key behavior. Key-repeat events do not submit additional requests.

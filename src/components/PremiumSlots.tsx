@@ -6,16 +6,15 @@ import {
   type CSSProperties,
 } from "react";
 import { flushSync } from "react-dom";
-import { RotateCw, FastForward, LockKeyhole } from "lucide-react";
+import { LockKeyhole } from "lucide-react";
 import type { Original } from "@/lib/catalog";
 import type { SlotWin } from "@/lib/slotModels";
 import type { PremiumFrame } from "@/lib/premiumSlots";
 import { vaultCoinPays } from "@/lib/premiumSlots";
 import type { Controls } from "./OriginalGame";
 import { PremiumBackdrop, PremiumSymbol } from "./PremiumSlotArt";
-import GameControls from "./GameControls";
+import SlotConsole from "./SlotConsole";
 import { slotThemeVars } from "../lib/slotPresentation";
-import { credits } from "@/lib/money";
 import SlotWinCelebration from "./SlotWinCelebration";
 import { useSlotPlayback } from "./useSlotPlayback";
 import { useSlotAudio } from "./useSlotAudio";
@@ -74,6 +73,8 @@ export default function PremiumSlots({
     timers = useRef(new Set<ReturnType<typeof setTimeout>>()),
     confirmed = useRef<PremiumResult | null>(null);
   const sound = useSlotAudio(game.slug);
+  const [waitingStop, setWaitingStop] = useState(false);
+  const stopRequested = useRef(false);
   const roundStake = useRef(c.bet);
   const cabinet = useRef<HTMLDivElement>(null);
   const spinHandler = useRef<(fast: boolean) => Promise<boolean>>(
@@ -107,7 +108,7 @@ export default function PremiumSlots({
     timers.current.add(timer);
   }
   function finish(result: PremiumResult) {
-    if (!locked.current) return;
+    if (!locked.current || !alive.current) return;
     clear();
     const last = result.frames?.[result.frames.length - 1];
     setFrame(
@@ -122,6 +123,7 @@ export default function PremiumSlots({
     setReturned(result.returned_minor);
     setPaid(true);
     setPlaying(false);
+    setWaitingStop(false);
     locked.current = false;
     c.finish(result.returned_minor);
     playback.completed();
@@ -137,6 +139,7 @@ export default function PremiumSlots({
   async function spin(quick = false) {
     if (locked.current || !c.start()) return false;
     locked.current = true;
+    stopRequested.current = false;
     roundStake.current = c.bet;
     playback.accepted();
     sound.audio.play("spin");
@@ -144,6 +147,7 @@ export default function PremiumSlots({
     clear();
     flushSync(() => {
       setPlaying(true);
+      setWaitingStop(false);
       setPaid(false);
       setLastStake(c.bet);
       setStage(0);
@@ -163,6 +167,10 @@ export default function PremiumSlots({
       const result = await serverSpin(c.bet);
       if (!alive.current) return false;
       confirmed.current = result;
+      if (stopRequested.current) {
+        finish(result);
+        return true;
+      }
       const frames = result.frames || [],
         elapsed = performance.now() - began;
       frames.forEach((f, i) =>
@@ -208,6 +216,7 @@ export default function PremiumSlots({
       if (!alive.current) return false;
       locked.current = false;
       setPlaying(false);
+      setWaitingStop(false);
       c.finish(0);
       c.setMessage(e instanceof Error ? e.message : "Unable to confirm spin");
       playback.completed();
@@ -216,6 +225,13 @@ export default function PremiumSlots({
       );
       return false;
     }
+  }
+  function stopSpin() {
+    playback.stop("Repeated spins stopped.");
+    if (!locked.current) return;
+    stopRequested.current = true;
+    if (confirmed.current) finish(confirmed.current);
+    else setWaitingStop(true);
   }
   useLayoutEffect(() => {
     spinHandler.current = spin;
@@ -228,7 +244,9 @@ export default function PremiumSlots({
     <div
       ref={cabinet}
       className={
-        "premium-slot slot-polished premium-" +
+        "premium-slot slot-polished scene-" +
+        s.scene +
+        " premium-" +
         kind +
         (playing ? " premium-playing" : "") +
         (playing && stage === 0 ? " premium-spinning" : "")
@@ -396,32 +414,20 @@ export default function PremiumSlots({
               : "BOOST " + frame.multiplier + "×"}
         </b>
       </div>
-      <div className="signature-console">
-        <div>
-          <small>LAST RETURN · USD</small>
-          <strong>{credits(returned)}</strong>
-        </div>
-        <button
-          className="signature-skip"
-          aria-label="Skip confirmed animation"
-          disabled={!playing || stage === 0}
-          onClick={() => {
-            if (confirmed.current) finish(confirmed.current);
-          }}
-        >
-          <FastForward size={20} />
-          <span>Skip</span>
-        </button>
-        <button
-          className="spin-control"
-          aria-label={playing ? "Spinning reels" : "Spin reels"}
-          disabled={playing || c.busy || c.canStart === false}
-          onClick={playback.manual}
-        >
-          <RotateCw size={28} />
-          <span>{playing ? "SPINNING" : "SPIN"}</span>
-        </button>
-      </div>
+      <SlotConsole
+        signature
+        controls={{ ...c, busy: c.busy || playing || playback.mode !== "idle" }}
+        returned={returned}
+        running={playing || playback.mode !== "idle"}
+        waiting={waitingStop}
+        disabled={
+          !(playing || playback.mode !== "idle") &&
+          (c.busy || c.canStart === false)
+        }
+        onPress={
+          playing || playback.mode !== "idle" ? stopSpin : playback.manual
+        }
+      />
       <SlotPlaybackControls
         {...playback}
         busy={playing || c.busy}
@@ -429,9 +435,6 @@ export default function PremiumSlots({
         stake={c.bet}
         preferences={sound.preferences}
         configure={sound.configure}
-      />
-      <GameControls
-        controls={{ ...c, busy: c.busy || playing || playback.mode !== "idle" }}
       />
     </div>
   );

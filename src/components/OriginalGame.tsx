@@ -25,11 +25,11 @@ export type Controls = {
 export default function OriginalGame({ game }: { game: Original }) {
   const { user, loading } = useAuth();
   return (
-    <section className="page game-page">
+    <section className={"page game-page" + (game.kind === "slots" ? " compact-slot-page" : "")}>
       <Link className="text-link" to="/games">
         <ArrowLeft size={16} /> Back to casino
       </Link>
-      <div className="section-heading">
+      <div className={game.kind === "slots" ? "section-heading sr-only" : "section-heading"}>
         <div>
           <span className="eyebrow">SPINDRA ORIGINAL</span>
           <h1>{game.name}</h1>

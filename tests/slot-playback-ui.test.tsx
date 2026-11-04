@@ -6,6 +6,7 @@ import type { PremiumResult } from "../src/components/PremiumSlots";
 import { originals } from "../src/lib/catalog";
 import { newCashRound } from "../src/lib/cashEngine";
 import { supabase } from "../src/lib/supabase";
+import { credits } from "../src/lib/money";
 import type { SlotBonus } from "../src/lib/slotModels";
 import type { Controls } from "../src/components/OriginalGame";
 const dom = new JSDOM("<!doctype html><html><body></body></html>", {
@@ -44,6 +45,7 @@ function cabinet(slug = "solar-vault", bonus = false) {
     returned_minor: state.returned_minor,
   } as Result;
   const requests: {
+    stake: number;
     resolve: (r: Result) => void;
     reject: (e: Error) => void;
   }[] = [];
@@ -51,11 +53,12 @@ function cabinet(slug = "solar-vault", bonus = false) {
     starts = 0,
     setBalance!: (v: number) => void;
   function Harness() {
+    const [bet, setBet] = useState(20);
     const [busy, setBusy] = useState(false),
       [balance, updateBalance] = useState(10000);
     setBalance = updateBalance;
     const c: Controls = {
-      bet: 20,
+      bet,
       start: () => {
         starts++;
         setBusy(true);
@@ -67,8 +70,8 @@ function cabinet(slug = "solar-vault", bonus = false) {
       },
       balance,
       busy,
-      canStart: balance >= 20,
-      setBet: () => {},
+      canStart: balance >= bet,
+      setBet,
       stakes: [20, 50],
       setMessage: () => {},
       message: "",
@@ -83,9 +86,9 @@ function cabinet(slug = "solar-vault", bonus = false) {
       <Cabinet
         game={game}
         controls={c}
-        serverSpin={() =>
+        serverSpin={(stake) =>
           new Promise<Result>((resolve, reject) => {
-            requests.push({ resolve, reject });
+            requests.push({ stake, resolve, reject });
           })
         }
       />
@@ -116,6 +119,125 @@ function setup(t: import("node:test").TestContext) {
     dom.window.localStorage.clear();
   });
 }
+for (const slug of [
+  "solar-vault",
+  "astra-cascade",
+  "copper-lock",
+  "nitro-sevens",
+]) {
+  for (const pending of [true, false])
+    test(
+      slug +
+        " Stop reveals one authoritative result " +
+        (pending ? "after pending confirmation" : "during confirmed animation"),
+      async (t) => {
+        setup(t);
+        const h = cabinet(slug);
+        fireEvent.click(
+          screen.getByRole("button", { name: "Spin reels", exact: true }),
+        );
+        if (!pending)
+          await act(async () => {
+            h.requests[0].resolve(h.result);
+          });
+        fireEvent.click(
+          screen.getByRole("button", { name: "Stop spin", exact: true }),
+        );
+        if (pending) {
+          assert.equal(h.finishes(), 0);
+          const waiting = screen.getByRole("button", {
+            name: "Waiting for spin result",
+          });
+          assert.equal((waiting as HTMLButtonElement).disabled, true);
+          fireEvent.click(waiting);
+          assert.equal(h.requests.length, 1);
+          await act(async () => {
+            h.requests[0].resolve(h.result);
+          });
+        }
+        assert.equal(h.finishes(), 1);
+        assert.equal(
+          h.app.container.querySelector(".deck-return strong")?.textContent,
+          credits(h.result.returned_minor),
+        );
+        assert.ok(
+          screen.getByRole("button", { name: "Spin reels", exact: true }),
+        );
+        await tick(10000);
+        assert.equal(h.finishes(), 1);
+        assert.equal(h.starts(), 1);
+        assert.equal(h.requests.length, 1);
+      },
+    );
+  test(
+    slug + " keeps one working stake selector directly beside Spin",
+    async (t) => {
+      setup(t);
+      const h = cabinet(slug);
+      const selector = screen.getByRole("combobox", { name: "Total stake" });
+      const action = selector.closest(".slot-wager-action")!;
+      assert.ok(
+        action.contains(
+          screen.getByRole("button", { name: "Spin reels", exact: true }),
+        ),
+      );
+      assert.equal(
+        h.app.container.querySelectorAll(".slot-stake-control").length,
+        1,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Increase stake" }));
+      assert.equal((selector as HTMLSelectElement).value, "50");
+      fireEvent.click(
+        screen.getByRole("button", { name: "Spin reels", exact: true }),
+      );
+      assert.equal(h.requests[0].stake, 50);
+      assert.equal((selector as HTMLSelectElement).disabled, true);
+    },
+  );
+}
+test("pressing primary Stop ends autoplay without submitting its next stake", async (t) => {
+  setup(t);
+  const h = cabinet();
+  fireEvent.click(screen.getByRole("button", { name: "Start autoplay" }));
+  await tick(20);
+  fireEvent.click(
+    screen.getByRole("button", { name: "Stop spin", exact: true }),
+  );
+  await act(async () => {
+    h.requests[0].resolve(h.result);
+  });
+  await tick(10000);
+  assert.equal(h.requests.length, 1);
+  assert.equal(h.finishes(), 1);
+});
+test("stopping the base animation preserves an awarded free-spins bonus and its full return", async (t) => {
+  setup(t);
+  const h = cabinet("solar-vault", true);
+  fireEvent.click(
+    screen.getByRole("button", { name: "Spin reels", exact: true }),
+  );
+  fireEvent.click(
+    screen.getByRole("button", { name: "Stop spin", exact: true }),
+  );
+  await act(async () => {
+    h.requests[0].resolve(h.result);
+  });
+  assert.ok(
+    screen.getByRole("region", { name: "Scatter free-spins celebration" }),
+  );
+  assert.equal(h.finishes(), 0);
+  fireEvent.click(
+    screen.getByRole("button", { name: "Skip bonus animations" }),
+  );
+  assert.equal(h.finishes(), 1);
+  assert.equal(
+    h.app.container.querySelector(".deck-return strong")?.textContent,
+    credits(h.result.returned_minor),
+  );
+  await tick(10000);
+  assert.equal(h.requests.length, 1);
+  assert.equal(h.finishes(), 1);
+});
 for (const slug of [
   "solar-vault",
   "astra-cascade",

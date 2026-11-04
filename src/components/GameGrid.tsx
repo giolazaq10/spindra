@@ -32,7 +32,7 @@ export default function GameGrid({ games, categories }: Props) {
     filter === "All" ? games : games.filter((g) => g.category?.name === filter);
 
   return (
-    <section id="games" className="relative py-20 px-4 sm:px-6 lg:px-8">
+    <section id="games" className="home-games-section relative py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 mb-10">
           <div>
@@ -62,7 +62,7 @@ export default function GameGrid({ games, categories }: Props) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="catalog-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {filtered.map((game, i) => {
             const accent =
               game.tag === "JACKPOT"
@@ -76,14 +76,16 @@ export default function GameGrid({ games, categories }: Props) {
               <Link
                 key={game.id}
                 to={`/game/${game.slug}`}
-                className={`group relative rounded-2xl overflow-hidden glass hover:border-amber-400/40 transition-all duration-300 hover:scale-[1.03] animate-[count-up_0.5s_ease_backwards]`}
+                className={`catalog-card group relative rounded-2xl overflow-hidden glass hover:border-amber-400/40 transition-all duration-300 hover:scale-[1.03] animate-[count-up_0.5s_ease_backwards]`}
                 style={{ animationDelay: `${i * 0.06}s` }}
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="catalog-card-art relative aspect-[4/3] overflow-hidden">
                   {game.image_url ? (
                     <img
                       src={game.image_url}
                       alt={game.title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : (
@@ -106,7 +108,7 @@ export default function GameGrid({ games, categories }: Props) {
                   </div>
                 </div>
 
-                <div className="p-4">
+                <div className="catalog-card-info p-4">
                   <h3 className="font-bold text-white text-base mb-1 group-hover:text-amber-400 transition-colors">
                     {game.title}
                   </h3>

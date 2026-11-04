@@ -7,14 +7,12 @@ import {
   type CSSProperties,
 } from "react";
 import { flushSync } from "react-dom";
-import { RotateCw, Trophy } from "lucide-react";
 import type { Original } from "../lib/catalog";
 import { type SlotWin, type SlotBonus } from "../lib/slotModels";
-import AnimatedCredits from "./AnimatedCredits";
 import SlotWinCelebration from "./SlotWinCelebration";
 import { credits } from "../lib/money";
 import type { Controls } from "./OriginalGame";
-import GameControls from "./GameControls";
+import SlotConsole from "./SlotConsole";
 import { slotLook, slotThemeVars } from "../lib/slotPresentation";
 import { SlotScenery, SlotSymbol } from "./SlotArt";
 import { reelMotion } from "./reelMotion";
@@ -103,6 +101,10 @@ export default function AdvancedSlots({
     async () => false,
   );
   const [quick, setQuick] = useState(false);
+  const [waitingStop, setWaitingStop] = useState(false);
+  const stopRequested = useRef(false),
+    basePresented = useRef(false),
+    spinStake = useRef(c.bet);
   const bonusStarted = useRef(false);
   const lock = useRef(false),
     mounted = useRef(true),
@@ -155,6 +157,9 @@ export default function AdvancedSlots({
   async function spin(fast = false) {
     if (lock.current || !c.start()) return false;
     lock.current = true;
+    stopRequested.current = false;
+    basePresented.current = false;
+    spinStake.current = c.bet;
     playback.accepted();
     sound.audio.play("spin");
     const startedAt = performance.now();
@@ -162,6 +167,7 @@ export default function AdvancedSlots({
     timers.current.length = 0;
     flushSync(() => {
       setQuick(fast);
+      setWaitingStop(false);
       setBonus(null);
       confirmed.current = null;
       bonusStarted.current = false;
@@ -179,6 +185,7 @@ export default function AdvancedSlots({
     } catch (e) {
       if (!mounted.current) return false;
       lock.current = false;
+      setWaitingStop(false);
       setMoving(Array(s.reels).fill(false));
       setLanding(Array(s.reels).fill(false));
       c.finish(0);
@@ -195,40 +202,63 @@ export default function AdvancedSlots({
     }
     if (!mounted.current) return false;
     confirmed.current = result;
+    if (stopRequested.current) {
+      finishBase(result, stake);
+      return true;
+    }
     // Network settlement and reel motion run together, not one after another.
     const elapsed = performance.now() - startedAt;
-    revealReels(
-      result.grid,
-      elapsed,
-      () => {
-        const payout = result.bonus
-          ? Math.floor((stake * (result.base_rate || 0)) / 100)
-          : result.returned_minor;
-        setWins(result.wins);
-        setReturned(payout);
-        if (result.bonus) {
-          playback.stop("Free spins awarded. Repeated paid spins stopped.");
-          sound.audio.play("bonus");
-          setBonus({
-            phase: "intro",
-            played: 0,
-            remaining: result.bonus.initial,
-            added: 0,
-            won: 0,
-          });
-        } else {
-          lock.current = false;
-          c.finish(payout);
-          playback.completed();
-          sound.audio.play(
-            payout > stake ? "win" : payout < stake ? "loss" : "reel",
-            payout / stake,
-          );
-        }
-      },
-      fast,
-    );
+    revealReels(result.grid, elapsed, () => finishBase(result, stake), fast);
     return true;
+  }
+  function finishBase(
+    result: Awaited<ReturnType<typeof serverSpin>>,
+    stake: number,
+  ) {
+    if (!mounted.current || basePresented.current) return;
+    basePresented.current = true;
+    timers.current.forEach(clearTimeout);
+    timers.current.length = 0;
+    setGrid(result.grid);
+    setMoving(Array(s.reels).fill(false));
+    setLanding(Array(s.reels).fill(false));
+    setWaitingStop(false);
+    const payout = result.bonus
+      ? Math.floor((stake * (result.base_rate || 0)) / 100)
+      : result.returned_minor;
+    setWins(result.wins);
+    setReturned(payout);
+    if (result.bonus) {
+      playback.stop("Free spins awarded. Repeated paid spins stopped.");
+      sound.audio.play("bonus");
+      setBonus({
+        phase: "intro",
+        played: 0,
+        remaining: result.bonus.initial,
+        added: 0,
+        won: 0,
+      });
+    } else {
+      lock.current = false;
+      c.finish(payout);
+      playback.completed();
+      sound.audio.play(
+        payout > stake ? "win" : payout < stake ? "loss" : "reel",
+        payout / stake,
+      );
+    }
+  }
+  function stopSpin() {
+    playback.stop("Repeated spins stopped.");
+    if (!lock.current) return;
+    if (bonus?.phase === "playing") {
+      completeBonus();
+      return;
+    }
+    if (bonus?.phase === "intro") return;
+    stopRequested.current = true;
+    if (confirmed.current) finishBase(confirmed.current, spinStake.current);
+    else setWaitingStop(true);
   }
   function completeBonus() {
     const result = confirmed.current;
@@ -550,31 +580,31 @@ export default function AdvancedSlots({
           />
         )}
       </div>
-      <div className="slot-console">
-        <div>
-          <small>ACTIVE PATTERNS</small>
-          <b>{pattern}</b>
-        </div>
-        <div className={returned ? "last-win has-win" : "last-win"}>
-          <small>
-            <Trophy size={12} /> LAST RETURN
-          </small>
-          <b>
-            <AnimatedCredits amount={returned} />
-          </b>
-        </div>
-        <button
-          className="spin-control"
-          onClick={playback.manual}
-          disabled={spinning || bonusActive || c.busy || c.canStart === false}
-          aria-label={spinning ? "Spinning reels" : "Spin reels"}
-        >
-          <RotateCw size={30} />
-          <span>
-            {bonusActive ? "FREE SPINS" : spinning ? "SPINNING" : "SPIN"}
-          </span>
-        </button>
-      </div>
+      <SlotConsole
+        controls={{
+          ...c,
+          busy: c.busy || spinning || !!bonusActive || playback.mode !== "idle",
+        }}
+        returned={returned}
+        running={
+          spinning || bonus?.phase === "playing" || playback.mode !== "idle"
+        }
+        waiting={waitingStop}
+        disabled={
+          bonus?.phase === "intro" ||
+          (!(
+            spinning ||
+            bonus?.phase === "playing" ||
+            playback.mode !== "idle"
+          ) &&
+            (c.busy || c.canStart === false))
+        }
+        onPress={
+          spinning || bonus?.phase === "playing" || playback.mode !== "idle"
+            ? stopSpin
+            : playback.manual
+        }
+      />
       <SlotPlaybackControls
         {...playback}
         busy={spinning || !!bonusActive || c.busy}
@@ -582,12 +612,6 @@ export default function AdvancedSlots({
         stake={c.bet}
         preferences={sound.preferences}
         configure={sound.configure}
-      />
-      <GameControls
-        controls={{
-          ...c,
-          busy: c.busy || spinning || !!bonusActive || playback.mode !== "idle",
-        }}
       />
       <div className="line-results" aria-live="polite">
         {wins.length ? (
