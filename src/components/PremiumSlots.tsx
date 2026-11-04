@@ -1,3 +1,6 @@
+import WorldEnvironment from "./WorldEnvironment";
+import WorldStage from "./WorldStage";
+import type { WorldEvent } from "../lib/worldDirector";
 import {
   useEffect,
   useLayoutEffect,
@@ -21,8 +24,7 @@ import { useSlotAudio } from "./useSlotAudio";
 import SlotPlaybackControls from "./SlotPlaybackControls";
 import SlotAtmosphere from "./SlotAtmosphere";
 import CinematicEffects from "./CinematicEffects";
-import WorldActor from "./WorldActor";
-import { livingWorld } from "../lib/livingWorlds";
+import WorldEmblem from "./WorldEmblem";
 export type PremiumResult = {
   grid: number[][];
   wins: SlotWin[];
@@ -48,6 +50,15 @@ export default function PremiumSlots({
 }) {
   const s = game.slot!,
     kind = s.premium!;
+  const [worldEvent, setWorldEvent] = useState<WorldEvent>({
+    id: 0,
+    type: "idle",
+    returned: 0,
+    stake: c.bet,
+  });
+  function worldCue(type: WorldEvent["type"], returned = 0, stake = c.bet) {
+    setWorldEvent((e) => ({ id: e.id + 1, type, returned, stake }));
+  }
   const empty = () =>
     Array.from({ length: s.reels }, (_, x) =>
       Array.from({ length: s.rows }, (_, y) =>
@@ -125,6 +136,7 @@ export default function PremiumSlots({
     setPlaying(false);
     setWaitingStop(false);
     locked.current = false;
+    worldCue("settled", result.returned_minor, roundStake.current);
     c.finish(result.returned_minor);
     playback.completed();
     sound.audio.play(
@@ -141,6 +153,7 @@ export default function PremiumSlots({
     locked.current = true;
     stopRequested.current = false;
     roundStake.current = c.bet;
+    worldCue("spin");
     playback.accepted();
     sound.audio.play("spin");
     confirmed.current = null;
@@ -214,6 +227,7 @@ export default function PremiumSlots({
       return true;
     } catch (e) {
       if (!alive.current) return false;
+      worldCue("error");
       locked.current = false;
       setPlaying(false);
       setWaitingStop(false);
@@ -244,7 +258,7 @@ export default function PremiumSlots({
     <div
       ref={cabinet}
       className={
-        "premium-slot slot-polished scene-" +
+        "premium-slot slot-polished has-directed-world scene-" +
         s.scene +
         " premium-" +
         kind +
@@ -254,6 +268,7 @@ export default function PremiumSlots({
       style={slotThemeVars(s.scene) as CSSProperties}
     >
       <PremiumBackdrop kind={kind} />
+      <WorldEnvironment scene={s.scene} event={worldEvent} />
       <SlotAtmosphere
         scene={s.scene}
         phase={playing ? "spin" : paid && returned > lastStake ? "win" : "idle"}
@@ -272,7 +287,7 @@ export default function PremiumSlots({
         </div>
         <span className="signature-seal">
           <span className="world-signature-avatar" aria-hidden="true">
-            <WorldActor kind={livingWorld(s.scene).actors[0]} />
+            <WorldEmblem scene={s.scene} />
           </span>
           <span>
             {kind === "cascade"
@@ -293,117 +308,119 @@ export default function PremiumSlots({
               : "ONE PAYLINE"}
         </span>
       </div>
-      <div className="signature-stage">
-        {kind === "cascade" && (
-          <aside className="cascade-rail">
-            <small>PORTAL CHARGE</small>
-            {[1, 2, 3].map((m) => (
-              <b
-                key={m}
-                className={frame.multiplier === m ? "charge-active" : ""}
-              >
-                {m}×
-              </b>
-            ))}
-            <span>Three stages maximum</span>
-          </aside>
-        )}
-        <div className="signature-cabinet">
-          {playing && stage === 0 && <CinematicEffects cue="spin" />}
-          {kind === "vault" && (
-            <div className="vault-counter">
-              <span>
-                <LockKeyhole size={15} /> {lockedCount} / 9 locked
-              </span>
-              <b>{frame.remaining ?? 3} CHANCES</b>
-              <span>Draw {stage} / 8</span>
-            </div>
-          )}
-          {kind === "nitro" && (
-            <div className="nitro-dashboard">
-              <div className="nitro-gauge">
-                <i
-                  style={{
-                    transform: `rotate(${frame.multiplier === 5 ? 70 : frame.multiplier === 2 ? 15 : -65}deg)`,
-                  }}
-                />
-                <b>{frame.multiplier}×</b>
-              </div>
-              <span>WILD GEAR TURBO</span>
-              <small>1× 85% · 2× 10% · 5× 5%</small>
-            </div>
-          )}
-          <div
-            className="signature-grid"
-            style={
-              {
-                "--premium-cols": s.reels,
-                "--premium-rows": s.rows,
-              } as CSSProperties
-            }
-            aria-label={
-              kind === "cascade"
-                ? "Six by five crystal board"
-                : kind === "vault"
-                  ? "Nine locking coin sockets"
-                  : "Three chrome slot drums"
-            }
-          >
-            {cells.map(({ symbol, x, y }) => {
-              const winning = frame.wins.some((w) =>
-                w.cells.some(([a, b]) => a === x && b === y),
-              );
-              return (
-                <div
-                  key={
-                    x +
-                    ":" +
-                    y +
-                    ":" +
-                    (kind === "cascade"
-                      ? stage
-                      : kind === "nitro"
-                        ? spinCount
-                        : 0)
-                  }
-                  className={
-                    "signature-cell " +
-                    (winning ? "signature-hit " : "") +
-                    (kind === "vault" && symbol ? "coin-locked " : "") +
-                    (kind === "vault" ? "" : "signature-draw")
-                  }
-                  style={{ "--cell-order": x + y } as CSSProperties}
+      <WorldStage scene={s.scene} event={worldEvent}>
+        <div className="signature-stage">
+          {kind === "cascade" && (
+            <aside className="cascade-rail">
+              <small>PORTAL CHARGE</small>
+              {[1, 2, 3].map((m) => (
+                <b
+                  key={m}
+                  className={frame.multiplier === m ? "charge-active" : ""}
                 >
-                  <PremiumSymbol kind={kind} index={symbol} />
-                  {kind === "vault" && symbol > 0 && (
-                    <span className="lock-glint" />
-                  )}
+                  {m}×
+                </b>
+              ))}
+              <span>Three stages maximum</span>
+            </aside>
+          )}
+          <div className="signature-cabinet">
+            {playing && stage === 0 && <CinematicEffects cue="spin" />}
+            {kind === "vault" && (
+              <div className="vault-counter">
+                <span>
+                  <LockKeyhole size={15} /> {lockedCount} / 9 locked
+                </span>
+                <b>{frame.remaining ?? 3} CHANCES</b>
+                <span>Draw {stage} / 8</span>
+              </div>
+            )}
+            {kind === "nitro" && (
+              <div className="nitro-dashboard">
+                <div className="nitro-gauge">
+                  <i
+                    style={{
+                      transform: `rotate(${frame.multiplier === 5 ? 70 : frame.multiplier === 2 ? 15 : -65}deg)`,
+                    }}
+                  />
+                  <b>{frame.multiplier}×</b>
                 </div>
-              );
-            })}
+                <span>WILD GEAR TURBO</span>
+                <small>1× 85% · 2× 10% · 5× 5%</small>
+              </div>
+            )}
+            <div
+              className="signature-grid"
+              style={
+                {
+                  "--premium-cols": s.reels,
+                  "--premium-rows": s.rows,
+                } as CSSProperties
+              }
+              aria-label={
+                kind === "cascade"
+                  ? "Six by five crystal board"
+                  : kind === "vault"
+                    ? "Nine locking coin sockets"
+                    : "Three chrome slot drums"
+              }
+            >
+              {cells.map(({ symbol, x, y }) => {
+                const winning = frame.wins.some((w) =>
+                  w.cells.some(([a, b]) => a === x && b === y),
+                );
+                return (
+                  <div
+                    key={
+                      x +
+                      ":" +
+                      y +
+                      ":" +
+                      (kind === "cascade"
+                        ? stage
+                        : kind === "nitro"
+                          ? spinCount
+                          : 0)
+                    }
+                    className={
+                      "signature-cell " +
+                      (winning ? "signature-hit " : "") +
+                      (kind === "vault" && symbol ? "coin-locked " : "") +
+                      (kind === "vault" ? "" : "signature-draw")
+                    }
+                    style={{ "--cell-order": x + y } as CSSProperties}
+                  >
+                    <PremiumSymbol kind={kind} index={symbol} />
+                    {kind === "vault" && symbol > 0 && (
+                      <span className="lock-glint" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {paid && returned > 0 && (
+              <SlotWinCelebration
+                key={spinCount}
+                returned={returned}
+                stake={lastStake}
+                signature
+              />
+            )}
           </div>
-          {paid && returned > 0 && (
-            <SlotWinCelebration
-              key={spinCount}
-              returned={returned}
-              stake={lastStake}
-              signature
-            />
+          {kind === "vault" && (
+            <aside className="vault-ledger">
+              <small>COIN VALUES</small>
+              {vaultCoinPays.map((pay, i) => (
+                <span key={i}>
+                  <i />
+                  {pay / 100}×
+                </span>
+              ))}
+              <b>Full grid +2×</b>
+            </aside>
           )}
         </div>
-        {kind === "vault" && (
-          <aside className="vault-ledger">
-            <small>COIN VALUES</small>
-            {vaultCoinPays.map((pay, i) => (
-              <span key={i}>
-                <i />
-                {pay / 100}×
-              </span>
-            ))}
-            <b>Full grid +2×</b>
-          </aside>
-        )}
-      </div>
+      </WorldStage>
       <div className="signature-status" role="status">
         <span>{playing && stage === 0 ? "Reels in motion…" : frame.label}</span>
         <b>

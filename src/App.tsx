@@ -22,6 +22,7 @@ import './components/slot-cinema.css';
 import './components/living-worlds.css';
 import './components/compact-ui.css';
 import './components/slot-stages.css';
+import './components/directed-worlds.css';
 import RouteBoundary from "@/components/RouteBoundary";
 import CasinoPage from "@/pages/CasinoPage";
 import AuthPage from "@/pages/AuthPage";

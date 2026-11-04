@@ -98,9 +98,12 @@ test("every slot has an explicit unique environment palette and unframed accessi
       assert.ok(image.getAttribute("aria-label"));
       assert.ok(app.container.querySelector(".slot-object"));
       assert.equal(
-        app.container.querySelectorAll(".lucide,script,image,foreignObject")
-          .length,
+        app.container.querySelectorAll(".lucide,script,foreignObject").length,
         0,
+      );
+      assert.equal(
+        app.container.querySelector("image")?.getAttribute("href"),
+        `/worlds/symbols-${spec.scene}.webp`,
       );
       assert.ok(!app.container.innerHTML.includes("NaN"));
       assert.ok(slotStageVars(spec.scene)["--slot-reel-top"]);

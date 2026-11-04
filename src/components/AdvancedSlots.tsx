@@ -1,3 +1,6 @@
+import WorldEnvironment from "./WorldEnvironment";
+import WorldStage from "./WorldStage";
+import type { WorldEvent } from "../lib/worldDirector";
 import {
   memo,
   useEffect,
@@ -22,8 +25,7 @@ import SlotPlaybackControls from "./SlotPlaybackControls";
 import SlotAtmosphere from "./SlotAtmosphere";
 import ScatterCelebration from "./ScatterCelebration";
 import CinematicEffects from "./CinematicEffects";
-import WorldActor from "./WorldActor";
-import { livingWorld } from "../lib/livingWorlds";
+import WorldEmblem from "./WorldEmblem";
 const ReelSymbol = memo(SlotSymbol);
 export default function AdvancedSlots({
   game,
@@ -51,6 +53,16 @@ export default function AdvancedSlots({
   };
 }) {
   const s = game.slot!;
+  const [worldEvent, setWorldEvent] = useState<WorldEvent>({
+    id: 0,
+    type: "idle",
+    returned: 0,
+    stake: c.bet,
+  });
+  function worldCue(type: WorldEvent["type"], returned = 0, stake = c.bet) {
+    setWorldEvent((e) => ({ id: e.id + 1, type, returned, stake }));
+  }
+
   const [grid, setGrid] = useState(
     () =>
       initialResult?.bonus?.frames[initialResult.bonus.frames.length - 1]
@@ -160,6 +172,7 @@ export default function AdvancedSlots({
     stopRequested.current = false;
     basePresented.current = false;
     spinStake.current = c.bet;
+    worldCue("spin");
     playback.accepted();
     sound.audio.play("spin");
     const startedAt = performance.now();
@@ -184,6 +197,7 @@ export default function AdvancedSlots({
       result = await serverSpin(stake);
     } catch (e) {
       if (!mounted.current) return false;
+      worldCue("error");
       lock.current = false;
       setWaitingStop(false);
       setMoving(Array(s.reels).fill(false));
@@ -228,6 +242,7 @@ export default function AdvancedSlots({
       : result.returned_minor;
     setWins(result.wins);
     setReturned(payout);
+    worldCue(result.bonus ? "bonus" : "settled", payout, stake);
     if (result.bonus) {
       playback.stop("Free spins awarded. Repeated paid spins stopped.");
       sound.audio.play("bonus");
@@ -282,6 +297,7 @@ export default function AdvancedSlots({
         Math.floor((lastStake * (result.base_rate || 0)) / 100),
     });
     lock.current = false;
+    worldCue("settled", result.returned_minor, lastStake);
     c.finish(result.returned_minor);
     playback.completed();
     sound.audio.play("win", result.returned_minor / lastStake);
@@ -332,7 +348,7 @@ export default function AdvancedSlots({
   return (
     <div
       className={
-        "advanced-slot distinct-slot slot-polished family-" +
+        "advanced-slot distinct-slot slot-polished has-directed-world family-" +
         slotLook(s.scene).family +
         " scene-" +
         s.scene +
@@ -351,6 +367,7 @@ export default function AdvancedSlots({
       }
     >
       <SlotScenery scene={s.scene} />
+      <WorldEnvironment scene={s.scene} event={worldEvent} />
       <div className="scene-overlay" />
       <SlotAtmosphere
         scene={s.scene}
@@ -371,7 +388,7 @@ export default function AdvancedSlots({
       </div>
       <div className="cabinet-heading">
         <span className="cabinet-mark world-badge-avatar" aria-hidden="true">
-          <WorldActor kind={livingWorld(s.scene).actors[0]} />
+          <WorldEmblem scene={s.scene} />
         </span>
         <div>
           <small>SPINDRA ORIGINALS · {slotLook(s.scene).label}</small>
@@ -438,148 +455,154 @@ export default function AdvancedSlots({
               : "RETURN · " + credits(returned)
             : s.description}
       </div>
-      <div
-        className={
-          "reel-cabinet " +
-          (wins.length ? "cabinet-winner " : "") +
-          (bonus?.phase === "intro"
-            ? "camera-bonus"
-            : spinning
-              ? "camera-spin"
-              : returned > lastStake
-                ? "camera-win"
-                : "")
-        }
-      >
-        {spinning && <CinematicEffects cue="spin" />}
+      <WorldStage scene={s.scene} event={worldEvent}>
         <div
-          className="advanced-reels"
-          aria-label={s.reels + " reels with " + s.rows + " rows"}
+          className={
+            "reel-cabinet " +
+            (wins.length ? "cabinet-winner " : "") +
+            (bonus?.phase === "intro"
+              ? "camera-bonus"
+              : spinning
+                ? "camera-spin"
+                : returned > lastStake
+                  ? "camera-win"
+                  : "")
+          }
         >
-          {grid.map((column, col) => (
-            <div
-              className={
-                "advanced-reel " +
-                (moving[col]
-                  ? "reel-moving"
-                  : landing[col]
-                    ? "reel-landing"
-                    : "reel-stopped")
-              }
-              key={col}
-              data-reel={col + 1}
-            >
+          {spinning && <CinematicEffects cue="spin" />}
+          <div
+            className="advanced-reels"
+            aria-label={s.reels + " reels with " + s.rows + " rows"}
+          >
+            {grid.map((column, col) => (
               <div
                 className={
-                  moving[col] ? "reel-strip strip-running" : "reel-strip"
+                  "advanced-reel " +
+                  (moving[col]
+                    ? "reel-moving"
+                    : landing[col]
+                      ? "reel-landing"
+                      : "reel-stopped")
                 }
+                key={col}
+                data-reel={col + 1}
               >
-                {Array.from(
-                  { length: s.rows * 2 },
-                  (_, row) => column[row % s.rows],
-                ).map((symbol, row) => {
-                  const winning =
-                    !moving[col] &&
-                    row < s.rows &&
-                    wins.some((w) =>
-                      w.cells.some(([x, y]) => col === x && row === y),
-                    );
-                  return (
-                    <div
-                      key={row}
-                      aria-hidden={row >= s.rows || undefined}
-                      className={
-                        "symbol-cell " +
-                        (winning ? "symbol-winning " : "") +
-                        (symbol === s.scatter?.symbol &&
-                        row < s.rows &&
-                        !moving[col] &&
-                        (bonus?.phase === "intro" || !!bonus?.added)
-                          ? "scatter-charged"
-                          : "")
-                      }
-                    >
-                      <ReelSymbol spec={s} index={symbol} />
-                      {symbol === s.scatter?.symbol &&
-                        row < s.rows &&
-                        !moving[col] &&
-                        (bonus?.phase === "intro" || !!bonus?.added) && (
-                          <span
-                            className="scatter-cell-orbit"
-                            aria-hidden="true"
-                          >
-                            <i />
-                            <i />
-                            <i />
+                <div
+                  className={
+                    moving[col] ? "reel-strip strip-running" : "reel-strip"
+                  }
+                >
+                  {Array.from(
+                    { length: s.rows * 2 },
+                    (_, row) => column[row % s.rows],
+                  ).map((symbol, row) => {
+                    const winning =
+                      !moving[col] &&
+                      row < s.rows &&
+                      wins.some((w) =>
+                        w.cells.some(([x, y]) => col === x && row === y),
+                      );
+                    return (
+                      <div
+                        key={row}
+                        aria-hidden={row >= s.rows || undefined}
+                        className={
+                          "symbol-cell " +
+                          (winning ? "symbol-winning " : "") +
+                          (symbol === s.scatter?.symbol &&
+                          row < s.rows &&
+                          !moving[col] &&
+                          (bonus?.phase === "intro" || !!bonus?.added)
+                            ? "scatter-charged"
+                            : "")
+                        }
+                      >
+                        <ReelSymbol spec={s} index={symbol} />
+                        {symbol === s.scatter?.symbol &&
+                          row < s.rows &&
+                          !moving[col] &&
+                          (bonus?.phase === "intro" || !!bonus?.added) && (
+                            <span
+                              className="scatter-cell-orbit"
+                              aria-hidden="true"
+                            >
+                              <i />
+                              <i />
+                              <i />
+                            </span>
+                          )}
+                        {winning && (
+                          <span className="symbol-spark" aria-hidden="true">
+                            ✦
                           </span>
                         )}
-                      {winning && (
-                        <span className="symbol-spark" aria-hidden="true">
-                          ✦
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
-          <svg
-            className="winning-lines"
-            viewBox={"0 0 " + s.reels * 100 + " " + s.rows * 100}
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            {wins
-              .filter((w) => w.line !== undefined)
-              .map((w, i) => (
-                <polyline
-                  key={w.line}
-                  points={w.cells
-                    .map(
-                      ([col, row]) => col * 100 + 50 + "," + (row * 100 + 50),
-                    )
-                    .join(" ")}
-                  fill="none"
-                  stroke={["#ffe087", "#75e9ff", "#e999ff"][i % 3]}
-                  strokeWidth="3"
-                />
-              ))}
-          </svg>
-        </div>
-        {bonus?.phase === "intro" && (
-          <ScatterCelebration
-            onStart={() => {
-              if (bonusStarted.current) return;
-              bonusStarted.current = true;
-              playBonus();
-            }}
-            onSkip={completeBonus}
-          />
-        )}
-        {bonus?.phase === "playing" && bonus.added > 0 && (
-          <CinematicEffects key={"retrigger-" + bonus.played} cue="retrigger" />
-        )}
-        {bonus?.phase === "playing" && bonus.added > 0 && (
-          <div
-            className="scatter-retrigger-ribbon"
-            key={bonus.played}
-            role="status"
-          >
-            <span aria-hidden="true">✦</span> +{bonus.added} FREE SPINS{" "}
-            <span aria-hidden="true">✦</span>
+            ))}
+            <svg
+              className="winning-lines"
+              viewBox={"0 0 " + s.reels * 100 + " " + s.rows * 100}
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              {wins
+                .filter((w) => w.line !== undefined)
+                .map((w, i) => (
+                  <polyline
+                    key={w.line}
+                    points={w.cells
+                      .map(
+                        ([col, row]) => col * 100 + 50 + "," + (row * 100 + 50),
+                      )
+                      .join(" ")}
+                    fill="none"
+                    stroke={["#ffe087", "#75e9ff", "#e999ff"][i % 3]}
+                    strokeWidth="3"
+                  />
+                ))}
+            </svg>
           </div>
-        )}
-        {!bonusActive && returned > 0 && (
-          <SlotWinCelebration
-            key={round}
-            returned={returned}
-            stake={lastStake}
-            scatter={wins.some((w) => w.scatter)}
-            bonus={bonus?.phase === "complete"}
-          />
-        )}
-      </div>
+          {bonus?.phase === "intro" && (
+            <ScatterCelebration
+              scene={s.scene}
+              onStart={() => {
+                if (bonusStarted.current) return;
+                bonusStarted.current = true;
+                playBonus();
+              }}
+              onSkip={completeBonus}
+            />
+          )}
+          {bonus?.phase === "playing" && bonus.added > 0 && (
+            <CinematicEffects
+              key={"retrigger-" + bonus.played}
+              cue="retrigger"
+            />
+          )}
+          {bonus?.phase === "playing" && bonus.added > 0 && (
+            <div
+              className="scatter-retrigger-ribbon"
+              key={bonus.played}
+              role="status"
+            >
+              <span aria-hidden="true">✦</span> +{bonus.added} FREE SPINS{" "}
+              <span aria-hidden="true">✦</span>
+            </div>
+          )}
+          {!bonusActive && returned > 0 && (
+            <SlotWinCelebration
+              key={round}
+              returned={returned}
+              stake={lastStake}
+              scatter={wins.some((w) => w.scatter)}
+              bonus={bonus?.phase === "complete"}
+            />
+          )}
+        </div>
+      </WorldStage>
       <SlotConsole
         controls={{
           ...c,

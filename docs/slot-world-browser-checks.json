@@ -1,0 +1,1748 @@
+{
+  "fixture": "Offline headless Chrome; local test outcomes; no cash requests",
+  "cases": 67,
+  "reports": [
+    {
+      "game": "amber-apiary",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/honey.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-honey.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-confectioner.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "amber-apiary",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/honey.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-honey.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-confectioner.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "astra-cascade",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "astra-cascade",
+      "mode": "pending",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 1,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "anticipation"
+    },
+    {
+      "game": "astra-cascade",
+      "mode": "win",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 1,
+      "finishes": 1,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "delighted"
+    },
+    {
+      "game": "astra-cascade",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "astra-cascade",
+      "mode": "pending",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 1,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "anticipation"
+    },
+    {
+      "game": "astra-cascade",
+      "mode": "win",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 1,
+      "finishes": 1,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-astral.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "delighted"
+    },
+    {
+      "game": "atlas-of-gold",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/map.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-map.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-explorer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "atlas-of-gold",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/map.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-map.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-explorer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "aurora-arcade",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/arcade.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-arcade.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "aurora-arcade",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/arcade.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-arcade.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "clockwork-aurora",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/aurora.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-aurora.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "clockwork-aurora",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/aurora.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-aurora.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "copper-canyon",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/canyon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-canyon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-explorer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "copper-canyon",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/canyon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-canyon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-explorer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "copper-lock",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "copper-lock",
+      "mode": "pending",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 1,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "anticipation"
+    },
+    {
+      "game": "copper-lock",
+      "mode": "win",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 1,
+      "finishes": 1,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "delighted"
+    },
+    {
+      "game": "copper-lock",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "copper-lock",
+      "mode": "pending",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 1,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "anticipation"
+    },
+    {
+      "game": "copper-lock",
+      "mode": "win",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 1,
+      "finishes": 1,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-foundry.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "delighted"
+    },
+    {
+      "game": "coral-cove",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/reef.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-reef.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-angler.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "coral-cove",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/reef.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-reef.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-angler.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "corsair-pearls",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/pirate.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-pirate.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-angler.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "corsair-pearls",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/pirate.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-pirate.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-angler.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "dragon-atelier",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/dragon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-dragon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "dragon-atelier",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/dragon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-dragon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "electric-garden",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/garden.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-garden.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "electric-garden",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/garden.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-garden.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "ember-crown",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/castle.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-castle.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "ember-crown",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/castle.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-castle.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "frost-bloom",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/ice.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-ice.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "frost-bloom",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/ice.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-ice.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "jade-temple",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/temple.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-temple.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "jade-temple",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/temple.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-temple.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "lunar-tides",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/moon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-moon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-angler.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "lunar-tides",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/moon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-moon.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-angler.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "midnight-express",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/train.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-train.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "midnight-express",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/train.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-train.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "neon-drift",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/city.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-city.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "neon-drift",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/city.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-city.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "nitro-sevens",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "nitro-sevens",
+      "mode": "pending",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 1,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "anticipation"
+    },
+    {
+      "game": "nitro-sevens",
+      "mode": "win",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 1,
+      "finishes": 1,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "cheer"
+    },
+    {
+      "game": "nitro-sevens",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "nitro-sevens",
+      "mode": "pending",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 1,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "anticipation"
+    },
+    {
+      "game": "nitro-sevens",
+      "mode": "win",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 1,
+      "finishes": 1,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-motor.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "cheer"
+    },
+    {
+      "game": "obsidian-echo",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/cave.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-cave.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "obsidian-echo",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/cave.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-cave.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-keeper.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "ruby-rebellion",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/royal.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-royal.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "ruby-rebellion",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/royal.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-royal.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "saffron-sky",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/desert.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-desert.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-explorer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "saffron-sky",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/desert.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-desert.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-explorer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "solar-vault",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "solar-vault",
+      "mode": "pending",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 1,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "anticipation"
+    },
+    {
+      "game": "solar-vault",
+      "mode": "win",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 1,
+      "finishes": 1,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "cheer"
+    },
+    {
+      "game": "solar-vault",
+      "mode": "bonus",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 1,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": true,
+      "assets": [
+        {
+          "src": "/worlds/solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "bonus"
+    },
+    {
+      "game": "solar-vault",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "solar-vault",
+      "mode": "pending",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 1,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "anticipation"
+    },
+    {
+      "game": "solar-vault",
+      "mode": "win",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 1,
+      "finishes": 1,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-solar.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "cheer"
+    },
+    {
+      "game": "sugar-parade",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/candy.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-candy.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-confectioner.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "sugar-parade",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/candy.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-candy.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-confectioner.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "thunder-aerie",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/storm.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-storm.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "thunder-aerie",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/storm.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-storm.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-guardian.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "velvet-orbit",
+      "mode": "idle",
+      "width": 1200,
+      "scrollWidth": 1190,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/cosmos.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-cosmos.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    },
+    {
+      "game": "velvet-orbit",
+      "mode": "idle",
+      "width": 390,
+      "scrollWidth": 380,
+      "requests": 0,
+      "finishes": 0,
+      "stable": true,
+      "stakeNextToSpin": true,
+      "bonus": false,
+      "assets": [
+        {
+          "src": "/worlds/cosmos.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/symbols-cosmos.webp",
+          "loaded": true
+        },
+        {
+          "src": "/worlds/rig-engineer.webp",
+          "loaded": true
+        }
+      ],
+      "actor": "idle"
+    }
+  ]
+}
