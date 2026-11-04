@@ -6,11 +6,13 @@ export default function SlotWinCelebration({
   stake,
   scatter = false,
   signature = false,
+  bonus = false,
 }: {
   returned: number;
   stake: number;
   scatter?: boolean;
   signature?: boolean;
+  bonus?: boolean;
 }) {
   const [visible, setVisible] = useState(true),
     tier = slotWinTier(returned, stake),
@@ -27,11 +29,13 @@ export default function SlotWinCelebration({
         ? "MEGA WIN"
         : tier === "big"
           ? "BIG WIN"
-          : scatter
-            ? "SCATTER WIN"
-            : returned > stake
-              ? "YOU WIN"
-              : "RETURN";
+          : bonus
+            ? "BONUS WIN"
+            : scatter
+              ? "SCATTER WIN"
+              : returned > stake
+                ? "YOU WIN"
+                : "RETURN";
   return (
     <div
       className={
@@ -42,22 +46,26 @@ export default function SlotWinCelebration({
       data-win-tier={tier}
     >
       <div className="slot-win-rays" aria-hidden="true" />
-      {big && (
+      {(big || returned > stake || bonus) && (
         <div className="slot-win-particles" aria-hidden="true">
-          {Array.from({ length: tier === "epic" ? 28 : 20 }, (_, i) => (
-            <i
-              key={i}
-              style={
-                {
-                  "--piece": i,
-                  "--lane": (i * 37) % 100,
-                  "--drift": (i % 2 ? 1 : -1) * (25 + (i % 7) * 12),
-                } as CSSProperties
-              }
-            >
-              ✦
-            </i>
-          ))}
+          {Array.from(
+            { length: tier === "epic" ? 42 : big ? 30 : 14 },
+            (_, i) => (
+              <i
+                key={i}
+                style={
+                  {
+                    "--piece": i,
+                    "--lane": (i * 37) % 100,
+                    "--drift": (i % 2 ? 1 : -1) * (25 + (i % 7) * 12),
+                    "--confetti-hue": (i * 47) % 360,
+                  } as CSSProperties
+                }
+              >
+                {i % 3 ? "✦" : "●"}
+              </i>
+            ),
+          )}
         </div>
       )}
       <section className="slot-win-card" aria-label="Confirmed slot return">
@@ -67,7 +75,18 @@ export default function SlotWinCelebration({
         >
           ×
         </button>
-        <small>{big ? "SPINDRA CELEBRATES" : "CONFIRMED RESULT"}</small>
+        {(returned > stake || bonus) && (
+          <div className="slot-award-crown" aria-hidden="true">
+            ✧ <span>♛</span> ✧
+          </div>
+        )}
+        <small>
+          {bonus
+            ? "BONUS ROUND SETTLED"
+            : big
+              ? "SPINDRA CELEBRATES"
+              : "CONFIRMED RESULT"}
+        </small>
         <strong>{title}</strong>
         <div className="slot-win-amount">
           <AnimatedCredits amount={returned} />

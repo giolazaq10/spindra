@@ -21,6 +21,8 @@ import { reelMotion } from "./reelMotion";
 import { useSlotPlayback } from "./useSlotPlayback";
 import { useSlotAudio } from "./useSlotAudio";
 import SlotPlaybackControls from "./SlotPlaybackControls";
+import SlotAtmosphere from "./SlotAtmosphere";
+import ScatterCelebration from "./ScatterCelebration";
 const ReelSymbol = memo(SlotSymbol);
 export default function AdvancedSlots({
   game,
@@ -302,9 +304,11 @@ export default function AdvancedSlots({
         " scene-" +
         s.scene +
         (spinning ? " slot-in-motion" : "") +
-        (quick ? " slot-quick" : "")
+        (quick ? " slot-quick" : "") +
+        (bonusActive ? " slot-in-bonus" : "")
       }
       ref={cabinet}
+      data-slot-rows={s.rows}
       style={
         {
           ...slotThemeVars(s.scene),
@@ -315,6 +319,17 @@ export default function AdvancedSlots({
     >
       <SlotScenery scene={s.scene} />
       <div className="scene-overlay" />
+      <SlotAtmosphere
+        phase={
+          bonusActive
+            ? "bonus"
+            : spinning
+              ? "spin"
+              : returned > lastStake
+                ? "win"
+                : "idle"
+        }
+      />
       <div className="scene-particles" aria-hidden="true">
         {Array.from({ length: 8 }, (_, i) => (
           <i key={i} style={{ "--particle": i } as CSSProperties} />
@@ -344,13 +359,17 @@ export default function AdvancedSlots({
         <span>3+ SCATTERS · 10 FREE SPINS</span>
       </div>
       <div
-        className={"slot-bonus-bar " + (bonus ? "bonus-visible" : "")}
+        className={
+          "slot-bonus-bar " +
+          (bonus ? "bonus-visible " : "") +
+          (bonus?.added ? "bonus-retrigger" : "")
+        }
         aria-live="polite"
       >
         {bonus ? (
           <>
             <div>
-              <strong>
+              <strong key={bonus.played}>
                 {bonus.phase === "intro"
                   ? "10 FREE SPINS AWARDED"
                   : bonus.phase === "complete"
@@ -364,18 +383,7 @@ export default function AdvancedSlots({
                   : "Bonus return " + credits(bonus.won)}
               </span>
             </div>
-            {bonus.phase === "intro" && (
-              <button
-                onClick={() => {
-                  if (bonusStarted.current) return;
-                  bonusStarted.current = true;
-                  playBonus();
-                }}
-              >
-                Start free spins
-              </button>
-            )}
-            {bonusActive && (
+            {bonus.phase === "playing" && (
               <button onClick={completeBonus}>Skip bonus animations</button>
             )}
           </>
@@ -432,10 +440,30 @@ export default function AdvancedSlots({
                       key={row}
                       aria-hidden={row >= s.rows || undefined}
                       className={
-                        "symbol-cell " + (winning ? "symbol-winning" : "")
+                        "symbol-cell " +
+                        (winning ? "symbol-winning " : "") +
+                        (symbol === s.scatter?.symbol &&
+                        row < s.rows &&
+                        !moving[col] &&
+                        (bonus?.phase === "intro" || !!bonus?.added)
+                          ? "scatter-charged"
+                          : "")
                       }
                     >
                       <ReelSymbol spec={s} index={symbol} />
+                      {symbol === s.scatter?.symbol &&
+                        row < s.rows &&
+                        !moving[col] &&
+                        (bonus?.phase === "intro" || !!bonus?.added) && (
+                          <span
+                            className="scatter-cell-orbit"
+                            aria-hidden="true"
+                          >
+                            <i />
+                            <i />
+                            <i />
+                          </span>
+                        )}
                       {winning && (
                         <span className="symbol-spark" aria-hidden="true">
                           ✦
@@ -470,12 +498,33 @@ export default function AdvancedSlots({
               ))}
           </svg>
         </div>
+        {bonus?.phase === "intro" && (
+          <ScatterCelebration
+            onStart={() => {
+              if (bonusStarted.current) return;
+              bonusStarted.current = true;
+              playBonus();
+            }}
+            onSkip={completeBonus}
+          />
+        )}
+        {bonus?.phase === "playing" && bonus.added > 0 && (
+          <div
+            className="scatter-retrigger-ribbon"
+            key={bonus.played}
+            role="status"
+          >
+            <span aria-hidden="true">✦</span> +{bonus.added} FREE SPINS{" "}
+            <span aria-hidden="true">✦</span>
+          </div>
+        )}
         {!bonusActive && returned > 0 && (
           <SlotWinCelebration
             key={round}
             returned={returned}
             stake={lastStake}
             scatter={wins.some((w) => w.scatter)}
+            bonus={bonus?.phase === "complete"}
           />
         )}
       </div>
